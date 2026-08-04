@@ -3,271 +3,830 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Repertorio & Visor de Acordes</title>
-
+  <title>Ministerio de Alabanza</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* Estilos Generales */
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: #f3f4f6;
+    :root {
+      --brand-mint: #6ee7b7;
+      --brand-mint-glow: rgba(110, 231, 183, 0.25);
+      --bg-dark: #07090e;
+      --card-bg: rgba(18, 24, 38, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --danger: #f43f5e;
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
       margin: 0;
-      padding: 20px;
-      color: #1f2937;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      font-size: 1.8rem;
-      margin-bottom: 20px;
-    }
-
-    /* Tabla Principal de Canciones */
-    .song-list {
+    html, body {
+      height: 100%;
       width: 100%;
-      border-collapse: collapse;
-      background: #ffffff;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      background-color: var(--bg-dark);
+      overflow-x: hidden;
     }
 
-    .song-list th, .song-list td {
-      padding: 12px 16px;
-      text-align: left;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .song-list th {
-      background-color: #1f2937;
-      color: #ffffff;
-      font-weight: 600;
-    }
-
-    .song-row {
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .song-row:hover {
-      background-color: #f9fafb;
-    }
-
-    .open-btn {
-      background-color: #2563eb;
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .open-btn:hover {
-      background-color: #1d4ed8;
-    }
-
-    /* Modal / Visor del PDF */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background-color: rgba(0, 0, 0, 0.75);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      background: #ffffff;
-      width: 95%;
-      max-width: 900px;
-      height: 90vh;
-      border-radius: 12px;
+    body {
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(110, 231, 183, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(10, 185, 129, 0.08) 0%, transparent 40%);
+      color: var(--text-main);
       display: flex;
       flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      min-height: 100vh;
+      max-width: 600px;
+      margin: 0 auto;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+      position: relative;
     }
 
-    /* Encabezado del Visor */
-    .modal-header {
-      padding: 16px 20px;
-      background: #1f2937;
-      color: #fff;
+    header {
+      padding: 1.2rem 1rem 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .logo-container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 4px 10px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .app-logo {
+      height: 34px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    header h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 30%, var(--brand-mint) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    main {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      padding-bottom: 80px;
+    }
+
+    /* BARRA DE NAVEGACIÓN PRINCIPAL */
+    nav {
+      display: flex;
+      background: rgba(10, 14, 23, 0.95);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid var(--card-border);
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-width: 600px;
+      margin: 0 auto;
+      z-index: 100;
+      padding: 0.6rem;
+      gap: 0.4rem;
+    }
+
+    nav button {
+      flex: 1;
+      padding: 0.65rem 0.2rem;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      border-radius: 14px;
+      transition: all 0.25s;
+    }
+
+    nav button span.icon { font-size: 1.2rem; }
+
+    nav button.active {
+      color: #000;
+      background: var(--brand-mint);
+      font-weight: 700;
+      box-shadow: 0 6px 16px var(--brand-mint-glow);
+    }
+
+    .tab-content {
+      display: none;
+      animation: tabSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tab-content.active { display: block; }
+
+    @keyframes tabSlide {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .search-wrapper {
+      position: relative;
+      margin-bottom: 1.25rem;
+    }
+
+    .search-wrapper input {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.85rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      color: var(--text-main);
+      font-size: 0.95rem;
+    }
+
+    .search-wrapper input:focus {
+      outline: none;
+      border-color: var(--brand-mint);
+      box-shadow: 0 0 0 3px var(--brand-mint-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .song-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-bottom: 0.85rem;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    #sundayList .song-card { cursor: grab; }
+    #sundayList .song-card:active { cursor: grabbing; }
+
+    .song-top {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
     }
 
-    .song-info h2 { margin: 0; font-size: 1.25rem; }
-    .song-info .subtitle { font-size: 0.875rem; color: #9ca3af; }
-
-    .close-btn {
-      background: transparent;
-      border: none;
-      color: #fff;
-      font-size: 2rem;
-      cursor: pointer;
+    .song-info {
+      flex: 1;
+      min-width: 0;
+      margin-right: 0.5rem;
     }
 
-    /* Barra de Badges (Tono y BPM) */
-    .badges-bar {
-      padding: 10px 20px;
-      background: #f3f4f6;
+    .song-info h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .song-meta {
       display: flex;
-      gap: 10px;
+      gap: 0.4rem;
       align-items: center;
     }
 
     .badge {
-      background: #e5e7eb;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 0.85rem;
+      display: inline-flex;
+      padding: 0.2rem 0.55rem;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
     }
 
-    /* Visor del PDF */
-    .pdf-viewer-box {
+    .badge.key {
+      background: rgba(110, 231, 183, 0.12);
+      color: var(--brand-mint);
+      border: 1px solid rgba(110, 231, 183, 0.25);
+    }
+
+    .song-main-actions {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .action-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .action-btn.star.active {
+      color: #000;
+      background: var(--brand-mint);
+      border-color: var(--brand-mint);
+      box-shadow: 0 4px 12px var(--brand-mint-glow);
+    }
+
+    .drag-handle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      cursor: grab;
+      margin-right: 0.4rem;
+    }
+
+    .song-links {
+      display: flex;
+      gap: 0.4rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 0.75rem;
+    }
+
+    .format-btn {
       flex: 1;
-      width: 100%;
-      background: #e5e7eb;
+      padding: 0.45rem 0.2rem;
+      border-radius: 10px;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
     }
 
-    .pdf-viewer-box iframe {
+    .format-btn:hover {
+      background: rgba(110, 231, 183, 0.15);
+      border-color: var(--brand-mint);
+      color: var(--brand-mint);
+    }
+
+    .format-btn.disabled {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .drive-container {
       width: 100%;
+      height: calc(100vh - 160px);
+      border: none;
+      border-radius: var(--radius);
+      background-color: var(--card-bg);
+    }
+
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 0.3rem;
+    }
+
+    /* ESTRUCTURA LIMPIA DEL VISOR */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; 
+      left: 0; 
+      width: 100%; 
       height: 100%;
+      background-color: #000;
+      z-index: 9999;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 0.6rem 0.8rem;
+      background: rgba(10, 14, 23, 0.98);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      gap: 0.4rem;
+      z-index: 10;
+    }
+
+    .modal-title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .modal-header h3 {
+      font-size: 0.85rem;
+      color: var(--brand-mint);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+    }
+
+    .modal-header-actions {
+      display: flex;
+      gap: 0.35rem;
+      align-items: center;
+    }
+
+    .modal-body { 
+      flex: 1; 
+      width: 100%; 
+      height: 100%;
+      background: #000; 
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-body iframe { 
+      width: 100%; 
+      height: 100%; 
+      border: none;
+    }
+
+    .nav-arrow {
+      background: rgba(110, 231, 183, 0.15);
+      border: 1px solid rgba(110, 231, 183, 0.4);
+      color: var(--brand-mint);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .nav-arrow:disabled {
+      opacity: 0.2;
+      cursor: not-allowed;
+      border-color: var(--card-border);
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      width: 34px; 
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      text-decoration: none;
+    }
+
+    .btn-small {
+      padding: 0.35rem 0.55rem;
+      font-size: 0.7rem;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+      cursor: pointer;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    .btn-small.active {
+      background: var(--brand-mint);
+      color: #000;
+      border-color: var(--brand-mint);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>Repertorio de Canciones</h1>
-    
-    <!-- Tabla Principal -->
-    <table class="song-list">
-      <thead>
-        <tr>
-          <th>Canción</th>
-          <th>Artista</th>
-          <th>Tono</th>
-          <th>BPM</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody id="songs-table-body">
-        <!-- Se completa con JS -->
-      </tbody>
-    </table>
-  </div>
+  <header>
+    <div class="logo-container">
+      <img src="logo.png" alt="Logo Ministerio" class="app-logo">
+    </div>
+    <h1>Ministerio de Alabanza</h1>
+  </header>
 
-  <!-- Modal / Visor de la Canción -->
-  <div id="song-viewer-modal" class="modal">
-    <div class="modal-content">
+  <main>
+    <!-- TAB REPERTORIO -->
+    <section id="repertorio" class="tab-content active">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Buscar canción o tono..." oninput="filterSongs()">
+      </div>
+      <div id="songsList">Cargando canciones...</div>
+    </section>
+
+    <!-- TAB DOMINGO -->
+    <section id="domingo" class="tab-content">
+      <h2 class="section-title">Repertorio del Domingo</h2>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">Se sincroniza para todo el equipo en tiempo real.</p>
+      <div id="sundayList"></div>
+    </section>
+
+    <!-- TAB DRIVE -->
+    <section id="drive" class="tab-content">
+      <iframe class="drive-container" src="https://drive.google.com/embeddedfolderview?id=12bycs6XiD6zlXIt2gNw9URdvfl0GoTxa#list"></iframe>
+    </section>
+  </main>
+
+  <nav>
+    <button class="nav-btn active" onclick="switchTab('repertorio', this)">
+      <span class="icon">🎵</span> Repertorio
+    </button>
+    <button class="nav-btn" onclick="switchTab('domingo', this)">
+      <span class="icon">⭐</span> Domingo
+    </button>
+    <button class="nav-btn" onclick="switchTab('drive', this)">
+      <span class="icon">📁</span> Drive
+    </button>
+  </nav>
+
+  <!-- MODAL VISOR ESTABLE SIN INTERFERENCIAS CSS -->
+  <div id="viewerModal" class="modal">
+    <div class="modal-header">
+      <button id="prevBtn" class="nav-arrow" onclick="navigateSong(-1)">◀</button>
+      <div class="modal-title-wrapper">
+        <h3 id="modalTitle">Partitura</h3>
+      </div>
+      <button id="nextBtn" class="nav-arrow" onclick="navigateSong(1)">▶</button>
       
-      <div class="modal-header">
-        <div class="song-info">
-          <h2 id="viewer-title">Título</h2>
-          <span id="viewer-artist-album" class="subtitle">Artista</span>
-        </div>
-        <button id="close-modal-btn" class="close-btn">&times;</button>
+      <div class="modal-header-actions">
+        <a id="externalLinkBtn" class="icon-btn" target="_blank" title="Abrir externamente">↗</a>
+        <button id="modalSundayBtn" class="btn-small" onclick="toggleSundayActiveModal()">⭐ Domingo</button>
+        <button class="icon-btn" title="Pantalla completa" onclick="toggleFullscreen()">⛶</button>
+        <button class="icon-btn" onclick="closeViewer()">&times;</button>
       </div>
-
-      <div class="badges-bar">
-        <span id="viewer-key" class="badge">Tono: -</span>
-        <span id="viewer-bpm" class="badge">BPM: -</span>
-      </div>
-
-      <!-- Visor de PDF / Letra -->
-      <div class="pdf-viewer-box">
-        <iframe id="viewer-pdf-iframe" src="" frameborder="0"></iframe>
-      </div>
-
+    </div>
+    <div class="modal-body" id="modalBody">
+      <iframe id="pdfFrame" src=""></iframe>
     </div>
   </div>
 
   <script>
-    // Ejemplo de filas (Estructura de la Columna A a la F)
-    const sampleRows = [
-      ["De Música Ligera", "Soda Stereo", "", "Bm", "125", "https://drive.google.com/file/d/12345/view"],
-      ["Flaca", "Andrés Calamaro", "", "G", "92", "https://drive.google.com/file/d/67890/view"]
-    ];
+    const SHEET_ID = '1qdZOBl0Nt-c9B0SwIgXY325nLE7qVdHZHfSXWVu1Xlc';
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyYLD9xbSEujD4q2wW--BR5ADimSKpcrhPF0b8ueS16EHzeF5X1WKU_duIIgEPfzRVDVQ/exec';
+    
+    let songs = [];
+    let currentActiveSongId = null;
+    let currentFormatType = 'letra';
+    let activeTab = 'repertorio';
 
-    // Mapeo directo de Columnas (A a la F)
-    function mapSheetRowToSong(row) {
-      return {
-        title: row[0] || '',      // Columna A (Canción)
-        artist: row[1] || '',     // Columna B (Artista)
-        albumCover: row[2] || '', // Columna C (Álbum / Imagen)
-        key: row[3] || '',        // Columna D (Tono)
-        bpm: row[4] || '',        // Columna E (BPM)
-        driveUrl: row[5] || ''    // Columna F (PDF / Letra en Drive)
-      };
+    async function fetchSongsFromSheet() {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+      try {
+        const [responseSongs, responseSunday] = await Promise.all([
+          fetch(url),
+          fetch(`${WEB_APP_URL}?action=get`)
+        ]);
+
+        const textSongs = await responseSongs.text();
+        const jsonSongs = JSON.parse(textSongs.substr(47).slice(0, -2));
+        const rows = jsonSongs.table.rows;
+
+        const sundayText = await responseSunday.text();
+        const savedSundayIds = sundayText ? sundayText.split(',').map(Number) : [];
+
+        songs = rows.map((row, index) => {
+          const c = row.c;
+          return {
+            id: index + 1,
+            title: c[0] ? c[0].v : '',
+            key: c[1] ? c[1].v : '',
+            bpm: c[2] ? c[2].v : '',
+            urlLetra: c[3] ? c[3].v : '',
+            urlLetraAcordes: c[4] ? c[4].v : '',
+            urlAcordes: c[5] ? c[5].v : '',
+            inSunday: savedSundayIds.includes(index + 1)
+          };
+        }).filter(song => song.title !== '');
+
+        if (savedSundayIds.length > 0) {
+          const songMap = new Map(songs.map(s => [s.id, s]));
+          const orderedSunday = savedSundayIds.map(id => songMap.get(id)).filter(Boolean);
+          const restSongs = songs.filter(s => !savedSundayIds.includes(s.id));
+          songs = [...orderedSunday, ...restSongs];
+        }
+
+        renderSongs();
+        renderSundayList();
+      } catch (error) {
+        console.error('Error cargando los datos:', error);
+        document.getElementById('songsList').innerHTML = '<div class="empty-state">Error al cargar los datos. Verifica la configuración.</div>';
+      }
     }
 
-    // Convierte enlace de Drive a formato Preview
-    function getDriveEmbedUrl(url) {
+    async function saveSundayState() {
+      const sundayIds = songs.filter(s => s.inSunday).map(s => s.id);
+      
+      try {
+        await fetch(WEB_APP_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'save', ids: sundayIds.join(',') })
+        });
+      } catch (error) {
+        console.error('Error al sincronizar con la nube:', error);
+      }
+    }
+
+    function getEmbedUrl(url) {
       if (!url) return '';
-      return url.replace(/\/view.*$/, '/preview');
+      const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) {
+        return `https://drive.google.com/file/d/${match[1]}/preview`;
+      }
+      return url;
     }
 
-    // Dibujar la tabla
-    function renderSongsTable(rows) {
-      const tbody = document.getElementById('songs-table-body');
-      tbody.innerHTML = '';
+    function switchTab(tabId, btnElement) {
+      activeTab = tabId;
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(tabId).classList.add('active');
+      btnElement.classList.add('active');
 
-      rows.forEach(row => {
-        const song = mapSheetRowToSong(row);
-        const tr = document.createElement('tr');
-        tr.className = 'song-row';
-        tr.innerHTML = `
-          <td><strong>${song.title}</strong></td>
-          <td>${song.artist}</td>
-          <td>${song.key}</td>
-          <td>${song.bpm}</td>
-          <td><button class="open-btn">Ver Acordes</button></td>
+      if (tabId === 'repertorio') renderSongs();
+      if (tabId === 'domingo') renderSundayList();
+    }
+
+    function renderSongs(filter = '') {
+      const listContainer = document.getElementById('songsList');
+      listContainer.innerHTML = '';
+
+      const filteredSongs = songs.filter(song => 
+        song.title.toLowerCase().includes(filter.toLowerCase()) || 
+        song.key.toLowerCase().includes(filter.toLowerCase())
+      );
+
+      if (filteredSongs.length === 0) {
+        listContainer.innerHTML = `<div class="empty-state"><span>🎶</span><p>No se encontraron canciones.</p></div>`;
+        return;
+      }
+
+      filteredSongs.forEach(song => {
+        const card = document.createElement('div');
+        card.className = 'song-card';
+        card.innerHTML = `
+          <div class="song-top">
+            <div class="song-info">
+              <h3>${song.title}</h3>
+              <div class="song-meta">
+                <span class="badge key">Tono: ${song.key}</span>
+                ${song.bpm ? `<span class="badge">${song.bpm} BPM</span>` : ''}
+              </div>
+            </div>
+            <div class="song-main-actions">
+              <button class="action-btn star ${song.inSunday ? 'active' : ''}" title="Domingo" onclick="toggleSunday(${song.id})">⭐</button>
+            </div>
+          </div>
+          <div class="song-links">
+            <button class="format-btn ${!song.urlLetra ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
+            <button class="format-btn ${!song.urlLetraAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
+            <button class="format-btn ${!song.urlAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
+          </div>
         `;
-        
-        tr.addEventListener('click', () => openSongViewer(song));
-        tbody.appendChild(tr);
+        listContainer.appendChild(card);
       });
     }
 
-    // Abrir Visor PDF
-    function openSongViewer(song) {
-      document.getElementById('viewer-title').textContent = song.title;
-      document.getElementById('viewer-artist-album').textContent = song.artist;
-      document.getElementById('viewer-key').textContent = `Tono: ${song.key}`;
-      document.getElementById('viewer-bpm').textContent = `BPM: ${song.bpm}`;
+    function renderSundayList() {
+      const listContainer = document.getElementById('sundayList');
+      listContainer.innerHTML = '';
 
-      const pdfIframe = document.getElementById('viewer-pdf-iframe');
-      pdfIframe.src = song.driveUrl ? getDriveEmbedUrl(song.driveUrl) : '';
+      const sundaySongs = songs.filter(song => song.inSunday);
 
-      document.getElementById('song-viewer-modal').classList.add('active');
+      if (sundaySongs.length === 0) {
+        listContainer.innerHTML = `<div class="empty-state"><span>⭐</span><p>No hay canciones seleccionadas para el Domingo.<br>Toca la estrella ⭐ en el repertorio para agregarlas.</p></div>`;
+        return;
+      }
+
+      sundaySongs.forEach(song => {
+        const card = document.createElement('div');
+        card.className = 'song-card';
+        card.dataset.id = song.id;
+        card.innerHTML = `
+          <div class="song-top">
+            <span class="drag-handle" title="Arrastrar">☰</span>
+            <div class="song-info">
+              <h3>${song.title}</h3>
+              <div class="song-meta">
+                <span class="badge key">Tono: ${song.key}</span>
+                ${song.bpm ? `<span class="badge">${song.bpm} BPM</span>` : ''}
+              </div>
+            </div>
+            <div class="song-main-actions">
+              <button class="action-btn danger" title="Quitar" onclick="toggleSunday(${song.id})" style="color:var(--danger)">✕</button>
+            </div>
+          </div>
+          <div class="song-links">
+            <button class="format-btn ${!song.urlLetra ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
+            <button class="format-btn ${!song.urlLetraAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
+            <button class="format-btn ${!song.urlAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
+          </div>
+        `;
+        listContainer.appendChild(card);
+      });
+
+      if (window.Sortable) {
+        if (listContainer.sortableInstance) {
+          listContainer.sortableInstance.destroy();
+        }
+        listContainer.sortableInstance = Sortable.create(listContainer, {
+          animation: 150,
+          handle: '.drag-handle',
+          onEnd: function () {
+            const newSundayIds = Array.from(listContainer.children).map(el => parseInt(el.dataset.id));
+            const sundayMap = new Map(songs.filter(s => s.inSunday).map(s => [s.id, s]));
+            const nonSundaySongs = songs.filter(s => !s.inSunday);
+            const reorderedSunday = newSundayIds.map(id => sundayMap.get(id));
+
+            songs = [...reorderedSunday, ...nonSundaySongs];
+            saveSundayState();
+          }
+        });
+      }
     }
 
-    // Eventos
-    document.addEventListener('DOMContentLoaded', () => {
-      renderSongsTable(sampleRows);
+    function toggleSunday(id) {
+      songs = songs.map(song => song.id === id ? {...song, inSunday: !song.inSunday} : song);
+      saveSundayState();
+      renderSongs();
+      renderSundayList();
+      if (currentActiveSongId === id) {
+        updateModalSundayButton();
+      }
+    }
 
-      const modal = document.getElementById('song-viewer-modal');
-      const closeBtn = document.getElementById('close-modal-btn');
+    function toggleSundayActiveModal() {
+      if (currentActiveSongId !== null) {
+        toggleSunday(currentActiveSongId);
+      }
+    }
 
-      closeBtn.addEventListener('click', () => {
-        modal.classList.remove('active');
-        document.getElementById('viewer-pdf-iframe').src = '';
-      });
+    function updateModalSundayButton() {
+      const song = songs.find(s => s.id === currentActiveSongId);
+      const btn = document.getElementById('modalSundayBtn');
+      if (song && song.inSunday) {
+        btn.classList.add('active');
+        btn.innerText = '★ En Domingo';
+      } else {
+        btn.classList.remove('active');
+        btn.innerText = '⭐ Domingo';
+      }
+    }
+
+    function filterSongs() {
+      const query = document.getElementById('searchInput').value;
+      renderSongs(query);
+    }
+
+    function getActiveList() {
+      if (activeTab === 'domingo') {
+        return songs.filter(s => s.inSunday);
+      }
+      return songs;
+    }
+
+    function openViewer(id, type) {
+      const currentList = getActiveList();
+      const songIndex = currentList.findIndex(s => s.id === id);
+      if (songIndex === -1) return;
+
+      currentActiveSongId = id;
+      currentFormatType = type;
+      
+      loadModalSong(currentList[songIndex]);
+      document.getElementById('viewerModal').style.display = 'flex';
+    }
+
+    function loadModalSong(song) {
+      updateModalSundayButton();
+
+      let targetUrl = '';
+      let label = '';
+
+      if (currentFormatType === 'letra') {
+        targetUrl = song.urlLetra;
+        label = `${song.title} (Letra)`;
+      } else if (currentFormatType === 'letra-acordes') {
+        targetUrl = song.urlLetraAcordes;
+        label = `${song.title} (Letra + Acordes)`;
+      } else if (currentFormatType === 'acordes') {
+        targetUrl = song.urlAcordes;
+        label = `${song.title} (Solo Acordes)`;
+      }
+
+      document.getElementById('modalTitle').innerText = label;
+      document.getElementById('externalLinkBtn').href = targetUrl || '#';
+
+      const embedUrl = getEmbedUrl(targetUrl);
+      document.getElementById('pdfFrame').src = embedUrl;
+
+      updateNavigationButtons();
+    }
+
+    function navigateSong(direction) {
+      const currentList = getActiveList();
+      const currentIndex = currentList.findIndex(s => s.id === currentActiveSongId);
+      const nextIndex = currentIndex + direction;
+
+      if (nextIndex >= 0 && nextIndex < currentList.length) {
+        const nextSong = currentList[nextIndex];
+        currentActiveSongId = nextSong.id;
+        loadModalSong(nextSong);
+      }
+    }
+
+    function updateNavigationButtons() {
+      const currentList = getActiveList();
+      const currentIndex = currentList.findIndex(s => s.id === currentActiveSongId);
+
+      const isFirst = currentIndex <= 0;
+      const isLast = currentIndex >= currentList.length - 1;
+
+      document.getElementById('prevBtn').disabled = isFirst;
+      document.getElementById('nextBtn').disabled = isLast;
+    }
+
+    function closeViewer() {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      }
+      document.getElementById('viewerModal').style.display = 'none';
+      document.getElementById('pdfFrame').src = '';
+      currentActiveSongId = null;
+    }
+
+    function toggleFullscreen() {
+      const elem = document.getElementById('viewerModal');
+      if (!document.fullscreenElement) {
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      const modal = document.getElementById('viewerModal');
+      if (modal.style.display === 'flex') {
+        if (e.key === 'ArrowRight') navigateSong(1);
+        if (e.key === 'ArrowLeft') navigateSong(-1);
+        if (e.key === 'Escape') closeViewer();
+      }
     });
+
+    fetchSongsFromSheet();
   </script>
 </body>
 </html>
