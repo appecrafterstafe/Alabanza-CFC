@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Ministerio de Alabanza</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -27,8 +27,14 @@
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    body {
+    html, body {
+      height: 100%;
+      width: 100%;
       background-color: var(--bg-dark);
+      overflow-x: hidden;
+    }
+
+    body {
       background-image: 
         radial-gradient(circle at 50% 0%, rgba(110, 231, 183, 0.12) 0%, transparent 50%),
         radial-gradient(circle at 100% 100%, rgba(10, 185, 129, 0.08) 0%, transparent 40%);
@@ -36,7 +42,7 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      max-width: 480px;
+      max-width: 600px;
       margin: 0 auto;
       box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
     }
@@ -290,32 +296,44 @@
       margin-bottom: 0.3rem;
     }
 
+    /* VISOR PANTALLA COMPLETA */
     .modal {
       display: none;
       position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.95);
-      backdrop-filter: blur(12px);
-      z-index: 100;
+      top: 0; left: 0; 
+      width: 100vw; 
+      height: 100vh;
+      background-color: #000;
+      z-index: 9999;
       flex-direction: column;
     }
 
     .modal-header {
-      padding: 0.8rem 1rem;
-      background: rgba(10, 14, 23, 0.95);
+      padding: 0.6rem 0.8rem;
+      background: rgba(10, 14, 23, 0.98);
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 1px solid var(--card-border);
+      gap: 0.5rem;
+    }
+
+    .modal-title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex: 1;
+      justify-content: center;
+      min-width: 0;
     }
 
     .modal-header h3 {
       font-size: 0.85rem;
       color: var(--brand-mint);
-      max-width: 50%;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      text-align: center;
     }
 
     .modal-header-actions {
@@ -327,49 +345,56 @@
     .modal-body { 
       flex: 1; 
       width: 100%; 
+      height: 100%;
       background: #000; 
       position: relative;
-      touch-action: pan-y;
     }
     
     .modal-body iframe { 
       width: 100%; 
       height: 100%; 
       border: none; 
-      pointer-events: auto;
     }
 
     .nav-arrow {
-      background: rgba(18, 24, 38, 0.85);
-      border: 1px solid var(--card-border);
+      background: rgba(110, 231, 183, 0.15);
+      border: 1px solid rgba(110, 231, 183, 0.4);
       color: var(--brand-mint);
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: bold;
       transition: all 0.2s;
+      flex-shrink: 0;
     }
     .nav-arrow:disabled {
       opacity: 0.2;
       cursor: not-allowed;
+      border-color: var(--card-border);
     }
 
-    .close-btn {
+    .icon-btn {
       background: rgba(255, 255, 255, 0.08);
-      border: none;
+      border: 1px solid var(--card-border);
       color: var(--text-main);
-      width: 32px; height: 32px;
+      width: 34px; 
+      height: 34px;
       border-radius: 50%;
       cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
     }
 
     .btn-small {
-      padding: 0.35rem 0.6rem;
+      padding: 0.35rem 0.55rem;
       font-size: 0.7rem;
       border-radius: 8px;
       border: 1px solid var(--card-border);
@@ -377,6 +402,7 @@
       font-weight: 700;
       background: rgba(255, 255, 255, 0.06);
       color: var(--text-main);
+      white-space: nowrap;
     }
     .btn-small.active {
       background: var(--brand-mint);
@@ -389,15 +415,6 @@
       padding: 3rem 1rem;
       color: var(--text-muted);
     }
-
-    .swipe-overlay {
-      position: absolute;
-      top: 0; bottom: 0;
-      width: 15%;
-      z-index: 10;
-    }
-    .swipe-overlay.left { left: 0; }
-    .swipe-overlay.right { right: 0; }
   </style>
 </head>
 <body>
@@ -446,16 +463,18 @@
   <div id="viewerModal" class="modal">
     <div class="modal-header">
       <button id="prevBtn" class="nav-arrow" onclick="navigateSong(-1)">◀</button>
-      <h3 id="modalTitle">Partitura</h3>
+      <div class="modal-title-wrapper">
+        <h3 id="modalTitle">Partitura</h3>
+      </div>
       <button id="nextBtn" class="nav-arrow" onclick="navigateSong(1)">▶</button>
+      
       <div class="modal-header-actions">
         <button id="modalSundayBtn" class="btn-small" onclick="toggleSundayActiveModal()">⭐ Domingo</button>
-        <button class="close-btn" onclick="closeViewer()">&times;</button>
+        <button class="icon-btn" title="Pantalla completa" onclick="toggleFullscreen()">⛶</button>
+        <button class="icon-btn" onclick="closeViewer()">&times;</button>
       </div>
     </div>
     <div class="modal-body" id="modalBody">
-      <div class="swipe-overlay left"></div>
-      <div class="swipe-overlay right"></div>
       <div id="iframeContainer" style="width: 100%; height: 100%;"></div>
     </div>
   </div>
@@ -468,10 +487,6 @@
     let currentActiveSongId = null;
     let currentFormatType = 'letra';
     let activeTab = 'repertorio';
-
-    // Touch variables for swipe
-    let touchStartX = 0;
-    let touchEndX = 0;
 
     async function fetchSongsFromSheet() {
       const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
@@ -744,37 +759,48 @@
       const currentList = getActiveList();
       const currentIndex = currentList.findIndex(s => s.id === currentActiveSongId);
 
-      document.getElementById('prevBtn').disabled = currentIndex <= 0;
-      document.getElementById('nextBtn').disabled = currentIndex >= currentList.length - 1;
+      const isFirst = currentIndex <= 0;
+      const isLast = currentIndex >= currentList.length - 1;
+
+      document.getElementById('prevBtn').disabled = isFirst;
+      document.getElementById('nextBtn').disabled = isLast;
     }
 
     function closeViewer() {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      }
       document.getElementById('viewerModal').style.display = 'none';
       document.getElementById('iframeContainer').innerHTML = '';
       currentActiveSongId = null;
     }
 
-    // GESTOS SWIPE (Deslizar con el dedo)
-    const modalBody = document.getElementById('modalBody');
-
-    modalBody.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-    }, false);
-
-    modalBody.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleSwipe();
-    }, false);
-
-    function handleSwipe() {
-      const swipeThreshold = 50; // Mínima distancia para considerar un swipe
-      if (touchEndX < touchStartX - swipeThreshold) {
-        navigateSong(1); // Deslizar hacia la izquierda -> Siguiente canción
-      }
-      if (touchEndX > touchStartX + swipeThreshold) {
-        navigateSong(-1); // Deslizar hacia la derecha -> Canción anterior
+    function toggleFullscreen() {
+      const elem = document.getElementById('viewerModal');
+      if (!document.fullscreenElement) {
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+          elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+          elem.msRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
       }
     }
+
+    // Teclas de dirección (← / →) para cambiar canción en computadoras
+    document.addEventListener('keydown', (e) => {
+      const modal = document.getElementById('viewerModal');
+      if (modal.style.display === 'flex') {
+        if (e.key === 'ArrowRight') navigateSong(1);
+        if (e.key === 'ArrowLeft') navigateSong(-1);
+        if (e.key === 'Escape') closeViewer();
+      }
+    });
 
     fetchSongsFromSheet();
   </script>
