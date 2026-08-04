@@ -90,7 +90,6 @@
       padding-bottom: 80px;
     }
 
-    /* BARRA DE NAVEGACIÓN PRINCIPAL */
     nav {
       display: flex;
       background: rgba(10, 14, 23, 0.95);
@@ -305,6 +304,10 @@
       font-weight: 600;
       cursor: pointer;
       text-align: center;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       transition: all 0.2s;
     }
 
@@ -339,7 +342,7 @@
       margin-bottom: 0.3rem;
     }
 
-    /* MODAL VISOR */
+    /* MODAL VISOR INTEGRADO */
     .modal {
       display: none;
       position: fixed;
@@ -560,7 +563,7 @@
       </div>
     </div>
     <div class="modal-body" id="modalBody">
-      <iframe id="pdfFrame" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <iframe id="pdfFrame" src=""></iframe>
     </div>
   </div>
 
@@ -637,21 +640,6 @@
 
     function getEmbedUrl(url) {
       if (!url) return '';
-      
-      // Formato YouTube
-      if (url.includes('youtube.com') || url.includes('youtu.be')) {
-        let videoId = '';
-        if (url.includes('youtu.be/')) {
-          videoId = url.split('youtu.be/')[1].split('?')[0];
-        } else if (url.includes('watch?v=')) {
-          videoId = url.split('watch?v=')[1].split('&')[0];
-        }
-        if (videoId) {
-          return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-        }
-      }
-
-      // Formato Google Drive
       const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
       if (match && match[1]) {
         return `https://drive.google.com/file/d/${match[1]}/preview`;
@@ -715,7 +703,7 @@
             <button class="format-btn ${!song.urlLetra ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
             <button class="format-btn ${!song.urlLetraAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
             <button class="format-btn ${!song.urlAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
-            <button class="format-btn yt-btn ${!song.urlYoutube ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'youtube')">▶ YouTube</button>
+            <a class="format-btn yt-btn ${!song.urlYoutube ? 'disabled' : ''}" href="${song.urlYoutube || '#'}" target="_blank" rel="noopener">▶ YouTube</a>
           </div>
         `;
         listContainer.appendChild(card);
@@ -756,7 +744,7 @@
             <button class="format-btn ${!song.urlLetra ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
             <button class="format-btn ${!song.urlLetraAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
             <button class="format-btn ${!song.urlAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
-            <button class="format-btn yt-btn ${!song.urlYoutube ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'youtube')">▶ YouTube</button>
+            <a class="format-btn yt-btn ${!song.urlYoutube ? 'disabled' : ''}" href="${song.urlYoutube || '#'}" target="_blank" rel="noopener">▶ YouTube</a>
           </div>
         `;
         listContainer.appendChild(card);
@@ -853,9 +841,6 @@
       } else if (currentFormatType === 'acordes' && song.urlAcordes) {
         targetUrl = song.urlAcordes;
         formatTag = 'Solo Acordes';
-      } else if (currentFormatType === 'youtube' && song.urlYoutube) {
-        targetUrl = song.urlYoutube;
-        formatTag = 'YouTube';
       } else {
         if (song.urlLetra) {
           targetUrl = song.urlLetra;
@@ -869,10 +854,6 @@
           targetUrl = song.urlAcordes;
           formatTag = 'Solo Acordes';
           currentFormatType = 'acordes';
-        } else if (song.urlYoutube) {
-          targetUrl = song.urlYoutube;
-          formatTag = 'YouTube';
-          currentFormatType = 'youtube';
         }
       }
 
