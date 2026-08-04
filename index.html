@@ -15,6 +15,8 @@
       --card-border: rgba(255, 255, 255, 0.08);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
+      --gold-star: #fbbf24;
+      --gold-glow: rgba(251, 191, 36, 0.35);
       --danger: #f43f5e;
       --radius: 18px;
     }
@@ -210,8 +212,8 @@
 
     .song-artist {
       font-size: 0.8rem;
-      color: var(--brand-mint);
-      font-weight: 600;
+      color: var(--text-muted);
+      font-weight: 500;
       margin-bottom: 0.4rem;
       white-space: nowrap;
       overflow: hidden;
@@ -247,10 +249,11 @@
       align-items: center;
     }
 
+    /* ESTRELLA DORADA REINVENTADA */
     .action-btn {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--card-border);
-      color: var(--text-main);
+      color: var(--text-muted);
       width: 36px;
       height: 36px;
       border-radius: 10px;
@@ -258,15 +261,21 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.2s;
+      font-size: 1.1rem;
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .action-btn.star:hover {
+      border-color: rgba(251, 191, 36, 0.4);
+      color: var(--gold-star);
     }
 
     .action-btn.star.active {
-      color: #000;
-      background: var(--brand-mint);
-      border-color: var(--brand-mint);
-      box-shadow: 0 4px 12px var(--brand-mint-glow);
+      color: var(--gold-star);
+      background: rgba(251, 191, 36, 0.12);
+      border-color: rgba(251, 191, 36, 0.4);
+      box-shadow: 0 4px 14px var(--gold-glow);
+      transform: scale(1.05);
     }
 
     .drag-handle {
@@ -380,8 +389,8 @@
 
     .modal-header .sub-artist {
       font-size: 0.7rem;
-      color: var(--brand-mint);
-      font-weight: 600;
+      color: var(--text-muted);
+      font-weight: 500;
     }
 
     .modal-header-actions {
@@ -458,14 +467,16 @@
       cursor: pointer;
       font-weight: 700;
       background: rgba(255, 255, 255, 0.06);
-      color: var(--text-main);
+      color: var(--text-muted);
       white-space: nowrap;
+      transition: all 0.2s;
     }
 
     .btn-small.active {
-      background: var(--brand-mint);
-      color: #000;
-      border-color: var(--brand-mint);
+      background: rgba(251, 191, 36, 0.15);
+      color: var(--gold-star);
+      border-color: rgba(251, 191, 36, 0.4);
+      box-shadow: 0 2px 10px var(--gold-glow);
     }
 
     .empty-state {
@@ -531,7 +542,7 @@
       
       <div class="modal-header-actions">
         <a id="externalLinkBtn" class="icon-btn" target="_blank" title="Abrir externamente">↗</a>
-        <button id="modalSundayBtn" class="btn-small" onclick="toggleSundayActiveModal()">⭐ Domingo</button>
+        <button id="modalSundayBtn" class="btn-small" onclick="toggleSundayActiveModal()">☆ Domingo</button>
         <button id="fullscreenToggleBtn" class="icon-btn" title="Pantalla completa" onclick="toggleSimulatedFullscreen()">⛶</button>
         <button class="icon-btn" onclick="closeViewer()">&times;</button>
       </div>
@@ -566,14 +577,6 @@
         const sundayText = await responseSunday.text();
         const savedSundayIds = sundayText ? sundayText.split(',').map(Number) : [];
 
-        // MAPEADO CORREGIDO DE COLUMNAS GOOGLE SHEETS:
-        // c[0]: Título
-        // c[1]: Artista
-        // c[2]: Tono
-        // c[3]: BPM
-        // c[4]: Url Letra
-        // c[5]: Url Letra + Acordes
-        // c[6]: Url Acordes
         songs = rows.map((row, index) => {
           const c = row.c;
           return {
@@ -675,7 +678,9 @@
               </div>
             </div>
             <div class="song-main-actions">
-              <button class="action-btn star ${song.inSunday ? 'active' : ''}" title="Domingo" onclick="toggleSunday(${song.id})">⭐</button>
+              <button class="action-btn star ${song.inSunday ? 'active' : ''}" title="Domingo" onclick="toggleSunday(${song.id})">
+                ${song.inSunday ? '⭐' : '☆'}
+              </button>
             </div>
           </div>
           <div class="song-links">
@@ -695,7 +700,7 @@
       const sundaySongs = songs.filter(song => song.inSunday);
 
       if (sundaySongs.length === 0) {
-        listContainer.innerHTML = `<div class="empty-state"><span>⭐</span><p>No hay canciones seleccionadas para el Domingo.<br>Toca la estrella ⭐ en el repertorio para agregarlas.</p></div>`;
+        listContainer.innerHTML = `<div class="empty-state"><span>⭐</span><p>No hay canciones seleccionadas para el Domingo.<br>Toca la estrella ☆ en el repertorio para agregarlas.</p></div>`;
         return;
       }
 
@@ -768,10 +773,10 @@
       const btn = document.getElementById('modalSundayBtn');
       if (song && song.inSunday) {
         btn.classList.add('active');
-        btn.innerText = '★ En Domingo';
+        btn.innerText = '⭐ En Domingo';
       } else {
         btn.classList.remove('active');
-        btn.innerText = '⭐ Domingo';
+        btn.innerText = '☆ Domingo';
       }
     }
 
