@@ -261,6 +261,7 @@
       font-size: 1.05rem;
       line-height: 1;
       padding: 0;
+      text-decoration: none;
       transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
@@ -275,6 +276,28 @@
       border-color: rgba(251, 191, 36, 0.4);
       box-shadow: 0 4px 14px var(--gold-glow);
       transform: scale(1.05);
+    }
+
+    .action-btn.yt-top-btn {
+      background: rgba(244, 63, 94, 0.1);
+      border-color: rgba(244, 63, 94, 0.25);
+      color: #fca5a5;
+      font-size: 0.9rem;
+    }
+
+    .action-btn.yt-top-btn:hover {
+      background: rgba(244, 63, 94, 0.3);
+      border-color: var(--danger);
+      color: #ffffff;
+      transform: scale(1.05);
+    }
+
+    .action-btn.yt-top-btn.disabled {
+      opacity: 0.2;
+      pointer-events: none;
+      background: rgba(255, 255, 255, 0.02);
+      border-color: transparent;
+      color: var(--text-muted);
     }
 
     .drag-handle {
@@ -315,18 +338,6 @@
       background: rgba(110, 231, 183, 0.15);
       border-color: var(--brand-mint);
       color: var(--brand-mint);
-    }
-
-    .format-btn.yt-btn {
-      background: rgba(244, 63, 94, 0.08);
-      border-color: rgba(244, 63, 94, 0.2);
-      color: #fca5a5;
-    }
-
-    .format-btn.yt-btn:hover {
-      background: rgba(244, 63, 94, 0.25);
-      border-color: var(--danger);
-      color: #ffffff;
     }
 
     .format-btn.disabled {
@@ -580,7 +591,6 @@
     let activeTab = 'repertorio';
     let filterTimeout = null;
 
-    // Extrae la URL de la celda sin importar si viene formateada o plana
     function extractCellUrl(cell) {
       if (!cell) return '';
       if (cell.v && typeof cell.v === 'string' && cell.v.startsWith('http')) return cell.v.trim();
@@ -617,7 +627,7 @@
             urlLetra: extractCellUrl(c[4]),
             urlLetraAcordes: extractCellUrl(c[5]),
             urlAcordes: extractCellUrl(c[6]),
-            urlYoutube: extractCellUrl(c[7]), // Lee Columna H
+            urlYoutube: extractCellUrl(c[7]),
             inSunday: savedSundayIds.includes(index + 1)
           };
         }).filter(song => song.title !== '');
@@ -707,6 +717,11 @@
               </div>
             </div>
             <div class="song-main-actions">
+              <a class="action-btn yt-top-btn ${!song.urlYoutube ? 'disabled' : ''}" 
+                 title="${song.urlYoutube ? 'Ver en YouTube' : 'Sin video de YouTube'}" 
+                 ${song.urlYoutube ? `href="${song.urlYoutube}" target="_blank" rel="noopener noreferrer"` : ''}>
+                 ▶
+              </a>
               <button class="action-btn star ${song.inSunday ? 'active' : ''}" title="Domingo" onclick="toggleSunday(${song.id})">
                 ${song.inSunday ? '⭐' : '☆'}
               </button>
@@ -716,7 +731,6 @@
             <button class="format-btn ${!song.urlLetra ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
             <button class="format-btn ${!song.urlLetraAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
             <button class="format-btn ${!song.urlAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
-            <a class="format-btn yt-btn ${!song.urlYoutube ? 'disabled' : ''}" ${song.urlYoutube ? `href="${song.urlYoutube}" target="_blank" rel="noopener noreferrer"` : ''}>▶ YouTube</a>
           </div>
         `;
         listContainer.appendChild(card);
@@ -750,6 +764,11 @@
               </div>
             </div>
             <div class="song-main-actions">
+              <a class="action-btn yt-top-btn ${!song.urlYoutube ? 'disabled' : ''}" 
+                 title="${song.urlYoutube ? 'Ver en YouTube' : 'Sin video de YouTube'}" 
+                 ${song.urlYoutube ? `href="${song.urlYoutube}" target="_blank" rel="noopener noreferrer"` : ''}>
+                 ▶
+              </a>
               <button class="action-btn danger" title="Quitar" onclick="toggleSunday(${song.id})" style="color:var(--danger)">✕</button>
             </div>
           </div>
@@ -757,7 +776,6 @@
             <button class="format-btn ${!song.urlLetra ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
             <button class="format-btn ${!song.urlLetraAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
             <button class="format-btn ${!song.urlAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
-            <a class="format-btn yt-btn ${!song.urlYoutube ? 'disabled' : ''}" ${song.urlYoutube ? `href="${song.urlYoutube}" target="_blank" rel="noopener noreferrer"` : ''}>▶ YouTube</a>
           </div>
         `;
         listContainer.appendChild(card);
