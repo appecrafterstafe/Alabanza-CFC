@@ -4,45 +4,173 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Repertorio & Visor de Acordes</title>
-  <link rel="stylesheet" href="style.css">
+
+  <!-- ESTILOS VISUALES (CSS) -->
+  <style>
+    /* Modal y Fondo */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: rgba(0, 0, 0, 0.75);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      width: 95%;
+      max-width: 900px;
+      height: 90vh;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    }
+
+    /* Encabezado */
+    .modal-header {
+      padding: 16px 20px;
+      background: #1f2937;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .song-info h2 { 
+      margin: 0; 
+      font-size: 1.25rem; 
+    }
+    
+    .song-info .subtitle { 
+      font-size: 0.875rem; 
+      color: #9ca3af; 
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 2rem;
+      cursor: pointer;
+    }
+
+    /* Badges y Botón de Audio */
+    .badges-bar {
+      padding: 10px 20px;
+      background: #f3f4f6;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .badge {
+      background: #e5e7eb;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .yt-toggle-btn {
+      margin-left: auto;
+      background: #ff0000;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: background 0.2s;
+    }
+
+    .yt-toggle-btn:hover {
+      background: #cc0000;
+    }
+
+    /* Reproductor Colapsable */
+    .yt-container {
+      width: 100%;
+      height: 180px;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .yt-container.collapsed {
+      max-height: 0;
+      opacity: 0;
+    }
+
+    .yt-container:not(.collapsed) {
+      max-height: 180px;
+      opacity: 1;
+    }
+
+    .yt-container iframe {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Contenedor del PDF */
+    .pdf-viewer-box {
+      flex: 1;
+      width: 100%;
+      background: #e5e7eb;
+    }
+
+    .pdf-viewer-box iframe {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Modal / Visor de la Canción -->
+  <!-- ESTRUCTURA DEL VISOR (HTML) -->
   <div id="song-viewer-modal" class="modal">
     <div class="modal-content">
       
-      <!-- Barra Superior / Encabezado -->
+      <!-- Encabezado con información principal -->
       <div class="modal-header">
         <div class="song-info">
-          <h2 id="viewer-title">Cargando canción...</h2>
+          <h2 id="viewer-title">Título de la Canción</h2>
           <span id="viewer-artist-album" class="subtitle">Artista • Álbum</span>
         </div>
         <button id="close-modal-btn" class="close-btn">&times;</button>
       </div>
 
-      <!-- Badges de Tono y BPM -->
+      <!-- Barra de Tono, BPM y Botón de Audio -->
       <div class="badges-bar">
         <span id="viewer-key" class="badge">Tono: -</span>
         <span id="viewer-bpm" class="badge">BPM: -</span>
         <button id="toggle-yt-btn" class="yt-toggle-btn" style="display: none;">
-          ▶ Mostrar Audio/YouTube
+          ▶ Escuchar Audio
         </button>
       </div>
 
-      <!-- Reproductor Flotante/Colapsable de YouTube -->
+      <!-- Reproductor Colapsable de YouTube (Columna G) -->
       <div id="youtube-player-container" class="yt-container collapsed">
         <iframe 
           id="youtube-iframe" 
           src="" 
-          title="Reproductor de YouTube" 
+          title="Reproductor de Audio YouTube" 
           frameborder="0" 
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
           allowfullscreen>
         </iframe>
       </div>
 
-      <!-- Visor Principal del PDF / Acordes -->
+      <!-- Visor de PDF / Letras y Acordes (Columna F) -->
       <div class="pdf-viewer-box">
         <iframe id="viewer-pdf-iframe" src="" frameborder="0"></iframe>
       </div>
@@ -50,6 +178,99 @@
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <!-- LÓGICA DE PROGRAMACIÓN (JAVASCRIPT) -->
+  <script>
+    // -------------------------------------------------------------
+    // FUNCIONES DE TRANSFORMACIÓN DE URLS
+    // -------------------------------------------------------------
+
+    // Convierte enlace normal de Drive a formato vista previa
+    function getDriveEmbedUrl(url) {
+      if (!url) return '';
+      return url.replace(/\/view.*$/, '/preview');
+    }
+
+    // Convierte enlace de YouTube (o Smart Chip) a enlace integrable (Embed)
+    function getYouTubeEmbedUrl(url) {
+      if (!url) return null;
+      const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[2].length === 11) 
+        ? `https://www.youtube.com/embed/${match[2]}` 
+        : null;
+    }
+
+    // -------------------------------------------------------------
+    // MAPEO DE COLUMNAS DE GOOGLE SHEETS (DE LA A A LA G)
+    // -------------------------------------------------------------
+    function mapSheetRowToSong(row) {
+      return {
+        title: row[0] || '',     // Columna A (Canción)
+        artist: row[1] || '',    // Columna B (Artista)
+        albumCover: row[2] || '',// Columna C (Álbum / Imagen)
+        key: row[3] || '',       // Columna D (Tono)
+        bpm: row[4] || '',       // Columna E (BPM)
+        driveUrl: row[5] || '',  // Columna F (PDF / Letra en Drive)
+        youtubeUrl: row[6] || '' // Columna G (Audio / YouTube)
+      };
+    }
+
+    // -------------------------------------------------------------
+    // ABRIR Y MOSTRAR LA CANCIÓN EN EL VISOR
+    // -------------------------------------------------------------
+    function openSongViewer(song) {
+      // Cargar textos en pantalla
+      document.getElementById('viewer-title').textContent = song.title;
+      document.getElementById('viewer-artist-album').textContent = `${song.artist} ${song.albumCover ? '• Álbum' : ''}`;
+      document.getElementById('viewer-key').textContent = `Tono: ${song.key}`;
+      document.getElementById('viewer-bpm').textContent = `BPM: ${song.bpm}`;
+
+      // 1. Cargar PDF desde la Columna F
+      const pdfIframe = document.getElementById('viewer-pdf-iframe');
+      pdfIframe.src = song.driveUrl ? getDriveEmbedUrl(song.driveUrl) : '';
+
+      // 2. Cargar Audio/YouTube desde la Columna G
+      const ytContainer = document.getElementById('youtube-player-container');
+      const ytIframe = document.getElementById('youtube-iframe');
+      const toggleBtn = document.getElementById('toggle-yt-btn');
+      const embedYtUrl = getYouTubeEmbedUrl(song.youtubeUrl);
+
+      if (embedYtUrl) {
+        ytIframe.src = embedYtUrl;
+        toggleBtn.style.display = 'inline-block';
+        toggleBtn.textContent = '▶ Escuchar Audio';
+        ytContainer.classList.add('collapsed'); // Inicia cerrado para ver la letra primero
+      } else {
+        ytIframe.src = '';
+        toggleBtn.style.display = 'none'; // Se oculta si no hay link
+        ytContainer.classList.add('collapsed');
+      }
+
+      // Mostrar el visor
+      document.getElementById('song-viewer-modal').classList.add('active');
+    }
+
+    // -------------------------------------------------------------
+    // EVENTOS DE BOTONES
+    // -------------------------------------------------------------
+    document.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('song-viewer-modal');
+      const closeBtn = document.getElementById('close-modal-btn');
+      const toggleBtn = document.getElementById('toggle-yt-btn');
+      const ytContainer = document.getElementById('youtube-player-container');
+
+      // Botón desplegable para mostrar/ocultar el reproductor
+      toggleBtn.addEventListener('click', () => {
+        const isCollapsed = ytContainer.classList.toggle('collapsed');
+        toggleBtn.textContent = isCollapsed ? '▶ Escuchar Audio' : '▼ Ocultar Audio';
+      });
+
+      // Botón para cerrar y pausar la música
+      closeBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+        document.getElementById('youtube-iframe').src = ''; // Corta el audio
+      });
+    });
+  </script>
 </body>
 </html>
