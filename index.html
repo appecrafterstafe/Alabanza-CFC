@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ministerio de Alabanza</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -10,7 +10,6 @@
     :root {
       --brand-mint: #6ee7b7;
       --brand-mint-glow: rgba(110, 231, 183, 0.25);
-      --brand-mint-dark: #059669;
       --bg-dark: #07090e;
       --card-bg: rgba(18, 24, 38, 0.75);
       --card-border: rgba(255, 255, 255, 0.08);
@@ -45,6 +44,7 @@
       max-width: 600px;
       margin: 0 auto;
       box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+      position: relative;
     }
 
     header {
@@ -55,7 +55,6 @@
       gap: 0.75rem;
     }
 
-    /* Contenedor adaptado para resaltar el logo con letras negras */
     .logo-container {
       background: rgba(255, 255, 255, 0.95);
       padding: 4px 10px;
@@ -82,14 +81,26 @@
       -webkit-text-fill-color: transparent;
     }
 
+    main {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      padding-bottom: 80px;
+    }
+
+    /* BARRA DE NAVEGACIÓN PRINCIPAL */
     nav {
       display: flex;
-      background: rgba(10, 14, 23, 0.85);
+      background: rgba(10, 14, 23, 0.95);
       backdrop-filter: blur(16px);
       border-top: 1px solid var(--card-border);
-      position: sticky;
+      position: fixed;
       bottom: 0;
-      z-index: 50;
+      left: 0;
+      right: 0;
+      max-width: 600px;
+      margin: 0 auto;
+      z-index: 100;
       padding: 0.6rem;
       gap: 0.4rem;
     }
@@ -118,13 +129,6 @@
       background: var(--brand-mint);
       font-weight: 700;
       box-shadow: 0 6px 16px var(--brand-mint-glow);
-    }
-
-    main {
-      flex: 1;
-      padding: 1rem;
-      overflow-y: auto;
-      padding-bottom: 2rem;
     }
 
     .tab-content {
@@ -295,7 +299,7 @@
 
     .drive-container {
       width: 100%;
-      height: calc(100vh - 140px);
+      height: calc(100vh - 160px);
       border: none;
       border-radius: var(--radius);
       background-color: var(--card-bg);
@@ -307,13 +311,14 @@
       margin-bottom: 0.3rem;
     }
 
-    /* VISOR PANTALLA COMPLETA & CONTROLES DE ZOOM */
+    /* ESTRUCTURA LIMPIA DEL VISOR */
     .modal {
       display: none;
       position: fixed;
-      top: 0; left: 0; 
-      width: 100vw; 
-      height: 100vh;
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%;
       background-color: #000;
       z-index: 9999;
       flex-direction: column;
@@ -327,7 +332,7 @@
       align-items: center;
       border-bottom: 1px solid var(--card-border);
       gap: 0.4rem;
-      flex-wrap: wrap;
+      z-index: 10;
     }
 
     .modal-title-wrapper {
@@ -354,55 +359,19 @@
       align-items: center;
     }
 
-    .zoom-controls {
-      display: flex;
-      align-items: center;
-      gap: 0.2rem;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 2px 6px;
-      border-radius: 10px;
-      border: 1px solid var(--card-border);
-    }
-
-    .zoom-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-main);
-      font-weight: bold;
-      font-size: 0.9rem;
-      width: 26px;
-      height: 26px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .zoom-btn:active {
-      color: var(--brand-mint);
-    }
-
     .modal-body { 
       flex: 1; 
       width: 100%; 
       height: 100%;
       background: #000; 
       position: relative;
-      overflow: auto;
-      -webkit-overflow-scrolling: touch;
+      overflow: hidden;
     }
 
-    .zoom-wrapper {
-      width: 100%;
-      height: 100%;
-      transform-origin: top center;
-      transition: transform 0.2s ease-out;
-    }
-    
-    .zoom-wrapper iframe { 
+    .modal-body iframe { 
       width: 100%; 
       height: 100%; 
-      border: none; 
+      border: none;
     }
 
     .nav-arrow {
@@ -513,7 +482,7 @@
     </button>
   </nav>
 
-  <!-- MODAL VISOR CON ZOOMS -->
+  <!-- MODAL VISOR ESTABLE SIN INTERFERENCIAS CSS -->
   <div id="viewerModal" class="modal">
     <div class="modal-header">
       <button id="prevBtn" class="nav-arrow" onclick="navigateSong(-1)">◀</button>
@@ -523,13 +492,6 @@
       <button id="nextBtn" class="nav-arrow" onclick="navigateSong(1)">▶</button>
       
       <div class="modal-header-actions">
-        <!-- Controles de zoom manual -->
-        <div class="zoom-controls">
-          <button class="zoom-btn" onclick="changeZoom(-0.15)">-</button>
-          <button class="zoom-btn" onclick="resetZoom()" style="font-size: 0.7rem;" title="Restablecer">100%</button>
-          <button class="zoom-btn" onclick="changeZoom(0.15)">+</button>
-        </div>
-
         <a id="externalLinkBtn" class="icon-btn" target="_blank" title="Abrir externamente">↗</a>
         <button id="modalSundayBtn" class="btn-small" onclick="toggleSundayActiveModal()">⭐ Domingo</button>
         <button class="icon-btn" title="Pantalla completa" onclick="toggleFullscreen()">⛶</button>
@@ -537,9 +499,7 @@
       </div>
     </div>
     <div class="modal-body" id="modalBody">
-      <div id="zoomWrapper" class="zoom-wrapper">
-        <div id="iframeContainer" style="width: 100%; height: 100%;"></div>
-      </div>
+      <iframe id="pdfFrame" src=""></iframe>
     </div>
   </div>
 
@@ -551,7 +511,6 @@
     let currentActiveSongId = null;
     let currentFormatType = 'letra';
     let activeTab = 'repertorio';
-    let currentZoom = 1.0;
 
     async function fetchSongsFromSheet() {
       const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
@@ -779,7 +738,6 @@
       currentActiveSongId = id;
       currentFormatType = type;
       
-      resetZoom();
       loadModalSong(currentList[songIndex]);
       document.getElementById('viewerModal').style.display = 'flex';
     }
@@ -804,28 +762,10 @@
       document.getElementById('modalTitle').innerText = label;
       document.getElementById('externalLinkBtn').href = targetUrl || '#';
 
-      const iframeContainer = document.getElementById('iframeContainer');
       const embedUrl = getEmbedUrl(targetUrl);
+      document.getElementById('pdfFrame').src = embedUrl;
 
-      iframeContainer.innerHTML = `<iframe src="${embedUrl}"></iframe>`;
       updateNavigationButtons();
-    }
-
-    function changeZoom(delta) {
-      currentZoom = Math.min(Math.max(0.6, currentZoom + delta), 2.5);
-      applyZoom();
-    }
-
-    function resetZoom() {
-      currentZoom = 1.0;
-      applyZoom();
-    }
-
-    function applyZoom() {
-      const wrapper = document.getElementById('zoomWrapper');
-      wrapper.style.transform = `scale(${currentZoom})`;
-      wrapper.style.width = `${100 / currentZoom}%`;
-      wrapper.style.height = `${100 / currentZoom}%`;
     }
 
     function navigateSong(direction) {
@@ -836,7 +776,6 @@
       if (nextIndex >= 0 && nextIndex < currentList.length) {
         const nextSong = currentList[nextIndex];
         currentActiveSongId = nextSong.id;
-        resetZoom();
         loadModalSong(nextSong);
       }
     }
@@ -857,7 +796,7 @@
         document.exitFullscreen();
       }
       document.getElementById('viewerModal').style.display = 'none';
-      document.getElementById('iframeContainer').innerHTML = '';
+      document.getElementById('pdfFrame').src = '';
       currentActiveSongId = null;
     }
 
