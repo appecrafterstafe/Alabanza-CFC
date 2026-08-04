@@ -222,6 +222,7 @@
       display: flex;
       gap: 0.4rem;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     .badge {
@@ -321,7 +322,7 @@
       margin-bottom: 0.3rem;
     }
 
-    /* ESTRUCTURA Y MODO FULLSCREEN VIRTUAL */
+    /* MODAL VISOR */
     .modal {
       display: none;
       position: fixed;
@@ -346,7 +347,6 @@
       transition: all 0.2s ease;
     }
 
-    /* Ocultar barra en modo pantalla completa simulado para maximizar visión y zoom táctil */
     .modal.fullscreen-mode .modal-header {
       position: absolute;
       top: 0;
@@ -519,7 +519,7 @@
     </button>
   </nav>
 
-  <!-- MODAL VISOR ESTABLE SIN INTERFERENCIAS CSS -->
+  <!-- MODAL VISOR -->
   <div id="viewerModal" class="modal">
     <div class="modal-header">
       <button id="prevBtn" class="nav-arrow" onclick="navigateSong(-1)">◀</button>
@@ -566,18 +566,25 @@
         const sundayText = await responseSunday.text();
         const savedSundayIds = sundayText ? sundayText.split(',').map(Number) : [];
 
-        // MAPEADO: 0:Título, 1:Artista, 2:Key, 3:BPM, 4:UrlLetra, 5:UrlLetraAcordes, 6:UrlAcordes
+        // MAPEADO CORREGIDO DE COLUMNAS GOOGLE SHEETS:
+        // c[0]: Título
+        // c[1]: Artista
+        // c[2]: Tono
+        // c[3]: BPM
+        // c[4]: Url Letra
+        // c[5]: Url Letra + Acordes
+        // c[6]: Url Acordes
         songs = rows.map((row, index) => {
           const c = row.c;
           return {
             id: index + 1,
-            title: c[0] ? c[0].v : '',
-            artist: c[1] ? c[1].v : '',
-            key: c[2] ? c[2].v : '',
-            bpm: c[3] ? c[3].v : '',
-            urlLetra: c[4] ? c[4].v : '',
-            urlLetraAcordes: c[5] ? c[5].v : '',
-            urlAcordes: c[6] ? c[6].v : '',
+            title: c[0] && c[0].v ? String(c[0].v) : '',
+            artist: c[1] && c[1].v ? String(c[1].v) : '',
+            key: c[2] && c[2].v ? String(c[2].v) : '',
+            bpm: c[3] && c[3].v ? String(c[3].v) : '',
+            urlLetra: c[4] && c[4].v ? String(c[4].v) : '',
+            urlLetraAcordes: c[5] && c[5].v ? String(c[5].v) : '',
+            urlAcordes: c[6] && c[6].v ? String(c[6].v) : '',
             inSunday: savedSundayIds.includes(index + 1)
           };
         }).filter(song => song.title !== '');
@@ -633,6 +640,11 @@
       if (tabId === 'domingo') renderSundayList();
     }
 
+    function formatBpmDisplay(bpmValue) {
+      if (!bpmValue) return '';
+      return bpmValue.toLowerCase().includes('bpm') ? bpmValue : `${bpmValue} BPM`;
+    }
+
     function renderSongs(filter = '') {
       const listContainer = document.getElementById('songsList');
       listContainer.innerHTML = '';
@@ -658,8 +670,8 @@
               <h3>${song.title}</h3>
               ${song.artist ? `<div class="song-artist">${song.artist}</div>` : ''}
               <div class="song-meta">
-                <span class="badge key">Tono: ${song.key}</span>
-                ${song.bpm ? `<span class="badge">${song.bpm} BPM</span>` : ''}
+                ${song.key ? `<span class="badge key">Tono: ${song.key}</span>` : ''}
+                ${song.bpm ? `<span class="badge">${formatBpmDisplay(song.bpm)}</span>` : ''}
               </div>
             </div>
             <div class="song-main-actions">
@@ -698,8 +710,8 @@
               <h3>${song.title}</h3>
               ${song.artist ? `<div class="song-artist">${song.artist}</div>` : ''}
               <div class="song-meta">
-                <span class="badge key">Tono: ${song.key}</span>
-                ${song.bpm ? `<span class="badge">${song.bpm} BPM</span>` : ''}
+                ${song.key ? `<span class="badge key">Tono: ${song.key}</span>` : ''}
+                ${song.bpm ? `<span class="badge">${formatBpmDisplay(song.bpm)}</span>` : ''}
               </div>
             </div>
             <div class="song-main-actions">
@@ -865,7 +877,6 @@
       currentActiveSongId = null;
     }
 
-    // PANTALLA COMPLETA SIMULADA (Respetando zoom nativo)
     function toggleSimulatedFullscreen() {
       const modal = document.getElementById('viewerModal');
       const btn = document.getElementById('fullscreenToggleBtn');
