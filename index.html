@@ -248,7 +248,6 @@
       align-items: center;
     }
 
-    /* BOTÓN ESTRELLA PERFECTAMENTE CENTRADO */
     .action-btn {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--card-border);
@@ -291,10 +290,12 @@
       gap: 0.4rem;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
       padding-top: 0.75rem;
+      flex-wrap: wrap;
     }
 
     .format-btn {
       flex: 1;
+      min-width: 70px;
       padding: 0.45rem 0.2rem;
       border-radius: 10px;
       border: 1px solid var(--card-border);
@@ -311,6 +312,12 @@
       background: rgba(110, 231, 183, 0.15);
       border-color: var(--brand-mint);
       color: var(--brand-mint);
+    }
+
+    .format-btn.yt-btn:hover {
+      background: rgba(244, 63, 94, 0.15);
+      border-color: var(--danger);
+      color: var(--danger);
     }
 
     .format-btn.disabled {
@@ -553,7 +560,7 @@
       </div>
     </div>
     <div class="modal-body" id="modalBody">
-      <iframe id="pdfFrame" src=""></iframe>
+      <iframe id="pdfFrame" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
   </div>
 
@@ -593,6 +600,7 @@
             urlLetra: c[4] && c[4].v ? String(c[4].v) : '',
             urlLetraAcordes: c[5] && c[5].v ? String(c[5].v) : '',
             urlAcordes: c[6] && c[6].v ? String(c[6].v) : '',
+            urlYoutube: c[7] && c[7].v ? String(c[7].v) : '',
             inSunday: savedSundayIds.includes(index + 1)
           };
         }).filter(song => song.title !== '');
@@ -629,6 +637,21 @@
 
     function getEmbedUrl(url) {
       if (!url) return '';
+      
+      // Formato YouTube
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        let videoId = '';
+        if (url.includes('youtu.be/')) {
+          videoId = url.split('youtu.be/')[1].split('?')[0];
+        } else if (url.includes('watch?v=')) {
+          videoId = url.split('watch?v=')[1].split('&')[0];
+        }
+        if (videoId) {
+          return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+        }
+      }
+
+      // Formato Google Drive
       const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
       if (match && match[1]) {
         return `https://drive.google.com/file/d/${match[1]}/preview`;
@@ -692,6 +715,7 @@
             <button class="format-btn ${!song.urlLetra ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
             <button class="format-btn ${!song.urlLetraAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
             <button class="format-btn ${!song.urlAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
+            <button class="format-btn yt-btn ${!song.urlYoutube ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'youtube')">▶ YouTube</button>
           </div>
         `;
         listContainer.appendChild(card);
@@ -732,6 +756,7 @@
             <button class="format-btn ${!song.urlLetra ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
             <button class="format-btn ${!song.urlLetraAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
             <button class="format-btn ${!song.urlAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
+            <button class="format-btn yt-btn ${!song.urlYoutube ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'youtube')">▶ YouTube</button>
           </div>
         `;
         listContainer.appendChild(card);
@@ -828,6 +853,9 @@
       } else if (currentFormatType === 'acordes' && song.urlAcordes) {
         targetUrl = song.urlAcordes;
         formatTag = 'Solo Acordes';
+      } else if (currentFormatType === 'youtube' && song.urlYoutube) {
+        targetUrl = song.urlYoutube;
+        formatTag = 'YouTube';
       } else {
         if (song.urlLetra) {
           targetUrl = song.urlLetra;
@@ -841,6 +869,10 @@
           targetUrl = song.urlAcordes;
           formatTag = 'Solo Acordes';
           currentFormatType = 'acordes';
+        } else if (song.urlYoutube) {
+          targetUrl = song.urlYoutube;
+          formatTag = 'YouTube';
+          currentFormatType = 'youtube';
         }
       }
 
