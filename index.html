@@ -202,7 +202,17 @@
     .song-info h3 {
       font-size: 0.95rem;
       font-weight: 700;
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.15rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .song-artist {
+      font-size: 0.8rem;
+      color: var(--brand-mint);
+      font-weight: 600;
+      margin-bottom: 0.4rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -311,14 +321,14 @@
       margin-bottom: 0.3rem;
     }
 
-    /* ESTRUCTURA LIMPIA DEL VISOR */
+    /* ESTRUCTURA Y MODO FULLSCREEN VIRTUAL */
     .modal {
       display: none;
       position: fixed;
       top: 0; 
       left: 0; 
-      width: 100%; 
-      height: 100%;
+      width: 100vw; 
+      height: 100vh;
       background-color: #000;
       z-index: 9999;
       flex-direction: column;
@@ -333,12 +343,27 @@
       border-bottom: 1px solid var(--card-border);
       gap: 0.4rem;
       z-index: 10;
+      transition: all 0.2s ease;
+    }
+
+    /* Ocultar barra en modo pantalla completa simulado para maximizar visión y zoom táctil */
+    .modal.fullscreen-mode .modal-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(10, 14, 23, 0.85);
+      backdrop-filter: blur(8px);
+      opacity: 0.2;
+    }
+    .modal.fullscreen-mode .modal-header:hover {
+      opacity: 1;
     }
 
     .modal-title-wrapper {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 0.5rem;
       flex: 1;
       justify-content: center;
       min-width: 0;
@@ -346,11 +371,17 @@
 
     .modal-header h3 {
       font-size: 0.85rem;
-      color: var(--brand-mint);
+      color: var(--text-main);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       text-align: center;
+    }
+
+    .modal-header .sub-artist {
+      font-size: 0.7rem;
+      color: var(--brand-mint);
+      font-weight: 600;
     }
 
     .modal-header-actions {
@@ -413,6 +444,12 @@
       text-decoration: none;
     }
 
+    .icon-btn.active {
+      background: var(--brand-mint);
+      color: #000;
+      border-color: var(--brand-mint);
+    }
+
     .btn-small {
       padding: 0.35rem 0.55rem;
       font-size: 0.7rem;
@@ -452,7 +489,7 @@
     <section id="repertorio" class="tab-content active">
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" placeholder="Buscar canción o tono..." oninput="filterSongs()">
+        <input type="text" id="searchInput" placeholder="Buscar canción, artista o tono..." oninput="filterSongs()">
       </div>
       <div id="songsList">Cargando canciones...</div>
     </section>
@@ -488,13 +525,14 @@
       <button id="prevBtn" class="nav-arrow" onclick="navigateSong(-1)">◀</button>
       <div class="modal-title-wrapper">
         <h3 id="modalTitle">Partitura</h3>
+        <span id="modalArtist" class="sub-artist"></span>
       </div>
       <button id="nextBtn" class="nav-arrow" onclick="navigateSong(1)">▶</button>
       
       <div class="modal-header-actions">
         <a id="externalLinkBtn" class="icon-btn" target="_blank" title="Abrir externamente">↗</a>
         <button id="modalSundayBtn" class="btn-small" onclick="toggleSundayActiveModal()">⭐ Domingo</button>
-        <button class="icon-btn" title="Pantalla completa" onclick="toggleFullscreen()">⛶</button>
+        <button id="fullscreenToggleBtn" class="icon-btn" title="Pantalla completa" onclick="toggleSimulatedFullscreen()">⛶</button>
         <button class="icon-btn" onclick="closeViewer()">&times;</button>
       </div>
     </div>
@@ -511,6 +549,7 @@
     let currentActiveSongId = null;
     let currentFormatType = 'letra';
     let activeTab = 'repertorio';
+    let filterTimeout = null;
 
     async function fetchSongsFromSheet() {
       const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
@@ -527,16 +566,18 @@
         const sundayText = await responseSunday.text();
         const savedSundayIds = sundayText ? sundayText.split(',').map(Number) : [];
 
+        // MAPEADO: 0:Título, 1:Artista, 2:Key, 3:BPM, 4:UrlLetra, 5:UrlLetraAcordes, 6:UrlAcordes
         songs = rows.map((row, index) => {
           const c = row.c;
           return {
             id: index + 1,
             title: c[0] ? c[0].v : '',
-            key: c[1] ? c[1].v : '',
-            bpm: c[2] ? c[2].v : '',
-            urlLetra: c[3] ? c[3].v : '',
-            urlLetraAcordes: c[4] ? c[4].v : '',
-            urlAcordes: c[5] ? c[5].v : '',
+            artist: c[1] ? c[1].v : '',
+            key: c[2] ? c[2].v : '',
+            bpm: c[3] ? c[3].v : '',
+            urlLetra: c[4] ? c[4].v : '',
+            urlLetraAcordes: c[5] ? c[5].v : '',
+            urlAcordes: c[6] ? c[6].v : '',
             inSunday: savedSundayIds.includes(index + 1)
           };
         }).filter(song => song.title !== '');
@@ -596,9 +637,11 @@
       const listContainer = document.getElementById('songsList');
       listContainer.innerHTML = '';
 
+      const query = filter.toLowerCase();
       const filteredSongs = songs.filter(song => 
-        song.title.toLowerCase().includes(filter.toLowerCase()) || 
-        song.key.toLowerCase().includes(filter.toLowerCase())
+        song.title.toLowerCase().includes(query) || 
+        song.artist.toLowerCase().includes(query) ||
+        song.key.toLowerCase().includes(query)
       );
 
       if (filteredSongs.length === 0) {
@@ -613,6 +656,7 @@
           <div class="song-top">
             <div class="song-info">
               <h3>${song.title}</h3>
+              ${song.artist ? `<div class="song-artist">${song.artist}</div>` : ''}
               <div class="song-meta">
                 <span class="badge key">Tono: ${song.key}</span>
                 ${song.bpm ? `<span class="badge">${song.bpm} BPM</span>` : ''}
@@ -652,6 +696,7 @@
             <span class="drag-handle" title="Arrastrar">☰</span>
             <div class="song-info">
               <h3>${song.title}</h3>
+              ${song.artist ? `<div class="song-artist">${song.artist}</div>` : ''}
               <div class="song-meta">
                 <span class="badge key">Tono: ${song.key}</span>
                 ${song.bpm ? `<span class="badge">${song.bpm} BPM</span>` : ''}
@@ -719,8 +764,11 @@
     }
 
     function filterSongs() {
-      const query = document.getElementById('searchInput').value;
-      renderSongs(query);
+      clearTimeout(filterTimeout);
+      filterTimeout = setTimeout(() => {
+        const query = document.getElementById('searchInput').value;
+        renderSongs(query);
+      }, 150);
     }
 
     function getActiveList() {
@@ -740,30 +788,47 @@
       
       loadModalSong(currentList[songIndex]);
       document.getElementById('viewerModal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
     }
 
     function loadModalSong(song) {
       updateModalSundayButton();
 
       let targetUrl = '';
-      let label = '';
+      let formatTag = '';
 
-      if (currentFormatType === 'letra') {
+      if (currentFormatType === 'letra' && song.urlLetra) {
         targetUrl = song.urlLetra;
-        label = `${song.title} (Letra)`;
-      } else if (currentFormatType === 'letra-acordes') {
+        formatTag = 'Letra';
+      } else if (currentFormatType === 'letra-acordes' && song.urlLetraAcordes) {
         targetUrl = song.urlLetraAcordes;
-        label = `${song.title} (Letra + Acordes)`;
-      } else if (currentFormatType === 'acordes') {
+        formatTag = 'Letra + Acordes';
+      } else if (currentFormatType === 'acordes' && song.urlAcordes) {
         targetUrl = song.urlAcordes;
-        label = `${song.title} (Solo Acordes)`;
+        formatTag = 'Solo Acordes';
+      } else {
+        if (song.urlLetra) {
+          targetUrl = song.urlLetra;
+          formatTag = 'Letra';
+          currentFormatType = 'letra';
+        } else if (song.urlLetraAcordes) {
+          targetUrl = song.urlLetraAcordes;
+          formatTag = 'Letra + Acordes';
+          currentFormatType = 'letra-acordes';
+        } else if (song.urlAcordes) {
+          targetUrl = song.urlAcordes;
+          formatTag = 'Solo Acordes';
+          currentFormatType = 'acordes';
+        }
       }
 
-      document.getElementById('modalTitle').innerText = label;
+      document.getElementById('modalTitle').innerText = `${song.title} (${formatTag})`;
+      document.getElementById('modalArtist').innerText = song.artist || '';
       document.getElementById('externalLinkBtn').href = targetUrl || '#';
 
-      const embedUrl = getEmbedUrl(targetUrl);
-      document.getElementById('pdfFrame').src = embedUrl;
+      const iframe = document.getElementById('pdfFrame');
+      iframe.src = 'about:blank';
+      iframe.src = getEmbedUrl(targetUrl);
 
       updateNavigationButtons();
     }
@@ -792,29 +857,21 @@
     }
 
     function closeViewer() {
-      if (document.fullscreenElement) {
-        document.exitFullscreen();
-      }
-      document.getElementById('viewerModal').style.display = 'none';
+      const modal = document.getElementById('viewerModal');
+      modal.classList.remove('fullscreen-mode');
+      modal.style.display = 'none';
       document.getElementById('pdfFrame').src = '';
+      document.body.style.overflow = '';
       currentActiveSongId = null;
     }
 
-    function toggleFullscreen() {
-      const elem = document.getElementById('viewerModal');
-      if (!document.fullscreenElement) {
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        } else if (elem.webkitRequestFullscreen) {
-          elem.webkitRequestFullscreen();
-        } else if (elem.msRequestFullscreen) {
-          elem.msRequestFullscreen();
-        }
-      } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        }
-      }
+    // PANTALLA COMPLETA SIMULADA (Respetando zoom nativo)
+    function toggleSimulatedFullscreen() {
+      const modal = document.getElementById('viewerModal');
+      const btn = document.getElementById('fullscreenToggleBtn');
+      
+      modal.classList.toggle('fullscreen-mode');
+      btn.classList.toggle('active');
     }
 
     document.addEventListener('keydown', (e) => {
