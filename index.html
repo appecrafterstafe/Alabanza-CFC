@@ -90,6 +90,7 @@
       padding-bottom: 80px;
     }
 
+    /* BARRA DE NAVEGACIÓN PRINCIPAL */
     nav {
       display: flex;
       background: rgba(10, 14, 23, 0.95);
@@ -247,6 +248,7 @@
       align-items: center;
     }
 
+    /* BOTÓN ESTRELLA PERFECTAMENTE CENTRADO */
     .action-btn {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--card-border);
@@ -289,12 +291,10 @@
       gap: 0.4rem;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
       padding-top: 0.75rem;
-      flex-wrap: wrap;
     }
 
     .format-btn {
       flex: 1;
-      min-width: 70px;
       padding: 0.45rem 0.2rem;
       border-radius: 10px;
       border: 1px solid var(--card-border);
@@ -304,10 +304,6 @@
       font-weight: 600;
       cursor: pointer;
       text-align: center;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
       transition: all 0.2s;
     }
 
@@ -315,12 +311,6 @@
       background: rgba(110, 231, 183, 0.15);
       border-color: var(--brand-mint);
       color: var(--brand-mint);
-    }
-
-    .format-btn.yt-btn:hover {
-      background: rgba(244, 63, 94, 0.15);
-      border-color: var(--danger);
-      color: var(--danger);
     }
 
     .format-btn.disabled {
@@ -342,7 +332,7 @@
       margin-bottom: 0.3rem;
     }
 
-    /* MODAL VISOR INTEGRADO */
+    /* MODAL VISOR */
     .modal {
       display: none;
       position: fixed;
@@ -603,7 +593,6 @@
             urlLetra: c[4] && c[4].v ? String(c[4].v) : '',
             urlLetraAcordes: c[5] && c[5].v ? String(c[5].v) : '',
             urlAcordes: c[6] && c[6].v ? String(c[6].v) : '',
-            urlYoutube: c[7] && c[7].v ? String(c[7].v) : '',
             inSunday: savedSundayIds.includes(index + 1)
           };
         }).filter(song => song.title !== '');
@@ -703,7 +692,6 @@
             <button class="format-btn ${!song.urlLetra ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
             <button class="format-btn ${!song.urlLetraAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
             <button class="format-btn ${!song.urlAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
-            <a class="format-btn yt-btn ${!song.urlYoutube ? 'disabled' : ''}" href="${song.urlYoutube || '#'}" target="_blank" rel="noopener">▶ YouTube</a>
           </div>
         `;
         listContainer.appendChild(card);
@@ -744,7 +732,6 @@
             <button class="format-btn ${!song.urlLetra ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
             <button class="format-btn ${!song.urlLetraAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
             <button class="format-btn ${!song.urlAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
-            <a class="format-btn yt-btn ${!song.urlYoutube ? 'disabled' : ''}" href="${song.urlYoutube || '#'}" target="_blank" rel="noopener">▶ YouTube</a>
           </div>
         `;
         listContainer.appendChild(card);
