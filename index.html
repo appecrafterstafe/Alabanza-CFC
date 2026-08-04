@@ -90,7 +90,6 @@
       padding-bottom: 80px;
     }
 
-    /* BARRA DE NAVEGACIÓN PRINCIPAL */
     nav {
       display: flex;
       background: rgba(10, 14, 23, 0.95);
@@ -248,7 +247,6 @@
       align-items: center;
     }
 
-    /* BOTÓN ESTRELLA PERFECTAMENTE CENTRADO */
     .action-btn {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid var(--card-border);
@@ -291,10 +289,12 @@
       gap: 0.4rem;
       border-top: 1px solid rgba(255, 255, 255, 0.05);
       padding-top: 0.75rem;
+      flex-wrap: wrap;
     }
 
     .format-btn {
       flex: 1;
+      min-width: 70px;
       padding: 0.45rem 0.2rem;
       border-radius: 10px;
       border: 1px solid var(--card-border);
@@ -304,6 +304,10 @@
       font-weight: 600;
       cursor: pointer;
       text-align: center;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       transition: all 0.2s;
     }
 
@@ -313,9 +317,23 @@
       color: var(--brand-mint);
     }
 
+    .format-btn.yt-btn {
+      background: rgba(244, 63, 94, 0.08);
+      border-color: rgba(244, 63, 94, 0.2);
+      color: #fca5a5;
+    }
+
+    .format-btn.yt-btn:hover {
+      background: rgba(244, 63, 94, 0.25);
+      border-color: var(--danger);
+      color: #ffffff;
+    }
+
     .format-btn.disabled {
-      opacity: 0.3;
+      opacity: 0.25;
       pointer-events: none;
+      background: rgba(255, 255, 255, 0.02);
+      border-color: transparent;
     }
 
     .drive-container {
@@ -332,7 +350,6 @@
       margin-bottom: 0.3rem;
     }
 
-    /* MODAL VISOR */
     .modal {
       display: none;
       position: fixed;
@@ -501,7 +518,6 @@
   </header>
 
   <main>
-    <!-- TAB REPERTORIO -->
     <section id="repertorio" class="tab-content active">
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
@@ -510,14 +526,12 @@
       <div id="songsList">Cargando canciones...</div>
     </section>
 
-    <!-- TAB DOMINGO -->
     <section id="domingo" class="tab-content">
       <h2 class="section-title">Repertorio del Domingo</h2>
       <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">Se sincroniza para todo el equipo en tiempo real.</p>
       <div id="sundayList"></div>
     </section>
 
-    <!-- TAB DRIVE -->
     <section id="drive" class="tab-content">
       <iframe class="drive-container" src="https://drive.google.com/embeddedfolderview?id=12bycs6XiD6zlXIt2gNw9URdvfl0GoTxa#list"></iframe>
     </section>
@@ -535,7 +549,6 @@
     </button>
   </nav>
 
-  <!-- MODAL VISOR -->
   <div id="viewerModal" class="modal">
     <div class="modal-header">
       <button id="prevBtn" class="nav-arrow" onclick="navigateSong(-1)">◀</button>
@@ -567,6 +580,17 @@
     let activeTab = 'repertorio';
     let filterTimeout = null;
 
+    // Extrae la URL de la celda sin importar si viene formateada o plana
+    function extractCellUrl(cell) {
+      if (!cell) return '';
+      if (cell.v && typeof cell.v === 'string' && cell.v.startsWith('http')) return cell.v.trim();
+      if (cell.f && typeof cell.f === 'string' && cell.f.includes('http')) {
+        const match = cell.f.match(/https?:\/\/[^"]+/);
+        if (match) return match[0];
+      }
+      return cell.v ? String(cell.v).trim() : '';
+    }
+
     async function fetchSongsFromSheet() {
       const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
       try {
@@ -590,9 +614,10 @@
             artist: c[1] && c[1].v ? String(c[1].v) : '',
             key: c[2] && c[2].v ? String(c[2].v) : '',
             bpm: c[3] && c[3].v ? String(c[3].v) : '',
-            urlLetra: c[4] && c[4].v ? String(c[4].v) : '',
-            urlLetraAcordes: c[5] && c[5].v ? String(c[5].v) : '',
-            urlAcordes: c[6] && c[6].v ? String(c[6].v) : '',
+            urlLetra: extractCellUrl(c[4]),
+            urlLetraAcordes: extractCellUrl(c[5]),
+            urlAcordes: extractCellUrl(c[6]),
+            urlYoutube: extractCellUrl(c[7]), // Lee Columna H
             inSunday: savedSundayIds.includes(index + 1)
           };
         }).filter(song => song.title !== '');
@@ -614,7 +639,6 @@
 
     async function saveSundayState() {
       const sundayIds = songs.filter(s => s.inSunday).map(s => s.id);
-      
       try {
         await fetch(WEB_APP_URL, {
           method: 'POST',
@@ -692,6 +716,7 @@
             <button class="format-btn ${!song.urlLetra ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
             <button class="format-btn ${!song.urlLetraAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
             <button class="format-btn ${!song.urlAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
+            <a class="format-btn yt-btn ${!song.urlYoutube ? 'disabled' : ''}" ${song.urlYoutube ? `href="${song.urlYoutube}" target="_blank" rel="noopener noreferrer"` : ''}>▶ YouTube</a>
           </div>
         `;
         listContainer.appendChild(card);
@@ -732,6 +757,7 @@
             <button class="format-btn ${!song.urlLetra ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
             <button class="format-btn ${!song.urlLetraAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
             <button class="format-btn ${!song.urlAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
+            <a class="format-btn yt-btn ${!song.urlYoutube ? 'disabled' : ''}" ${song.urlYoutube ? `href="${song.urlYoutube}" target="_blank" rel="noopener noreferrer"` : ''}>▶ YouTube</a>
           </div>
         `;
         listContainer.appendChild(card);
