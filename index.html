@@ -19,6 +19,11 @@
       --gold-glow: rgba(251, 191, 36, 0.35);
       --danger: #f43f5e;
       --radius: 18px;
+
+      /* Configuración dinámica del metrónomo visual */
+      --metronome-color-rgb: 110, 231, 183;
+      --metronome-intensity-spread: 50px;
+      --metronome-intensity-size: 15px;
     }
 
     * {
@@ -47,6 +52,25 @@
       margin: 0 auto;
       box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
       position: relative;
+    }
+
+    /* OVERLAY DE PANTALLA COMPLETA (MARCO DE NEÓN PERIFÉRICO) */
+    #metronomeOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 99999;
+      opacity: 0;
+      transition: opacity 0.05s ease-out;
+      box-shadow: inset 0 0 var(--metronome-intensity-spread) var(--metronome-intensity-size) rgba(var(--metronome-color-rgb), 0.95);
+      border: 4px solid rgba(var(--metronome-color-rgb), 0.8);
+    }
+
+    #metronomeOverlay.bpm-flash-overlay {
+      opacity: 1 !important;
     }
 
     header {
@@ -182,6 +206,7 @@
       padding: 1rem;
       margin-bottom: 0.85rem;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+      transition: all 0.2s ease;
     }
 
     #sundayList .song-card { cursor: grab; }
@@ -248,6 +273,8 @@
       color: var(--text-main);
       border: 1px solid var(--card-border);
       transition: all 0.2s;
+      user-select: none;
+      -webkit-touch-callout: none;
     }
 
     .badge.bpm-btn:hover {
@@ -256,17 +283,17 @@
       color: var(--brand-mint);
     }
 
-    .badge.bpm-btn.playing {
+    .badge.bpm-btn.modo-visual {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+      border-color: rgba(96, 165, 250, 0.5);
+    }
+
+    .badge.bpm-btn.modo-sonoro {
       background: var(--brand-mint);
       color: #000;
       font-weight: 800;
       border-color: var(--brand-mint);
-      animation: pulseBpm 0.8s infinite alternate;
-    }
-
-    @keyframes pulseBpm {
-      from { box-shadow: 0 0 2px var(--brand-mint); }
-      to { box-shadow: 0 0 12px var(--brand-mint); }
     }
 
     .song-main-actions {
@@ -422,6 +449,7 @@
       backdrop-filter: blur(8px);
       opacity: 0.2;
     }
+
     .modal.fullscreen-mode .modal-header:hover {
       opacity: 1;
     }
@@ -545,9 +573,134 @@
       padding: 3rem 1rem;
       color: var(--text-muted);
     }
+
+    /* MENÚ POPUP DE CONFIGURACIÓN DEL METRÓNOMO */
+    .metronome-settings-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 100000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .metronome-settings-card {
+      background: rgba(18, 24, 38, 0.95);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 340px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    .metronome-settings-card h4 {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      text-align: center;
+      color: var(--text-main);
+    }
+
+    .setting-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .setting-group label {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .color-options, .intensity-options {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .color-opt {
+      flex: 1;
+      height: 38px;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .color-opt:hover { transform: scale(1.05); }
+    .color-opt.selected { border-color: #ffffff; transform: scale(1.08); }
+
+    .intensity-opt {
+      flex: 1;
+      padding: 0.5rem 0.2rem;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .intensity-opt.selected {
+      background: var(--brand-mint);
+      color: #000;
+      border-color: var(--brand-mint);
+    }
+
+    .close-settings-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
   </style>
 </head>
 <body>
+
+  <!-- MARCO DE DESTELLO FLOTANTE -->
+  <div id="metronomeOverlay"></div>
+
+  <!-- POPUP DE CONFIGURACIÓN DEL METRÓNOMO -->
+  <div id="metronomeSettingsModal" class="metronome-settings-modal" onclick="closeMetronomeSettings(event)">
+    <div class="metronome-settings-card" onclick="event.stopPropagation()">
+      <h4>⚡ Configuración Metrónomo Visual</h4>
+      
+      <div class="setting-group">
+        <label>Color del Destello (Visión Periférica)</label>
+        <div class="color-options">
+          <button class="color-opt selected" style="background: #6ee7b7;" onclick="setMetronomeColor('110, 231, 183', this)"></button>
+          <button class="color-opt" style="background: #ffffff;" onclick="setMetronomeColor('255, 255, 255', this)"></button>
+          <button class="color-opt" style="background: #3b82f6;" onclick="setMetronomeColor('59, 130, 246', this)"></button>
+          <button class="color-opt" style="background: #f43f5e;" onclick="setMetronomeColor('244, 63, 94', this)"></button>
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <label>Intensidad del Destello</label>
+        <div class="intensity-options">
+          <button class="intensity-opt" onclick="setMetronomeIntensity('25px', '8px', this)">Suave</button>
+          <button class="intensity-opt selected" onclick="setMetronomeIntensity('50px', '15px', this)">Media</button>
+          <button class="intensity-opt" onclick="setMetronomeIntensity('120px', '40px', this)">Fuerte</button>
+        </div>
+      </div>
+
+      <button class="close-settings-btn" onclick="closeMetronomeSettings()">Listo</button>
+    </div>
+  </div>
 
   <header>
     <div class="logo-container">
@@ -619,10 +772,36 @@
     let activeTab = 'repertorio';
     let filterTimeout = null;
 
-    // --- METRÓNOMO AUDIO ENGINE ---
+    /* ==========================================================
+       1. PANTALLA SIEMPRE ENCENDIDA (WAKE LOCK API)
+       ========================================================== */
+    let wakeLock = null;
+
+    async function activarPantallaEncendida() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
+        }
+      } catch (err) {
+        console.warn(`Wake Lock no disponible: ${err.message}`);
+      }
+    }
+
+    document.addEventListener('visibilitychange', async () => {
+      if (wakeLock !== null && document.visibilityState === 'visible') {
+        await activarPantallaEncendida();
+      }
+    });
+
+    activarPantallaEncendida();
+
+    /* ==========================================================
+       2. METRÓNOMO AUDIO & VISUAL ENGINE (TAP SINGLE VS LONG PRESS)
+       ========================================================== */
     let audioCtx = null;
     let metronomeTimer = null;
     let activeMetronomeSongId = null;
+    let estadoMetronomo = 0; // 0: Apagado, 1: Solo Visual, 2: Visual + Sonoro
 
     function playClick() {
       if (!audioCtx) {
@@ -636,41 +815,58 @@
       const gain = audioCtx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(1000, audioCtx.currentTime); // Tono de 1000 Hz
+      osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
 
-      gain.gain.setValueAtTime(1, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05); // Clic seco de 50ms
+      gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
 
       osc.connect(gain);
       gain.connect(audioCtx.destination);
 
       osc.start();
-      osc.stop(audioCtx.currentTime + 0.05);
+      osc.stop(audioCtx.currentTime + 0.04);
     }
 
-    function toggleMetronome(songId, bpmString, event) {
-      if (event) event.stopPropagation();
-
-      // Extraer solo los números de la cadena BPM
+    function toggleMetronome(songId, bpmString) {
       const cleanBpm = parseInt(String(bpmString).replace(/\D/g, ''), 10);
       if (!cleanBpm || isNaN(cleanBpm) || cleanBpm <= 0) return;
 
-      // Si ya está sonando en esta canción, lo detenemos
-      if (activeMetronomeSongId === songId) {
+      if (activeMetronomeSongId !== songId) {
+        stopMetronome();
+        activeMetronomeSongId = songId;
+        estadoMetronomo = 1;
+      } else {
+        estadoMetronomo = (estadoMetronomo + 1) % 3;
+      }
+
+      if (estadoMetronomo === 0) {
         stopMetronome();
         return;
       }
 
-      // Si había otro metrónomo sonando, lo detenemos primero
-      stopMetronome();
-
-      activeMetronomeSongId = songId;
-      const intervalMs = (60 / cleanBpm) * 1000;
-
-      playClick(); // Primer pulso inmediato
-      metronomeTimer = setInterval(playClick, intervalMs);
-
+      iniciarPulsoMetronomo(cleanBpm);
       updateMetronomeUI();
+    }
+
+    function iniciarPulsoMetronomo(cleanBpm) {
+      if (metronomeTimer) clearInterval(metronomeTimer);
+
+      const intervalMs = (60 / cleanBpm) * 1000;
+      const overlay = document.getElementById('metronomeOverlay');
+
+      const ejecutarBeat = () => {
+        // Destello perimetral neón
+        overlay.classList.add('bpm-flash-overlay');
+        setTimeout(() => overlay.classList.remove('bpm-flash-overlay'), 80);
+
+        // Clic de audio (solo en modo 2)
+        if (estadoMetronomo === 2) {
+          playClick();
+        }
+      };
+
+      ejecutarBeat();
+      metronomeTimer = setInterval(ejecutarBeat, intervalMs);
     }
 
     function stopMetronome() {
@@ -679,22 +875,97 @@
         metronomeTimer = null;
       }
       activeMetronomeSongId = null;
+      estadoMetronomo = 0;
       updateMetronomeUI();
     }
 
     function updateMetronomeUI() {
       document.querySelectorAll('.bpm-btn').forEach(btn => {
         const songId = parseInt(btn.dataset.songId, 10);
+        btn.classList.remove('modo-visual', 'modo-sonoro');
+
         if (songId === activeMetronomeSongId) {
-          btn.classList.add('playing');
-          btn.innerHTML = `⏹️ ${btn.dataset.bpm} BPM`;
+          if (estadoMetronomo === 1) {
+            btn.classList.add('modo-visual');
+            btn.innerHTML = `👁️ ${btn.dataset.bpm} BPM`;
+          } else if (estadoMetronomo === 2) {
+            btn.classList.add('modo-sonoro');
+            btn.innerHTML = `🔊 ${btn.dataset.bpm} BPM`;
+          }
         } else {
-          btn.classList.remove('playing');
           btn.innerHTML = `⏱️ ${btn.dataset.bpm} BPM`;
         }
       });
     }
 
+    /* DETECTOR DE EVENTOS PARA LONG PRESS SIN INTERFERENCIA DE CLICK */
+    function setupLongPress(btn) {
+      let timer = null;
+      let isLongPress = false;
+
+      const start = (e) => {
+        if (e.type === 'click') return;
+        isLongPress = false;
+
+        timer = setTimeout(() => {
+          isLongPress = true;
+          openMetronomeSettings();
+        }, 500);
+      };
+
+      const end = (e) => {
+        clearTimeout(timer);
+
+        if (!isLongPress && e.type !== 'contextmenu') {
+          const songId = parseInt(btn.dataset.songId, 10);
+          const bpm = btn.dataset.bpm;
+          toggleMetronome(songId, bpm);
+        }
+      };
+
+      const cancel = () => {
+        clearTimeout(timer);
+      };
+
+      btn.addEventListener('touchstart', start, { passive: true });
+      btn.addEventListener('touchend', end);
+      btn.addEventListener('touchmove', cancel);
+
+      btn.addEventListener('mousedown', start);
+      btn.addEventListener('mouseup', end);
+      btn.addEventListener('mouseleave', cancel);
+
+      btn.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openMetronomeSettings();
+      });
+    }
+
+    function openMetronomeSettings() {
+      document.getElementById('metronomeSettingsModal').style.display = 'flex';
+    }
+
+    function closeMetronomeSettings(e) {
+      document.getElementById('metronomeSettingsModal').style.display = 'none';
+    }
+
+    function setMetronomeColor(rgbValue, btnEl) {
+      document.documentElement.style.setProperty('--metronome-color-rgb', rgbValue);
+      document.querySelectorAll('.color-opt').forEach(b => b.classList.remove('selected'));
+      btnEl.classList.add('selected');
+    }
+
+    function setMetronomeIntensity(spread, size, btnEl) {
+      document.documentElement.style.setProperty('--metronome-intensity-spread', spread);
+      document.documentElement.style.setProperty('--metronome-intensity-size', size);
+      document.querySelectorAll('.intensity-opt').forEach(b => b.classList.remove('selected'));
+      btnEl.classList.add('selected');
+    }
+
+    /* ==========================================================
+       3. LÓGICA DE REPERTORIO Y DRIVE
+       ========================================================== */
     function extractCellUrl(cell) {
       if (!cell) return '';
       if (cell.v && typeof cell.v === 'string' && cell.v.startsWith('http')) return cell.v.trim();
@@ -747,7 +1018,7 @@
         renderSundayList();
       } catch (error) {
         console.error('Error cargando los datos:', error);
-        document.getElementById('songsList').innerHTML = '<div class="empty-state">Error al cargar los datos. Verifica la configuración.</div>';
+        document.getElementById('songsList').innerHTML = '<div class="empty-state">Error al cargar los datos.</div>';
       }
     }
 
@@ -809,7 +1080,6 @@
 
       filteredSongs.forEach(song => {
         const cleanBpm = cleanBpmNumber(song.bpm);
-        const isMetronomeActive = activeMetronomeSongId === song.id;
 
         const card = document.createElement('div');
         card.className = 'song-card';
@@ -821,12 +1091,10 @@
               <div class="song-meta">
                 ${song.key ? `<span class="badge key">Tono: ${song.key}</span>` : ''}
                 ${cleanBpm ? `
-                  <button class="badge bpm-btn ${isMetronomeActive ? 'playing' : ''}" 
+                  <button class="badge bpm-btn" 
                           data-song-id="${song.id}" 
-                          data-bpm="${cleanBpm}" 
-                          onclick="toggleMetronome(${song.id}, '${cleanBpm}', event)" 
-                          title="Tocar para activar/desactivar metrónomo">
-                    ${isMetronomeActive ? '⏹️' : '⏱️'} ${cleanBpm} BPM
+                          data-bpm="${cleanBpm}">
+                    ⏱️ ${cleanBpm} BPM
                   </button>
                 ` : ''}
               </div>
@@ -850,6 +1118,9 @@
         `;
         listContainer.appendChild(card);
       });
+
+      document.querySelectorAll('.bpm-btn').forEach(btn => setupLongPress(btn));
+      updateMetronomeUI();
     }
 
     function renderSundayList() {
@@ -865,7 +1136,6 @@
 
       sundaySongs.forEach(song => {
         const cleanBpm = cleanBpmNumber(song.bpm);
-        const isMetronomeActive = activeMetronomeSongId === song.id;
 
         const card = document.createElement('div');
         card.className = 'song-card';
@@ -879,12 +1149,10 @@
               <div class="song-meta">
                 ${song.key ? `<span class="badge key">Tono: ${song.key}</span>` : ''}
                 ${cleanBpm ? `
-                  <button class="badge bpm-btn ${isMetronomeActive ? 'playing' : ''}" 
+                  <button class="badge bpm-btn" 
                           data-song-id="${song.id}" 
-                          data-bpm="${cleanBpm}" 
-                          onclick="toggleMetronome(${song.id}, '${cleanBpm}', event)" 
-                          title="Tocar para activar/desactivar metrónomo">
-                    ${isMetronomeActive ? '⏹️' : '⏱️'} ${cleanBpm} BPM
+                          data-bpm="${cleanBpm}">
+                    ⏱️ ${cleanBpm} BPM
                   </button>
                 ` : ''}
               </div>
@@ -925,6 +1193,9 @@
           }
         });
       }
+
+      document.querySelectorAll('.bpm-btn').forEach(btn => setupLongPress(btn));
+      updateMetronomeUI();
     }
 
     function toggleSunday(id) {
