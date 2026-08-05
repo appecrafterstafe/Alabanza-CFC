@@ -234,11 +234,39 @@
       font-weight: 700;
       background: rgba(255, 255, 255, 0.05);
       color: var(--text-muted);
+      border: none;
     }
 
     .badge.key {
       background: rgba(110, 231, 183, 0.12);
       color: var(--brand-mint);
+    }
+
+    .badge.bpm-btn {
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+      transition: all 0.2s;
+    }
+
+    .badge.bpm-btn:hover {
+      background: rgba(110, 231, 183, 0.2);
+      border-color: var(--brand-mint);
+      color: var(--brand-mint);
+    }
+
+    .badge.bpm-btn.playing {
+      background: var(--brand-mint);
+      color: #000;
+      font-weight: 800;
+      border-color: var(--brand-mint);
+      animation: pulseBpm 0.8s infinite alternate;
+    }
+
+    @keyframes pulseBpm {
+      from { box-shadow: 0 0 2px var(--brand-mint); }
+      to { box-shadow: 0 0 12px var(--brand-mint); }
     }
 
     .song-main-actions {
@@ -591,6 +619,82 @@
     let activeTab = 'repertorio';
     let filterTimeout = null;
 
+    // --- METRÓNOMO AUDIO ENGINE ---
+    let audioCtx = null;
+    let metronomeTimer = null;
+    let activeMetronomeSongId = null;
+
+    function playClick() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1000, audioCtx.currentTime); // Tono de 1000 Hz
+
+      gain.gain.setValueAtTime(1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05); // Clic seco de 50ms
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.05);
+    }
+
+    function toggleMetronome(songId, bpmString, event) {
+      if (event) event.stopPropagation();
+
+      // Extraer solo los números de la cadena BPM
+      const cleanBpm = parseInt(String(bpmString).replace(/\D/g, ''), 10);
+      if (!cleanBpm || isNaN(cleanBpm) || cleanBpm <= 0) return;
+
+      // Si ya está sonando en esta canción, lo detenemos
+      if (activeMetronomeSongId === songId) {
+        stopMetronome();
+        return;
+      }
+
+      // Si había otro metrónomo sonando, lo detenemos primero
+      stopMetronome();
+
+      activeMetronomeSongId = songId;
+      const intervalMs = (60 / cleanBpm) * 1000;
+
+      playClick(); // Primer pulso inmediato
+      metronomeTimer = setInterval(playClick, intervalMs);
+
+      updateMetronomeUI();
+    }
+
+    function stopMetronome() {
+      if (metronomeTimer) {
+        clearInterval(metronomeTimer);
+        metronomeTimer = null;
+      }
+      activeMetronomeSongId = null;
+      updateMetronomeUI();
+    }
+
+    function updateMetronomeUI() {
+      document.querySelectorAll('.bpm-btn').forEach(btn => {
+        const songId = parseInt(btn.dataset.songId, 10);
+        if (songId === activeMetronomeSongId) {
+          btn.classList.add('playing');
+          btn.innerHTML = `⏹️ ${btn.dataset.bpm} BPM`;
+        } else {
+          btn.classList.remove('playing');
+          btn.innerHTML = `⏱️ ${btn.dataset.bpm} BPM`;
+        }
+      });
+    }
+
     function extractCellUrl(cell) {
       if (!cell) return '';
       if (cell.v && typeof cell.v === 'string' && cell.v.startsWith('http')) return cell.v.trim();
@@ -682,9 +786,9 @@
       if (tabId === 'domingo') renderSundayList();
     }
 
-    function formatBpmDisplay(bpmValue) {
+    function cleanBpmNumber(bpmValue) {
       if (!bpmValue) return '';
-      return bpmValue.toLowerCase().includes('bpm') ? bpmValue : `${bpmValue} BPM`;
+      return bpmValue.replace(/\D/g, '');
     }
 
     function renderSongs(filter = '') {
@@ -704,6 +808,9 @@
       }
 
       filteredSongs.forEach(song => {
+        const cleanBpm = cleanBpmNumber(song.bpm);
+        const isMetronomeActive = activeMetronomeSongId === song.id;
+
         const card = document.createElement('div');
         card.className = 'song-card';
         card.innerHTML = `
@@ -713,7 +820,15 @@
               ${song.artist ? `<div class="song-artist">${song.artist}</div>` : ''}
               <div class="song-meta">
                 ${song.key ? `<span class="badge key">Tono: ${song.key}</span>` : ''}
-                ${song.bpm ? `<span class="badge">${formatBpmDisplay(song.bpm)}</span>` : ''}
+                ${cleanBpm ? `
+                  <button class="badge bpm-btn ${isMetronomeActive ? 'playing' : ''}" 
+                          data-song-id="${song.id}" 
+                          data-bpm="${cleanBpm}" 
+                          onclick="toggleMetronome(${song.id}, '${cleanBpm}', event)" 
+                          title="Tocar para activar/desactivar metrónomo">
+                    ${isMetronomeActive ? '⏹️' : '⏱️'} ${cleanBpm} BPM
+                  </button>
+                ` : ''}
               </div>
             </div>
             <div class="song-main-actions">
@@ -749,6 +864,9 @@
       }
 
       sundaySongs.forEach(song => {
+        const cleanBpm = cleanBpmNumber(song.bpm);
+        const isMetronomeActive = activeMetronomeSongId === song.id;
+
         const card = document.createElement('div');
         card.className = 'song-card';
         card.dataset.id = song.id;
@@ -760,7 +878,15 @@
               ${song.artist ? `<div class="song-artist">${song.artist}</div>` : ''}
               <div class="song-meta">
                 ${song.key ? `<span class="badge key">Tono: ${song.key}</span>` : ''}
-                ${song.bpm ? `<span class="badge">${formatBpmDisplay(song.bpm)}</span>` : ''}
+                ${cleanBpm ? `
+                  <button class="badge bpm-btn ${isMetronomeActive ? 'playing' : ''}" 
+                          data-song-id="${song.id}" 
+                          data-bpm="${cleanBpm}" 
+                          onclick="toggleMetronome(${song.id}, '${cleanBpm}', event)" 
+                          title="Tocar para activar/desactivar metrónomo">
+                    ${isMetronomeActive ? '⏹️' : '⏱️'} ${cleanBpm} BPM
+                  </button>
+                ` : ''}
               </div>
             </div>
             <div class="song-main-actions">
