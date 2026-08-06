@@ -64,7 +64,7 @@
       pointer-events: none;
       z-index: 99999;
       opacity: 0;
-      transition: opacity 0.05s ease-out;
+      transition: opacity 0.04s ease-out;
       box-shadow: inset 0 0 var(--metronome-intensity-spread) var(--metronome-intensity-size) rgba(var(--metronome-color-rgb), 0.95);
       border: 4px solid rgba(var(--metronome-color-rgb), 0.8);
     }
@@ -277,12 +277,6 @@
       -webkit-touch-callout: none;
     }
 
-    .badge.bpm-btn:hover {
-      background: rgba(110, 231, 183, 0.2);
-      border-color: var(--brand-mint);
-      color: var(--brand-mint);
-    }
-
     .badge.bpm-btn.modo-visual {
       background: rgba(59, 130, 246, 0.2);
       color: #60a5fa;
@@ -294,6 +288,17 @@
       color: #000;
       font-weight: 800;
       border-color: var(--brand-mint);
+    }
+
+    .song-structure {
+      margin: 0.6rem 0;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 0.4rem 0.6rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
     }
 
     .song-main-actions {
@@ -320,17 +325,11 @@
       transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    .action-btn.star:hover {
-      border-color: rgba(251, 191, 36, 0.4);
-      color: var(--gold-star);
-    }
-
     .action-btn.star.active {
       color: var(--gold-star);
       background: rgba(251, 191, 36, 0.12);
       border-color: rgba(251, 191, 36, 0.4);
       box-shadow: 0 4px 14px var(--gold-glow);
-      transform: scale(1.05);
     }
 
     .action-btn.yt-top-btn {
@@ -340,19 +339,9 @@
       font-size: 0.9rem;
     }
 
-    .action-btn.yt-top-btn:hover {
-      background: rgba(244, 63, 94, 0.3);
-      border-color: var(--danger);
-      color: #ffffff;
-      transform: scale(1.05);
-    }
-
     .action-btn.yt-top-btn.disabled {
       opacity: 0.2;
       pointer-events: none;
-      background: rgba(255, 255, 255, 0.02);
-      border-color: transparent;
-      color: var(--text-muted);
     }
 
     .drag-handle {
@@ -382,30 +371,17 @@
       font-weight: 600;
       cursor: pointer;
       text-align: center;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-
-    .format-btn:hover {
-      background: rgba(110, 231, 183, 0.15);
-      border-color: var(--brand-mint);
-      color: var(--brand-mint);
     }
 
     .format-btn.disabled {
       opacity: 0.25;
       pointer-events: none;
-      background: rgba(255, 255, 255, 0.02);
-      border-color: transparent;
     }
 
     .drive-container {
       width: 100%;
       height: calc(100vh - 160px);
-      border: none;
+      border: 1px solid var(--card-border);
       border-radius: var(--radius);
       background-color: var(--card-bg);
     }
@@ -437,21 +413,6 @@
       border-bottom: 1px solid var(--card-border);
       gap: 0.4rem;
       z-index: 10;
-      transition: all 0.2s ease;
-    }
-
-    .modal.fullscreen-mode .modal-header {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: rgba(10, 14, 23, 0.85);
-      backdrop-filter: blur(8px);
-      opacity: 0.2;
-    }
-
-    .modal.fullscreen-mode .modal-header:hover {
-      opacity: 1;
     }
 
     .modal-title-wrapper {
@@ -475,7 +436,6 @@
     .modal-header .sub-artist {
       font-size: 0.7rem;
       color: var(--text-muted);
-      font-weight: 500;
     }
 
     .modal-header-actions {
@@ -490,7 +450,6 @@
       height: 100%;
       background: #000; 
       position: relative;
-      overflow: hidden;
     }
 
     .modal-body iframe { 
@@ -512,14 +471,6 @@
       cursor: pointer;
       font-size: 1rem;
       font-weight: bold;
-      transition: all 0.2s;
-      flex-shrink: 0;
-    }
-
-    .nav-arrow:disabled {
-      opacity: 0.2;
-      cursor: not-allowed;
-      border-color: var(--card-border);
     }
 
     .icon-btn {
@@ -530,18 +481,11 @@
       height: 34px;
       border-radius: 50%;
       cursor: pointer;
-      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 0.85rem;
       text-decoration: none;
-    }
-
-    .icon-btn.active {
-      background: var(--brand-mint);
-      color: #000;
-      border-color: var(--brand-mint);
     }
 
     .btn-small {
@@ -553,28 +497,8 @@
       font-weight: 700;
       background: rgba(255, 255, 255, 0.06);
       color: var(--text-muted);
-      white-space: nowrap;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
     }
 
-    .btn-small.active {
-      background: rgba(251, 191, 36, 0.15);
-      color: var(--gold-star);
-      border-color: rgba(251, 191, 36, 0.4);
-      box-shadow: 0 2px 10px var(--gold-glow);
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--text-muted);
-    }
-
-    /* MENÚ POPUP DE CONFIGURACIÓN DEL METRÓNOMO */
     .metronome-settings-modal {
       display: none;
       position: fixed;
@@ -597,7 +521,6 @@
       padding: 1.5rem;
       width: 100%;
       max-width: 340px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
     }
 
     .metronome-settings-card h4 {
@@ -608,10 +531,7 @@
       color: var(--text-main);
     }
 
-    .setting-group {
-      margin-bottom: 1.25rem;
-    }
-
+    .setting-group { margin-bottom: 1.25rem; }
     .setting-group label {
       display: block;
       font-size: 0.75rem;
@@ -620,22 +540,15 @@
       font-weight: 600;
     }
 
-    .color-options, .intensity-options {
-      display: flex;
-      gap: 0.5rem;
-    }
-
+    .color-options, .intensity-options { display: flex; gap: 0.5rem; }
     .color-opt {
       flex: 1;
       height: 38px;
       border-radius: 10px;
       border: 2px solid transparent;
       cursor: pointer;
-      transition: transform 0.2s;
     }
-
-    .color-opt:hover { transform: scale(1.05); }
-    .color-opt.selected { border-color: #ffffff; transform: scale(1.08); }
+    .color-opt.selected { border-color: #ffffff; }
 
     .intensity-opt {
       flex: 1;
@@ -647,9 +560,7 @@
       font-size: 0.75rem;
       font-weight: 700;
       cursor: pointer;
-      text-align: center;
     }
-
     .intensity-opt.selected {
       background: var(--brand-mint);
       color: #000;
@@ -671,16 +582,14 @@
 </head>
 <body>
 
-  <!-- MARCO DE DESTELLO FLOTANTE -->
   <div id="metronomeOverlay"></div>
 
-  <!-- POPUP DE CONFIGURACIÓN DEL METRÓNOMO -->
   <div id="metronomeSettingsModal" class="metronome-settings-modal" onclick="closeMetronomeSettings(event)">
     <div class="metronome-settings-card" onclick="event.stopPropagation()">
-      <h4>⚡ Configuración Metrónomo Visual</h4>
+      <h4>⚡ Configuración Metrónomo</h4>
       
       <div class="setting-group">
-        <label>Color del Destello (Visión Periférica)</label>
+        <label>Color del Destello</label>
         <div class="color-options">
           <button class="color-opt selected" style="background: #6ee7b7;" onclick="setMetronomeColor('110, 231, 183', this)"></button>
           <button class="color-opt" style="background: #ffffff;" onclick="setMetronomeColor('255, 255, 255', this)"></button>
@@ -725,7 +634,7 @@
     </section>
 
     <section id="drive" class="tab-content">
-      <iframe class="drive-container" src="https://drive.google.com/embeddedfolderview?id=12bycs6XiD6zlXIt2gNw9URdvfl0GoTxa#list"></iframe>
+      <iframe class="drive-container" src="https://drive.google.com/embeddedfolderview?id=12bycs6XiD6zlXIt2gNw9URdvfl0GoTxa#grid"></iframe>
     </section>
   </main>
 
@@ -751,9 +660,8 @@
       <button id="nextBtn" class="nav-arrow" onclick="navigateSong(1)">▶</button>
       
       <div class="modal-header-actions">
-        <a id="externalLinkBtn" class="icon-btn" target="_blank" title="Abrir externamente">↗</a>
+        <a id="externalLinkBtn" class="icon-btn" target="_blank" title="Abrir en Drive">↗</a>
         <button id="modalSundayBtn" class="btn-small" onclick="toggleSundayActiveModal()"><span>☆</span> Domingo</button>
-        <button id="fullscreenToggleBtn" class="icon-btn" title="Pantalla completa" onclick="toggleSimulatedFullscreen()">⛶</button>
         <button class="icon-btn" onclick="closeViewer()">&times;</button>
       </div>
     </div>
@@ -768,7 +676,7 @@
     
     let songs = [];
     let currentActiveSongId = null;
-    let currentFormatType = 'letra';
+    let currentFormatType = 'acordes';
     let activeTab = 'repertorio';
     let filterTimeout = null;
 
@@ -776,7 +684,6 @@
        1. PANTALLA SIEMPRE ENCENDIDA (WAKE LOCK API)
        ========================================================== */
     let wakeLock = null;
-
     async function activarPantallaEncendida() {
       try {
         if ('wakeLock' in navigator) {
@@ -786,48 +693,81 @@
         console.warn(`Wake Lock no disponible: ${err.message}`);
       }
     }
-
     document.addEventListener('visibilitychange', async () => {
       if (wakeLock !== null && document.visibilityState === 'visible') {
         await activarPantallaEncendida();
       }
     });
-
     activarPantallaEncendida();
 
     /* ==========================================================
-       2. METRÓNOMO AUDIO & VISUAL ENGINE (TAP SINGLE VS LONG PRESS)
+       2. MOTOR DE METRÓNOMO DE ALTA PRECISIÓN (LOOKAHEAD SCHEDULER)
        ========================================================== */
     let audioCtx = null;
-    let metronomeTimer = null;
+    let isMetronomeRunning = false;
     let activeMetronomeSongId = null;
     let estadoMetronomo = 0; // 0: Apagado, 1: Solo Visual, 2: Visual + Sonoro
+    
+    let bpm = 120;
+    let currentBeat = 0;
+    const lookahead = 25.0; // Frecuencia del temporizador (ms)
+    const scheduleAheadTime = 0.1; // Tiempo de reserva para audio (s)
+    let nextNoteTime = 0.0;
+    let metronomeTimerID = null;
 
-    function playClick() {
+    function initAudioContext() {
       if (!audioCtx) {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
       if (audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
+    }
 
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
+    function nextNote() {
+      const secondsPerBeat = 60.0 / bpm;
+      nextNoteTime += secondsPerBeat;
+      currentBeat = (currentBeat + 1) % 4;
+    }
 
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
+    function scheduleNote(beatNumber, time) {
+      if (estadoMetronomo === 2) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
 
-      gain.gain.setValueAtTime(0.8, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(beatNumber === 0 ? 1200 : 900, time);
 
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
+        gain.gain.setValueAtTime(0.8, time);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
 
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.04);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(time);
+        osc.stop(time + 0.04);
+      }
+
+      const drawTime = Math.max(0, (time - audioCtx.currentTime) * 1000);
+      setTimeout(() => {
+        const overlay = document.getElementById('metronomeOverlay');
+        overlay.classList.add('bpm-flash-overlay');
+        setTimeout(() => overlay.classList.remove('bpm-flash-overlay'), 60);
+      }, drawTime);
+    }
+
+    function scheduler() {
+      while (nextNoteTime < audioCtx.currentTime + scheduleAheadTime) {
+        scheduleNote(currentBeat, nextNoteTime);
+        nextNote();
+      }
+      if (isMetronomeRunning) {
+        metronomeTimerID = setTimeout(scheduler, lookahead);
+      }
     }
 
     function toggleMetronome(songId, bpmString) {
+      initAudioContext();
       const cleanBpm = parseInt(String(bpmString).replace(/\D/g, ''), 10);
       if (!cleanBpm || isNaN(cleanBpm) || cleanBpm <= 0) return;
 
@@ -844,36 +784,17 @@
         return;
       }
 
-      iniciarPulsoMetronomo(cleanBpm);
+      bpm = cleanBpm;
+      isMetronomeRunning = true;
+      currentBeat = 0;
+      nextNoteTime = audioCtx.currentTime + 0.05;
+      scheduler();
       updateMetronomeUI();
     }
 
-    function iniciarPulsoMetronomo(cleanBpm) {
-      if (metronomeTimer) clearInterval(metronomeTimer);
-
-      const intervalMs = (60 / cleanBpm) * 1000;
-      const overlay = document.getElementById('metronomeOverlay');
-
-      const ejecutarBeat = () => {
-        // Destello perimetral neón
-        overlay.classList.add('bpm-flash-overlay');
-        setTimeout(() => overlay.classList.remove('bpm-flash-overlay'), 80);
-
-        // Clic de audio (solo en modo 2)
-        if (estadoMetronomo === 2) {
-          playClick();
-        }
-      };
-
-      ejecutarBeat();
-      metronomeTimer = setInterval(ejecutarBeat, intervalMs);
-    }
-
     function stopMetronome() {
-      if (metronomeTimer) {
-        clearInterval(metronomeTimer);
-        metronomeTimer = null;
-      }
+      isMetronomeRunning = false;
+      if (metronomeTimerID) clearTimeout(metronomeTimerID);
       activeMetronomeSongId = null;
       estadoMetronomo = 0;
       updateMetronomeUI();
@@ -898,7 +819,6 @@
       });
     }
 
-    /* DETECTOR DE EVENTOS PARA LONG PRESS SIN INTERFERENCIA DE CLICK */
     function setupLongPress(btn) {
       let timer = null;
       let isLongPress = false;
@@ -906,7 +826,6 @@
       const start = (e) => {
         if (e.type === 'click') return;
         isLongPress = false;
-
         timer = setTimeout(() => {
           isLongPress = true;
           openMetronomeSettings();
@@ -915,29 +834,23 @@
 
       const end = (e) => {
         clearTimeout(timer);
-
         if (!isLongPress && e.type !== 'contextmenu') {
           const songId = parseInt(btn.dataset.songId, 10);
-          const bpm = btn.dataset.bpm;
-          toggleMetronome(songId, bpm);
+          const bpmVal = btn.dataset.bpm;
+          toggleMetronome(songId, bpmVal);
         }
       };
 
-      const cancel = () => {
-        clearTimeout(timer);
-      };
+      const cancel = () => clearTimeout(timer);
 
       btn.addEventListener('touchstart', start, { passive: true });
       btn.addEventListener('touchend', end);
       btn.addEventListener('touchmove', cancel);
-
       btn.addEventListener('mousedown', start);
       btn.addEventListener('mouseup', end);
       btn.addEventListener('mouseleave', cancel);
-
       btn.addEventListener('contextmenu', (e) => {
         e.preventDefault();
-        e.stopPropagation();
         openMetronomeSettings();
       });
     }
@@ -946,7 +859,7 @@
       document.getElementById('metronomeSettingsModal').style.display = 'flex';
     }
 
-    function closeMetronomeSettings(e) {
+    function closeMetronomeSettings() {
       document.getElementById('metronomeSettingsModal').style.display = 'none';
     }
 
@@ -964,15 +877,26 @@
     }
 
     /* ==========================================================
-       3. LÓGICA DE REPERTORIO Y DRIVE
+       3. CONVERSIÓN Y EXTRACCIÓN DE URLS DE DRIVE Y SHEETS
        ========================================================== */
+    function getEmbedUrl(rawUrl) {
+      if (!rawUrl) return '';
+      let match = rawUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) return `https://drive.google.com/file/d/${match[1]}/preview`;
+      match = rawUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) return `https://drive.google.com/file/d/${match[1]}/preview`;
+      if (rawUrl.includes('docs.google.com/document/d/')) return rawUrl.replace(/\/edit.*$/, '/preview');
+      return rawUrl;
+    }
+
     function extractCellUrl(cell) {
       if (!cell) return '';
       if (cell.v && typeof cell.v === 'string' && cell.v.startsWith('http')) return cell.v.trim();
       if (cell.f && typeof cell.f === 'string' && cell.f.includes('http')) {
-        const match = cell.f.match(/https?:\/\/[^"]+/);
+        const match = cell.f.match(/https?:\/\/[^\s"'<>)]+/);
         if (match) return match[0];
       }
+      if (cell.p && cell.p.url) return cell.p.url;
       return cell.v ? String(cell.v).trim() : '';
     }
 
@@ -1003,22 +927,15 @@
             urlLetraAcordes: extractCellUrl(c[5]),
             urlAcordes: extractCellUrl(c[6]),
             urlYoutube: extractCellUrl(c[7]),
+            structure: c[8] && c[8].v ? String(c[8].v) : '', // Columna I: Secuencia/Estructura
             inSunday: savedSundayIds.includes(index + 1)
           };
         }).filter(song => song.title !== '');
-
-        if (savedSundayIds.length > 0) {
-          const songMap = new Map(songs.map(s => [s.id, s]));
-          const orderedSunday = savedSundayIds.map(id => songMap.get(id)).filter(Boolean);
-          const restSongs = songs.filter(s => !savedSundayIds.includes(s.id));
-          songs = [...orderedSunday, ...restSongs];
-        }
 
         renderSongs();
         renderSundayList();
       } catch (error) {
         console.error('Error cargando los datos:', error);
-        document.getElementById('songsList').innerHTML = '<div class="empty-state">Error al cargar los datos.</div>';
       }
     }
 
@@ -1036,20 +953,10 @@
       }
     }
 
-    function getEmbedUrl(url) {
-      if (!url) return '';
-      const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-      if (match && match[1]) {
-        return `https://drive.google.com/file/d/${match[1]}/preview`;
-      }
-      return url;
-    }
-
     function switchTab(tabId, btnElement) {
       activeTab = tabId;
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-      
       document.getElementById(tabId).classList.add('active');
       btnElement.classList.add('active');
 
@@ -1057,29 +964,19 @@
       if (tabId === 'domingo') renderSundayList();
     }
 
-    function cleanBpmNumber(bpmValue) {
-      if (!bpmValue) return '';
-      return bpmValue.replace(/\D/g, '');
-    }
-
     function renderSongs(filter = '') {
       const listContainer = document.getElementById('songsList');
       listContainer.innerHTML = '';
-
       const query = filter.toLowerCase();
+
       const filteredSongs = songs.filter(song => 
         song.title.toLowerCase().includes(query) || 
         song.artist.toLowerCase().includes(query) ||
         song.key.toLowerCase().includes(query)
       );
 
-      if (filteredSongs.length === 0) {
-        listContainer.innerHTML = `<div class="empty-state"><span>🎶</span><p>No se encontraron canciones.</p></div>`;
-        return;
-      }
-
       filteredSongs.forEach(song => {
-        const cleanBpm = cleanBpmNumber(song.bpm);
+        const cleanBpm = song.bpm ? song.bpm.replace(/\D/g, '') : '';
 
         const card = document.createElement('div');
         card.className = 'song-card';
@@ -1090,22 +987,15 @@
               ${song.artist ? `<div class="song-artist">${song.artist}</div>` : ''}
               <div class="song-meta">
                 ${song.key ? `<span class="badge key">Tono: ${song.key}</span>` : ''}
-                ${cleanBpm ? `
-                  <button class="badge bpm-btn" 
-                          data-song-id="${song.id}" 
-                          data-bpm="${cleanBpm}">
-                    ⏱️ ${cleanBpm} BPM
-                  </button>
-                ` : ''}
+                ${cleanBpm ? `<button class="badge bpm-btn" data-song-id="${song.id}" data-bpm="${cleanBpm}">⏱️ ${cleanBpm} BPM</button>` : ''}
               </div>
+
+              ${song.structure ? `<div class="song-structure"><strong>Estructura:</strong> ${song.structure}</div>` : ''}
             </div>
             <div class="song-main-actions">
               <a class="action-btn yt-top-btn ${!song.urlYoutube ? 'disabled' : ''}" 
-                 title="${song.urlYoutube ? 'Ver en YouTube' : 'Sin video de YouTube'}" 
-                 ${song.urlYoutube ? `href="${song.urlYoutube}" target="_blank" rel="noopener noreferrer"` : ''}>
-                 ▶
-              </a>
-              <button class="action-btn star ${song.inSunday ? 'active' : ''}" title="Domingo" onclick="toggleSunday(${song.id})">
+                 ${song.urlYoutube ? `href="${song.urlYoutube}" target="_blank"` : ''}>▶</a>
+              <button class="action-btn star ${song.inSunday ? 'active' : ''}" onclick="toggleSunday(${song.id})">
                 ${song.inSunday ? '⭐' : '☆'}
               </button>
             </div>
@@ -1126,44 +1016,29 @@
     function renderSundayList() {
       const listContainer = document.getElementById('sundayList');
       listContainer.innerHTML = '';
-
       const sundaySongs = songs.filter(song => song.inSunday);
 
-      if (sundaySongs.length === 0) {
-        listContainer.innerHTML = `<div class="empty-state"><span>⭐</span><p>No hay canciones seleccionadas para el Domingo.<br>Toca la estrella ☆ en el repertorio para agregarlas.</p></div>`;
-        return;
-      }
-
       sundaySongs.forEach(song => {
-        const cleanBpm = cleanBpmNumber(song.bpm);
+        const cleanBpm = song.bpm ? song.bpm.replace(/\D/g, '') : '';
 
         const card = document.createElement('div');
         card.className = 'song-card';
         card.dataset.id = song.id;
         card.innerHTML = `
           <div class="song-top">
-            <span class="drag-handle" title="Arrastrar">☰</span>
+            <span class="drag-handle">☰</span>
             <div class="song-info">
               <h3>${song.title}</h3>
               ${song.artist ? `<div class="song-artist">${song.artist}</div>` : ''}
               <div class="song-meta">
                 ${song.key ? `<span class="badge key">Tono: ${song.key}</span>` : ''}
-                ${cleanBpm ? `
-                  <button class="badge bpm-btn" 
-                          data-song-id="${song.id}" 
-                          data-bpm="${cleanBpm}">
-                    ⏱️ ${cleanBpm} BPM
-                  </button>
-                ` : ''}
+                ${cleanBpm ? `<button class="badge bpm-btn" data-song-id="${song.id}" data-bpm="${cleanBpm}">⏱️ ${cleanBpm} BPM</button>` : ''}
               </div>
+
+              ${song.structure ? `<div class="song-structure"><strong>Estructura:</strong> ${song.structure}</div>` : ''}
             </div>
             <div class="song-main-actions">
-              <a class="action-btn yt-top-btn ${!song.urlYoutube ? 'disabled' : ''}" 
-                 title="${song.urlYoutube ? 'Ver en YouTube' : 'Sin video de YouTube'}" 
-                 ${song.urlYoutube ? `href="${song.urlYoutube}" target="_blank" rel="noopener noreferrer"` : ''}>
-                 ▶
-              </a>
-              <button class="action-btn danger" title="Quitar" onclick="toggleSunday(${song.id})" style="color:var(--danger)">✕</button>
+              <button class="action-btn danger" onclick="toggleSunday(${song.id})" style="color:var(--danger)">✕</button>
             </div>
           </div>
           <div class="song-links">
@@ -1176,9 +1051,7 @@
       });
 
       if (window.Sortable) {
-        if (listContainer.sortableInstance) {
-          listContainer.sortableInstance.destroy();
-        }
+        if (listContainer.sortableInstance) listContainer.sortableInstance.destroy();
         listContainer.sortableInstance = Sortable.create(listContainer, {
           animation: 150,
           handle: '.drag-handle',
@@ -1186,9 +1059,7 @@
             const newSundayIds = Array.from(listContainer.children).map(el => parseInt(el.dataset.id));
             const sundayMap = new Map(songs.filter(s => s.inSunday).map(s => [s.id, s]));
             const nonSundaySongs = songs.filter(s => !s.inSunday);
-            const reorderedSunday = newSundayIds.map(id => sundayMap.get(id));
-
-            songs = [...reorderedSunday, ...nonSundaySongs];
+            songs = [...newSundayIds.map(id => sundayMap.get(id)), ...nonSundaySongs];
             saveSundayState();
           }
         });
@@ -1199,151 +1070,45 @@
     }
 
     function toggleSunday(id) {
-      songs = songs.map(song => song.id === id ? {...song, inSunday: !song.inSunday} : song);
+      songs = songs.map(s => s.id === id ? {...s, inSunday: !s.inSunday} : s);
       saveSundayState();
       renderSongs();
       renderSundayList();
-      if (currentActiveSongId === id) {
-        updateModalSundayButton();
-      }
-    }
-
-    function toggleSundayActiveModal() {
-      if (currentActiveSongId !== null) {
-        toggleSunday(currentActiveSongId);
-      }
-    }
-
-    function updateModalSundayButton() {
-      const song = songs.find(s => s.id === currentActiveSongId);
-      const btn = document.getElementById('modalSundayBtn');
-      if (song && song.inSunday) {
-        btn.classList.add('active');
-        btn.innerHTML = '<span>⭐</span> En Domingo';
-      } else {
-        btn.classList.remove('active');
-        btn.innerHTML = '<span>☆</span> Domingo';
-      }
     }
 
     function filterSongs() {
       clearTimeout(filterTimeout);
       filterTimeout = setTimeout(() => {
-        const query = document.getElementById('searchInput').value;
-        renderSongs(query);
+        renderSongs(document.getElementById('searchInput').value);
       }, 150);
     }
 
-    function getActiveList() {
-      if (activeTab === 'domingo') {
-        return songs.filter(s => s.inSunday);
-      }
-      return songs;
-    }
-
     function openViewer(id, type) {
-      const currentList = getActiveList();
-      const songIndex = currentList.findIndex(s => s.id === id);
-      if (songIndex === -1) return;
+      const song = songs.find(s => s.id === id);
+      if (!song) return;
 
       currentActiveSongId = id;
       currentFormatType = type;
-      
-      loadModalSong(currentList[songIndex]);
-      document.getElementById('viewerModal').style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
 
-    function loadModalSong(song) {
-      updateModalSundayButton();
+      let targetUrl = song.urlAcordes || song.urlLetraAcordes || song.urlLetra;
+      if (type === 'letra' && song.urlLetra) targetUrl = song.urlLetra;
+      if (type === 'letra-acordes' && song.urlLetraAcordes) targetUrl = song.urlLetraAcordes;
+      if (type === 'acordes' && song.urlAcordes) targetUrl = song.urlAcordes;
 
-      let targetUrl = '';
-      let formatTag = '';
-
-      if (currentFormatType === 'letra' && song.urlLetra) {
-        targetUrl = song.urlLetra;
-        formatTag = 'Letra';
-      } else if (currentFormatType === 'letra-acordes' && song.urlLetraAcordes) {
-        targetUrl = song.urlLetraAcordes;
-        formatTag = 'Letra + Acordes';
-      } else if (currentFormatType === 'acordes' && song.urlAcordes) {
-        targetUrl = song.urlAcordes;
-        formatTag = 'Solo Acordes';
-      } else {
-        if (song.urlLetra) {
-          targetUrl = song.urlLetra;
-          formatTag = 'Letra';
-          currentFormatType = 'letra';
-        } else if (song.urlLetraAcordes) {
-          targetUrl = song.urlLetraAcordes;
-          formatTag = 'Letra + Acordes';
-          currentFormatType = 'letra-acordes';
-        } else if (song.urlAcordes) {
-          targetUrl = song.urlAcordes;
-          formatTag = 'Solo Acordes';
-          currentFormatType = 'acordes';
-        }
-      }
-
-      document.getElementById('modalTitle').innerText = `${song.title} (${formatTag})`;
+      document.getElementById('modalTitle').innerText = song.title;
       document.getElementById('modalArtist').innerText = song.artist || '';
       document.getElementById('externalLinkBtn').href = targetUrl || '#';
 
       const iframe = document.getElementById('pdfFrame');
-      iframe.src = 'about:blank';
       iframe.src = getEmbedUrl(targetUrl);
 
-      updateNavigationButtons();
-    }
-
-    function navigateSong(direction) {
-      const currentList = getActiveList();
-      const currentIndex = currentList.findIndex(s => s.id === currentActiveSongId);
-      const nextIndex = currentIndex + direction;
-
-      if (nextIndex >= 0 && nextIndex < currentList.length) {
-        const nextSong = currentList[nextIndex];
-        currentActiveSongId = nextSong.id;
-        loadModalSong(nextSong);
-      }
-    }
-
-    function updateNavigationButtons() {
-      const currentList = getActiveList();
-      const currentIndex = currentList.findIndex(s => s.id === currentActiveSongId);
-
-      const isFirst = currentIndex <= 0;
-      const isLast = currentIndex >= currentList.length - 1;
-
-      document.getElementById('prevBtn').disabled = isFirst;
-      document.getElementById('nextBtn').disabled = isLast;
+      document.getElementById('viewerModal').style.display = 'flex';
     }
 
     function closeViewer() {
-      const modal = document.getElementById('viewerModal');
-      modal.classList.remove('fullscreen-mode');
-      modal.style.display = 'none';
+      document.getElementById('viewerModal').style.display = 'none';
       document.getElementById('pdfFrame').src = '';
-      document.body.style.overflow = '';
-      currentActiveSongId = null;
     }
-
-    function toggleSimulatedFullscreen() {
-      const modal = document.getElementById('viewerModal');
-      const btn = document.getElementById('fullscreenToggleBtn');
-      
-      modal.classList.toggle('fullscreen-mode');
-      btn.classList.toggle('active');
-    }
-
-    document.addEventListener('keydown', (e) => {
-      const modal = document.getElementById('viewerModal');
-      if (modal.style.display === 'flex') {
-        if (e.key === 'ArrowRight') navigateSong(1);
-        if (e.key === 'ArrowLeft') navigateSong(-1);
-        if (e.key === 'Escape') closeViewer();
-      }
-    });
 
     fetchSongsFromSheet();
   </script>
