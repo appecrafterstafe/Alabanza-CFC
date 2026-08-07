@@ -20,6 +20,7 @@
       --danger: #f43f5e;
       --radius: 18px;
 
+      /* Configuración dinámica del metrónomo visual */
       --metronome-color-rgb: 110, 231, 183;
       --metronome-intensity-spread: 50px;
       --metronome-intensity-size: 15px;
@@ -53,6 +54,7 @@
       position: relative;
     }
 
+    /* OVERLAY DE PANTALLA COMPLETA (MARCO DE NEÓN PERIFÉRICO) */
     #metronomeOverlay {
       position: fixed;
       top: 0;
@@ -699,7 +701,7 @@
     activarPantallaEncendida();
 
     /* ==========================================================
-       2. MOTOR DE METRÓNOMO BASADO EN WEB WORKER (SIN CORTE EN SEGUNDO PLANO)
+       2. MOTOR DE METRÓNOMO DE ALTA PRECISIÓN (LOOKAHEAD SCHEDULER)
        ========================================================== */
     let audioCtx = null;
     let isMetronomeRunning = false;
@@ -708,38 +710,10 @@
     
     let bpm = 120;
     let currentBeat = 0;
-    const scheduleAheadTime = 0.2; // Margen ampliado a 200ms para amortiguar sobrecargas del sistema
+    const lookahead = 25.0; // Frecuencia del temporizador (ms)
+    const scheduleAheadTime = 0.1; // Tiempo de reserva para audio (s)
     let nextNoteTime = 0.0;
-    let timerWorker = null;
-
-    // Crear Web Worker inline mediante un Blob para evitar problemas de rutas
-    const workerCode = `
-      let timerID = null;
-      let interval = 25;
-      self.onmessage = function(e) {
-        if (e.data === "start") {
-          timerID = setInterval(function() { postMessage("tick"); }, interval);
-        } else if (e.data.interval) {
-          interval = e.data.interval;
-          if (timerID) {
-            clearInterval(timerID);
-            timerID = setInterval(function() { postMessage("tick"); }, interval);
-          }
-        } else if (e.data === "stop") {
-          clearInterval(timerID);
-          timerID = null;
-        }
-      };
-    `;
-    
-    const blob = new Blob([workerCode], { type: 'application/javascript' });
-    timerWorker = new Worker(URL.createObjectURL(blob));
-
-    timerWorker.onmessage = function(e) {
-      if (e.data === "tick") {
-        scheduler();
-      }
-    };
+    let metronomeTimerID = null;
 
     function initAudioContext() {
       if (!audioCtx) {
@@ -787,6 +761,9 @@
         scheduleNote(currentBeat, nextNoteTime);
         nextNote();
       }
+      if (isMetronomeRunning) {
+        metronomeTimerID = setTimeout(scheduler, lookahead);
+      }
     }
 
     function toggleMetronome(songId, bpmString) {
@@ -811,14 +788,13 @@
       isMetronomeRunning = true;
       currentBeat = 0;
       nextNoteTime = audioCtx.currentTime + 0.05;
-      
-      timerWorker.postMessage("start");
+      scheduler();
       updateMetronomeUI();
     }
 
     function stopMetronome() {
       isMetronomeRunning = false;
-      if (timerWorker) timerWorker.postMessage("stop");
+      if (metronomeTimerID) clearTimeout(metronomeTimerID);
       activeMetronomeSongId = null;
       estadoMetronomo = 0;
       updateMetronomeUI();
@@ -951,7 +927,7 @@
             urlLetraAcordes: extractCellUrl(c[5]),
             urlAcordes: extractCellUrl(c[6]),
             urlYoutube: extractCellUrl(c[7]),
-            structure: c[8] && c[8].v ? String(c[8].v) : '',
+            structure: c[8] && c[8].v ? String(c[8].v) : '', // Columna I: Secuencia/Estructura
             inSunday: savedSundayIds.includes(index + 1)
           };
         }).filter(song => song.title !== '');
