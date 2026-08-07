@@ -54,7 +54,7 @@
       position: relative;
     }
 
-    /* OVERLAY DE PANTALLA COMPLETA (MARCO DE NEÓN PERIFÉRICO) */
+    /* OVERLAY DE PANTALLA COMPLETA (MARCO DE NEÓN PERIFÉRICO OPTIMIZADO) */
     #metronomeOverlay {
       position: fixed;
       top: 0;
@@ -64,13 +64,10 @@
       pointer-events: none;
       z-index: 99999;
       opacity: 0;
-      transition: opacity 0.04s ease-out;
+      will-change: opacity;
+      transform: translateZ(0); /* Aceleración por hardware GPU */
       box-shadow: inset 0 0 var(--metronome-intensity-spread) var(--metronome-intensity-size) rgba(var(--metronome-color-rgb), 0.95);
       border: 4px solid rgba(var(--metronome-color-rgb), 0.8);
-    }
-
-    #metronomeOverlay.bpm-flash-overlay {
-      opacity: 1 !important;
     }
 
     header {
@@ -701,7 +698,7 @@
     activarPantallaEncendida();
 
     /* ==========================================================
-       2. MOTOR DE METRÓNOMO DE ALTA PRECISIÓN (LOOKAHEAD SCHEDULER)
+       2. MOTOR DE METRÓNOMO ULTRA-PRECISO CON DESTELLO RAF GPU
        ========================================================== */
     let audioCtx = null;
     let isMetronomeRunning = false;
@@ -714,6 +711,28 @@
     const scheduleAheadTime = 0.1; // Tiempo de reserva para audio (s)
     let nextNoteTime = 0.0;
     let metronomeTimerID = null;
+
+    const overlay = document.getElementById('metronomeOverlay');
+    let flashEndTime = 0;
+
+    function renderFlash() {
+      if (!isMetronomeRunning) {
+        overlay.style.opacity = '0';
+        return;
+      }
+      const now = performance.now();
+      if (now < flashEndTime) {
+        overlay.style.opacity = '1';
+        requestAnimationFrame(renderFlash);
+      } else {
+        overlay.style.opacity = '0';
+      }
+    }
+
+    function triggerVisualFlash() {
+      flashEndTime = performance.now() + 70; // Duración del pulso (ms)
+      requestAnimationFrame(renderFlash);
+    }
 
     function initAudioContext() {
       if (!audioCtx) {
@@ -750,9 +769,7 @@
 
       const drawTime = Math.max(0, (time - audioCtx.currentTime) * 1000);
       setTimeout(() => {
-        const overlay = document.getElementById('metronomeOverlay');
-        overlay.classList.add('bpm-flash-overlay');
-        setTimeout(() => overlay.classList.remove('bpm-flash-overlay'), 60);
+        triggerVisualFlash();
       }, drawTime);
     }
 
@@ -797,6 +814,7 @@
       if (metronomeTimerID) clearTimeout(metronomeTimerID);
       activeMetronomeSongId = null;
       estadoMetronomo = 0;
+      overlay.style.opacity = '0';
       updateMetronomeUI();
     }
 
@@ -927,7 +945,7 @@
             urlLetraAcordes: extractCellUrl(c[5]),
             urlAcordes: extractCellUrl(c[6]),
             urlYoutube: extractCellUrl(c[7]),
-            structure: c[8] && c[8].v ? String(c[8].v) : '', // Columna I: Secuencia/Estructura
+            structure: c[8] && c[8].v ? String(c[8].v) : '',
             inSunday: savedSundayIds.includes(index + 1)
           };
         }).filter(song => song.title !== '');
