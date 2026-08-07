@@ -548,7 +548,13 @@
   </div>
 
   <script>
-    const SHEET_ID = '1qdZOBl0Nt-c9B0SwIgXY325nLE7qVdHZHfSXWVu1Xlc';
+    // Mapeo de IDs de Google Sheets por sede
+    const SHEET_IDS = {
+      'Santa Fe': '1qdZOBl0Nt-c9B0SwIgXY325nLE7qVdHZHfSXWVu1Xlc',
+      'Monte Vera': '1NdbznXVTpr6LAcuEAqxGJm9yXQuPuOkZveVpsp9evEg',
+      'Recreo': '1NiMt3Plxl1dSOi7p4PXWPATNJJtwJ-8HUcnX4quKslQ'
+    };
+
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyYLD9xbSEujD4q2wW--BR5ADimSKpcrhPF0b8ueS16EHzeF5X1WKU_duIIgEPfzRVDVQ/exec';
     
     let currentTeam = localStorage.getItem('selected_team') || null;
@@ -792,8 +798,11 @@
     }
 
     async function fetchSongsFromSheet() {
-      const sheetName = encodeURIComponent(currentTeam);
-      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=${sheetName}&tqx=out:json`;
+      // Obtiene el ID específico para la sede seleccionada
+      const sheetId = SHEET_IDS[currentTeam] || SHEET_IDS['Santa Fe'];
+      
+      // Agregamos &headers=0 para que GViz traiga todas las filas desde la fila 1 sin omitir encabezados de datos
+      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&headers=0`;
 
       try {
         const [responseSongs, responseSunday] = await Promise.all([
@@ -808,12 +817,13 @@
         const sundayText = await responseSunday.text();
         const savedSundayIds = sundayText ? sundayText.split(',').map(Number) : [];
 
-        // Ignoramos la fila 1 (encabezados) usando .slice(1)
+        // Ignoramos solo la fila 1 (encabezados) usando .slice(1)
+        // La fila 2 de la planilla será procesada con index = 0 -> songId = 2
         songs = rows.slice(1).map((row, index) => {
           const c = row.c;
           if (!c || !c[0] || c[0].v === null || c[0].v === '') return null;
 
-          const songId = index + 2; // Sincroniza el ID con la fila real del Sheet
+          const songId = index + 2; // Coincide exactamente con el número de fila real en Google Sheets
 
           return {
             id: songId,
@@ -836,7 +846,6 @@
         console.error('Error cargando los datos de la sede:', error);
       }
     }
-
     async function saveSundayState() {
       const sundayIds = songs.filter(s => s.inSunday).map(s => s.id);
       try {
