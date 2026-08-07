@@ -148,12 +148,15 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 0.75rem;
     }
 
     .header-left {
       display: flex;
       align-items: center;
       gap: 0.75rem;
+      flex: 1;
+      min-width: 0;
     }
 
     .logo-container {
@@ -164,6 +167,7 @@
       align-items: center;
       justify-content: center;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      flex-shrink: 0;
     }
 
     .app-logo {
@@ -171,8 +175,9 @@
     }
 
     header h1 {
-      font-size: 1.1rem;
-      font-weight: 800;
+      font-size: 0.72rem;
+      font-weight: 700;
+      line-height: 1.25;
       background: linear-gradient(135deg, #ffffff 30%, var(--brand-mint) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -187,6 +192,7 @@
       padding: 0.3rem 0.6rem;
       border-radius: 10px;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     main {
@@ -490,7 +496,7 @@
       <div class="logo-container">
         <img src="logo.png" alt="Logo Ministerio" class="app-logo">
       </div>
-      <h1>Ministerio</h1>
+      <h1>«Bendeciré a Jehová en todo tiempo;<br>Su alabanza estará de continuo en mi boca»</h1>
     </div>
     <div id="currentLocationBadge" class="location-badge" onclick="showLocationSelector()">
       📍 Carga...
@@ -602,7 +608,7 @@
     });
     activarPantallaEncendida();
 
- /* ==========================================================
+    /* ==========================================================
        2. METRÓNOMO ULTRA-PRECISO PARA ANDROID / MOBILE
        ========================================================== */
     let audioCtx = null;
@@ -612,7 +618,6 @@
     let bpm = 120;
     let currentBeat = 0;
     
-    // Parámetros de precisión para móviles
     const lookahead = 15.0; // Frecuencia de chequeo (ms)
     const scheduleAheadTime = 0.2; // Cuánto tiempo adelantamos el render (segundos)
     let nextNoteTime = 0.0;
@@ -631,7 +636,6 @@
       }
     }
 
-    // Bucle de renderizado gráfico sincronizado con el reloj del audio
     function visualLoop() {
       if (!isMetronomeRunning) {
         overlay.style.opacity = '0';
@@ -640,27 +644,23 @@
 
       const currentTime = audioCtx.currentTime;
 
-      // Si alcanzamos o pasamos el tiempo exacto en que debe destellar la nota
       if (nextFlashTime > 0 && currentTime >= nextFlashTime) {
         overlay.style.opacity = '1';
-        // Mantiene el destello visible por 60ms
         setTimeout(() => {
           overlay.style.opacity = '0';
         }, 60);
-        nextFlashTime = -1; // Resetea el disparo visual
+        nextFlashTime = -1;
       }
 
       requestAnimationFrame(visualLoop);
     }
 
     function scheduleNote(beatNumber, time) {
-      // 1. Programación del Audio (Solo en modo 2)
       if (estadoMetronomo === 2) {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
         osc.type = 'sine';
-        // Acento agudo en el primer tiempo (beat 0)
         osc.frequency.setValueAtTime(beatNumber === 0 ? 1200 : 800, time);
 
         gain.gain.setValueAtTime(1.0, time);
@@ -673,7 +673,6 @@
         osc.stop(time + 0.03);
       }
 
-      // 2. Sincronización exacta del destello con el reloj del AudioContext
       nextFlashTime = time;
     }
 
@@ -701,7 +700,7 @@
       if (activeMetronomeSongId !== songId) {
         stopMetronome();
         activeMetronomeSongId = songId;
-        estadoMetronomo = 1; // Arranca en visual
+        estadoMetronomo = 1;
       } else {
         estadoMetronomo = (estadoMetronomo + 1) % 3;
       }
@@ -715,7 +714,7 @@
       isMetronomeRunning = true;
       currentBeat = 0;
       nextFlashTime = -1;
-      nextNoteTime = audioCtx.currentTime + 0.05; // Margen de arranque limpio
+      nextNoteTime = audioCtx.currentTime + 0.05;
 
       scheduler();
       requestAnimationFrame(visualLoop);
@@ -827,10 +826,7 @@
     }
 
     async function fetchSongsFromSheet() {
-      // Obtiene el ID específico para la sede seleccionada
       const sheetId = SHEET_IDS[currentTeam] || SHEET_IDS['Santa Fe'];
-      
-      // Agregamos &headers=0 para que GViz traiga todas las filas desde la fila 1 sin omitir encabezados de datos
       const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&headers=0`;
 
       try {
@@ -846,13 +842,11 @@
         const sundayText = await responseSunday.text();
         const savedSundayIds = sundayText ? sundayText.split(',').map(Number) : [];
 
-        // Ignoramos solo la fila 1 (encabezados) usando .slice(1)
-        // La fila 2 de la planilla será procesada con index = 0 -> songId = 2
         songs = rows.slice(1).map((row, index) => {
           const c = row.c;
           if (!c || !c[0] || c[0].v === null || c[0].v === '') return null;
 
-          const songId = index + 2; // Coincide exactamente con el número de fila real en Google Sheets
+          const songId = index + 2;
 
           return {
             id: songId,
@@ -875,6 +869,7 @@
         console.error('Error cargando los datos de la sede:', error);
       }
     }
+
     async function saveSundayState() {
       const sundayIds = songs.filter(s => s.inSunday).map(s => s.id);
       try {
