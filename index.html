@@ -1,256 +1,674 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visor de Partituras y Acordes</title>
-  <style>
-    :root {
-      --brand-mint: #00ffd5;
-      --bg-dark: #121212;
-      --card-bg: #1e1e1e;
-      --text-light: #ffffff;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ministerio de Alabanza</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brand-mint: #6ee7b7;
+  --brand-mint-glow: rgba(110, 231, 183, 0.25);
+  --bg-dark: #07090e;
+  --card-bg: rgba(18, 24, 38, 0.75);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --gold-star: #fbbf24;
+  --gold-glow: rgba(251, 191, 36, 0.35);
+  --danger: #f43f5e;
+  --radius: 18px;
+  --metronome-color-rgb: 110, 231, 183;
+  --metronome-intensity-spread: 50px;
+  --metronome-intensity-size: 15px;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+html, body {
+  height: 100%;
+  width: 100%;
+  background-color: var(--bg-dark);
+  overflow-x: hidden;
+}
+body {
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(110, 231, 183, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(10, 185, 129, 0.08) 0%, transparent 40%);
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
+  position: relative;
+}
 
-    body {
-      font-family: Arial, sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-light);
-      margin: 0;
-      padding: 20px;
-    }
+/* PANTALLA SELECCIÓN DE SEDE */
+#locationSelectorScreen {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  background: var(--bg-dark);
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  text-align: center;
+}
+.selector-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  padding: 2rem 1.5rem;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+} 
+.selector-card img {
+  height: 52px;
+  width: auto;
+  object-fit: contain;
+  margin-bottom: 1.25rem;
+}
+.selector-card h2 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 0.3rem;
+}
+.selector-card p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+.team-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+.team-btn {
+  padding: 0.9rem 1.2rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--card-border);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.2s ease;
+}
+.team-btn:hover, .team-btn:active {
+  background: var(--brand-mint);
+  color: #000;
+  border-color: var(--brand-mint);
+  box-shadow: 0 4px 15px var(--brand-mint-glow);
+}
 
-    /* Modal / Visor */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.9);
-      z-index: 1000;
-      flex-direction: column;
-    }
+#metronomeOverlay {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  pointer-events: none;
+  z-index: 99999;
+  opacity: 0;
+  will-change: opacity;
+  transform: translateZ(0);
+  box-shadow: inset 0 0 var(--metronome-intensity-spread) var(--metronome-intensity-size) rgba(var(--metronome-color-rgb), 0.95);
+  border: 4px solid rgba(var(--metronome-color-rgb), 0.8);
+}
 
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 20px;
-      background-color: #1a1a1a;
-      border-bottom: 1px solid #333;
-    }
+header {
+  padding: 1.2rem 1rem 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+.logo-container {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 4px 10px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+.app-logo {
+  height: 34px; width: auto; object-fit: contain;
+}
+header h1 {
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.25;
+  background: linear-gradient(135deg, #ffffff 30%, var(--brand-mint) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.location-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: rgba(110, 231, 183, 0.15);
+  color: var(--brand-mint);
+  border: 1px solid rgba(110, 231, 183, 0.3);
+  padding: 0.3rem 0.6rem;
+  border-radius: 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
 
-    .modal-title-wrapper {
-      text-align: center;
-    }
+main {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  padding-bottom: 80px;
+}
 
-    .modal-title-wrapper h3 {
-      margin: 0;
-      font-size: 1.1rem;
-    }
+nav {
+  display: flex;
+  background: rgba(10, 14, 23, 0.95);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--card-border);
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  max-width: 600px;
+  margin: 0 auto;
+  z-index: 100;
+  padding: 0.6rem;
+  gap: 0.4rem;
+}
+nav button {
+  flex: 1;
+  padding: 0.65rem 0.2rem;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border-radius: 14px;
+  transition: all 0.25s;
+}
+nav button span.icon { font-size: 1.2rem; }
+nav button.active {
+  color: #000;
+  background: var(--brand-mint);
+  font-weight: 700;
+  box-shadow: 0 6px 16px var(--brand-mint-glow);
+}
 
-    .sub-artist {
-      font-size: 0.85rem;
-      color: #aaa;
-    }
+.tab-content {
+  display: none;
+  animation: tabSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tab-content.active { display: block; } 
+@keyframes tabSlide {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-    .modal-header-actions {
-      display: flex;
-      gap: 10px;
-    }
+.search-wrapper { position: relative; margin-bottom: 1.25rem; }
+.search-wrapper input {
+  width: 100%;
+  padding: 0.9rem 1rem 0.9rem 2.85rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  color: var(--text-main);
+  font-size: 0.95rem;
+}
+.search-wrapper input:focus {
+  outline: none;
+  border-color: var(--brand-mint);
+  box-shadow: 0 0 0 3px var(--brand-mint-glow);
+}
+.search-icon {
+  position: absolute; left: 1rem; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
 
-    .icon-btn, .nav-arrow {
-      background: #2a2a2a;
-      color: #fff;
-      border: 1px solid #444;
-      border-radius: 6px;
-      padding: 6px 12px;
-      cursor: pointer;
-      font-size: 1rem;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-    }
+.song-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  margin-bottom: 0.85rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+}
+#sundayList .song-card { cursor: grab; }
+#sundayList .song-card:active { cursor: grabbing; }
 
-    .icon-btn:hover, .nav-arrow:hover {
-      background: #3a3a3a;
-    }
+.song-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+.song-info { flex: 1; min-width: 0; margin-right: 0.5rem; }
+.song-info h3 {
+  font-size: 0.95rem; font-weight: 700; margin-bottom: 0.15rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.song-artist {
+  font-size: 0.8rem; color: var(--text-muted); font-weight: 500;
+  margin-bottom: 0.4rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.song-meta { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+.badge {
+  display: inline-flex; padding: 0.2rem 0.55rem; border-radius: 8px;
+  font-size: 0.72rem; font-weight: 700; background: rgba(255, 255, 255, 0.05);
+  color: var(--text-muted); border: none;
+}
+.badge.key { background: rgba(110, 231, 183, 0.12); color: var(--brand-mint); }
+.badge.bpm-btn {
+  cursor: pointer; background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main); border: 1px solid var(--card-border);
+  transition: all 0.2s; user-select: none; -webkit-touch-callout: none;
+}
+.badge.bpm-btn.modo-visual {
+  background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-color: rgba(96, 165, 250, 0.5);
+} 
+.badge.bpm-btn.modo-sonoro {
+  background: var(--brand-mint); color: #000; font-weight: 800; border-color: var(--brand-mint);
+}
 
-    .icon-btn.active-invert {
-      background: var(--brand-mint);
-      color: #000;
-      border-color: var(--brand-mint);
-    }
+.song-structure {
+  margin: 0.6rem 0; font-size: 0.75rem; color: var(--text-muted);
+  line-height: 1.4; background: rgba(0, 0, 0, 0.2); padding: 0.4rem 0.6rem;
+  border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.03);
+}
 
-    .modal-body {
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      position: relative;
-      background-color: #fff;
-      transition: filter 0.3s ease;
-    }
+.song-main-actions { display: flex; gap: 0.4rem; align-items: center; }
+.action-btn {
+  background: rgba(255, 255, 255, 0.04); border: 1px solid var(--card-border);
+  color: var(--text-muted); width: 36px; height: 36px; border-radius: 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 1.05rem; line-height: 1; padding: 0; text-decoration: none;
+  transition: all 0.2s;
+}
+.action-btn.star.active {
+  color: var(--gold-star); background: rgba(251, 191, 36, 0.12);
+  border-color: rgba(251, 191, 36, 0.4); box-shadow: 0 4px 14px var(--gold-glow);
+}
+.action-btn.yt-top-btn {
+  background: rgba(244, 63, 94, 0.1); border-color: rgba(244, 63, 94, 0.25);
+  color: #fca5a5; font-size: 0.9rem;
+}
+.action-btn.yt-top-btn.disabled { opacity: 0.2; pointer-events: none; }
+.drag-handle { color: var(--text-muted); font-size: 1.1rem; cursor: grab; margin-right: 0.4rem; }
 
-    /* Inversión de colores para vista oscura */
-    .modal-body.inverted {
-      filter: invert(1) hue-rotate(180deg);
-    }
+.song-links {
+  display: flex; gap: 0.4rem; border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 0.75rem; flex-wrap: wrap;
+}
+.format-btn {
+  flex: 1; min-width: 70px; padding: 0.45rem 0.2rem; border-radius: 10px;
+  border: 1px solid var(--card-border); background: rgba(255, 255, 255, 0.04);
+  color: var(--text-main); font-size: 0.72rem; font-weight: 600; cursor: pointer; text-align: center;
+}
+.format-btn.disabled { opacity: 0.25; pointer-events: none; }
 
-    .modal-body iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-  </style>
+.drive-container {
+  width: 100%; height: calc(100vh - 160px);
+  border: 1px solid var(--card-border); border-radius: var(--radius);
+  background-color: var(--card-bg);
+}
+.section-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.3rem; }
+
+/* Modal y Visor con Inversión de Colores */
+.modal {
+  display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background-color: #000; z-index: 9999; flex-direction: column;
+}
+.modal-header {
+  padding: 0.6rem 0.8rem; background: rgba(10, 14, 23, 0.98); display: flex;
+  justify-content: space-between; align-items: center;
+  border-bottom: 1px solid var(--card-border); gap: 0.4rem; z-index: 10;
+}
+.modal-title-wrapper { display: flex; flex-direction: column; align-items: center; flex: 1; justify-content: center; min-width: 0; }
+.modal-header h3 { font-size: 0.85rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.modal-header .sub-artist { font-size: 0.7rem; color: var(--text-muted); }
+.modal-header-actions { display: flex; gap: 0.35rem; align-items: center; }
+
+.modal-body { 
+  flex: 1; width: 100%; height: 100%; background: #fff; position: relative; 
+  transition: filter 0.3s ease;
+}
+.modal-body.inverted {
+  filter: invert(1) hue-rotate(180deg);
+}
+.modal-body iframe { width: 100%; height: 100%; border: none; }
+
+.nav-arrow {
+  background: rgba(110, 231, 183, 0.15); border: 1px solid rgba(110, 231, 183, 0.4);
+  color: var(--brand-mint); width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  font-size: 1rem; font-weight: bold;
+}
+.icon-btn {
+  background: rgba(255, 255, 255, 0.08); border: 1px solid var(--card-border);
+  color: var(--text-main); width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; 
+  align-items: center; justify-content: center; font-size: 0.85rem; text-decoration: none;
+  transition: all 0.2s ease;
+}
+.icon-btn.active-invert {
+  background: var(--brand-mint);
+  color: #000;
+  border-color: var(--brand-mint);
+}
+
+.metronome-settings-modal {
+  display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); z-index: 100000;
+  align-items: center; justify-content: center; padding: 1rem;
+}
+.metronome-settings-card {
+  background: rgba(18, 24, 38, 0.95); border: 1px solid var(--card-border);
+  border-radius: 20px; padding: 1.5rem; width: 100%; max-width: 340px;
+}
+.metronome-settings-card h4 { font-size: 1rem; font-weight: 800; margin-bottom: 1rem; text-align: center; }
+.setting-group { margin-bottom: 1.25rem; }
+.setting-group label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600; }
+.color-options, .intensity-options { display: flex; gap: 0.5rem; }
+.color-opt { flex: 1; height: 38px; border-radius: 10px; border: 2px solid transparent; cursor: pointer; }
+.color-opt.selected { border-color: #ffffff; }
+.intensity-opt { flex: 1; padding: 0.5rem 0.2rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border); color: var(--text-main);
+border-radius: 10px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+.intensity-opt.selected { background: var(--brand-mint); color: #000; border-color: var(--brand-mint); }
+.close-settings-btn { width: 100%; padding: 0.75rem; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--card-border); color: var(--text-main);
+border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 0.5rem; }
+</style>
 </head>
 <body>
 
-  <!-- Modal del Visor -->
-  <div id="viewerModal" class="modal">
-    <div class="modal-header">
-      <button id="prevBtn" class="nav-arrow" onclick="navigateSong(-1)" title="Anterior">◀</button>
-      <div class="modal-title-wrapper">
-        <h3 id="modalTitle">Título de la canción</h3>
-        <span id="modalArtist" class="sub-artist">Artista</span>
-      </div>
-      <button id="nextBtn" class="nav-arrow" onclick="navigateSong(1)" title="Siguiente">▶</button>
-      <div class="modal-header-actions">
-        <button id="invertBtn" class="icon-btn" onclick="toggleInvertColors()" title="Invertir colores (Modo oscuro)">🌓</button>
-        <a id="externalLinkBtn" class="icon-btn" target="_blank" title="Abrir archivo original">↗</a>
-        <button class="icon-btn" onclick="closeViewer()" title="Cerrar">&times;</button>
-      </div>
-    </div>
-    <div class="modal-body" id="modalBody">
-      <iframe id="pdfFrame" src=""></iframe>
+<div id="locationSelectorScreen">
+  <div class="selector-card">
+    <img src="logo.png" alt="Logo Ministerio">
+    <h2>Ministerio de Alabanza</h2>
+    <p>Selecciona tu equipo / sede para continuar</p>
+    <div class="team-buttons">
+      <button class="team-btn" onclick="selectTeam('Santa Fe')">
+        <span>📍 Santa Fe</span> ➔
+      </button>
+      <button class="team-btn" onclick="selectTeam('Monte Vera')">
+        <span>📍 Monte Vera</span> ➔
+      </button>
+      <button class="team-btn" onclick="selectTeam('Recreo')">
+        <span>📍 Recreo</span> ➔
+      </button>
     </div>
   </div>
+</div>
 
-  <script>
-    // Estado global del visor
-    let currentSongIndex = 0;
-    let currentFileType = 'acordes';
-    let isInverted = false;
+<div id="metronomeOverlay"></div>
 
-    // Ejemplo de estructura de datos de canciones
-    const songs = [
-      {
-        id: 1,
-        title: "Ejemplo Canción 1",
-        artist: "Artista A",
-        urlAcordes: "https://drive.google.com/file/d/1ABC123456789xyz/view",
-        urlLetra: "https://docs.google.com/document/d/1DEF987654321abc/edit"
+<div id="metronomeSettingsModal" class="metronome-settings-modal" onclick="closeMetronomeSettings(event)">
+  <div class="metronome-settings-card" onclick="event.stopPropagation()">
+    <h4>⚡ Configuración Metrónomo</h4>
+    <div class="setting-group">
+      <label>Color del Destello</label>
+      <div class="color-options">
+        <button class="color-opt selected" style="background: #6ee7b7;" onclick="setMetronomeColor('110, 231, 183', this)"></button>
+        <button class="color-opt" style="background: #ffffff;" onclick="setMetronomeColor('255, 255, 255', this)"></button>
+        <button class="color-opt" style="background: #3b82f6;" onclick="setMetronomeColor('59, 130, 246', this)"></button>
+        <button class="color-opt" style="background: #f43f5e;" onclick="setMetronomeColor('244, 63, 94', this)"></button>
+      </div>
+    </div>
+    <div class="setting-group">
+      <label>Intensidad del Destello</label>
+      <div class="intensity-options">
+        <button class="intensity-opt" onclick="setMetronomeIntensity('25px', '8px', this)">Suave</button>
+        <button class="intensity-opt selected" onclick="setMetronomeIntensity('50px', '15px', this)">Media</button>
+        <button class="intensity-opt" onclick="setMetronomeIntensity('120px', '40px', this)">Fuerte</button>
+      </div>
+    </div>
+    <button class="close-settings-btn" onclick="closeMetronomeSettings()">Listo</button>
+  </div>
+</div>
+
+<header>
+  <div class="header-left">
+    <div class="logo-container">
+      <img src="logo.png" alt="Logo Ministerio" class="app-logo">
+    </div>
+    <h1>«Bendeciré a Jehová en todo tiempo; Su alabanza estará de continuo en mi boca»</h1>
+  </div>
+  <div class="location-badge" onclick="showLocationSelector()" id="currentLocationBadge">
+    📍 Seleccionar
+  </div>
+</header>
+
+<main>
+  <!-- TAB REPERTORIO -->
+  <div id="tabRepertorio" class="tab-content active">
+    <div class="search-wrapper">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Buscar por título, artista o tono..." onkeyup="filterSongs()">
+    </div>
+    <div id="repertoireList"></div>
+  </div>
+
+  <!-- TAB DOMINGO -->
+  <div id="tabDomingo" class="tab-content">
+    <div class="section-title" style="margin-bottom: 1rem;">Lista del Domingo</div>
+    <div id="sundayList"></div>
+  </div>
+
+  <!-- TAB DRIVE -->
+  <div id="tabDrive" class="tab-content">
+    <iframe class="drive-container" src="https://drive.google.com/embeddedfolderview?id=1xyz#list" id="driveFrame"></iframe>
+  </div>
+</main>
+
+<nav>
+  <button id="navRepertorio" class="active" onclick="switchTab('tabRepertorio', this)">
+    <span class="icon">🎵</span> Repertorio
+  </button>
+  <button id="navDomingo" onclick="switchTab('tabDomingo', this)">
+    <span class="icon">⭐</span> Domingo
+  </button>
+  <button id="navDrive" onclick="switchTab('tabDrive', this)">
+    <span class="icon">📁</span> Drive
+  </button>
+</nav>
+
+<!-- MODAL VISOR DE ARCHIVOS -->
+<div id="viewerModal" class="modal">
+  <div class="modal-header">
+    <button id="prevBtn" class="nav-arrow" onclick="navigateSong(-1)" title="Anterior">◀</button>
+    <div class="modal-title-wrapper">
+      <h3 id="modalTitle">Título de la Canción</h3>
+      <span id="modalArtist" class="sub-artist">Artista</span>
+    </div>
+    <button id="nextBtn" class="nav-arrow" onclick="navigateSong(1)" title="Siguiente">▶</button>
+    <div class="modal-header-actions">
+      <button id="invertBtn" class="icon-btn" onclick="toggleInvertColors()" title="Invertir colores (Modo oscuro)">🌓</button>
+      <a id="externalLinkBtn" class="icon-btn" target="_blank" title="Abrir archivo original">↗</a>
+      <button class="icon-btn" onclick="closeViewer()" title="Cerrar">&times;</button>
+    </div>
+  </div>
+  <div class="modal-body" id="modalBody">
+    <iframe id="pdfFrame" src=""></iframe>
+  </div>
+</div>
+
+<script>
+  let currentTeam = '';
+  let songs = [];
+  let currentSongIndex = 0;
+  let currentFileType = 'acordes';
+  let isInverted = false;
+  let wakeLock = null;
+
+  function selectTeam(teamName) {
+    currentTeam = teamName;
+    document.getElementById('currentLocationBadge').innerText = `📍 ${teamName}`;
+    document.getElementById('locationSelectorScreen').style.display = 'none';
+    localStorage.setItem('selectedTeam', teamName);
+  }
+
+  function showLocationSelector() {
+    document.getElementById('locationSelectorScreen').style.display = 'flex';
+  }
+
+  async function activarPantallaEncendida() {
+    try {
+      if ('wakeLock' in navigator) {
+        wakeLock = await navigator.wakeLock.request('screen');
       }
-    ];
+    } catch (err) {
+      console.log('Wake Lock no disponible', err);
+    }
+  }
 
-    /**
-     * Ajusta la URL de Google Drive / Docs para permitir interactividad y ZOOM
-     */
-    function getEmbedUrl(rawUrl) {
-      if (!rawUrl) return '';
-      
-      let id = null;
-      let match = rawUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
-      if (match && match[1]) {
-        id = match[1];
-      } else {
-        match = rawUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-        if (match && match[1]) id = match[1];
-      }
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    btn.classList.add('active');
+  }
 
-      if (id) {
-        // Para Google Docs usa modo móvil (permite pinch-to-zoom nativo)
-        if (rawUrl.includes('docs.google.com/document')) {
-          return `https://docs.google.com/document/d/${id}/mobilebasic`;
-        }
-        // Para PDFs/Drive usa la vista nativa con controles habilitados
-        return `https://drive.google.com/file/d/${id}/view?usp=sharing`;
-      }
-      
-      return rawUrl;
+  /**
+   * Adapta las URLs de Google Drive/Docs para habilitar Zoom táctil e interactividad
+   */
+  function getEmbedUrl(rawUrl) {
+    if (!rawUrl) return '';
+    
+    let id = null;
+    let match = rawUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match && match[1]) {
+      id = match[1];
+    } else {
+      match = rawUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+      if (match && match[1]) id = match[1];
     }
 
-    /**
-     * Abre el visor con la canción y tipo seleccionados
-     */
-    function openViewer(id, type = 'acordes') {
-      const index = songs.findIndex(s => s.id === id);
-      if (index === -1) return;
+    if (id) {
+      // Google Docs en modo mobilebasic permite pinch-to-zoom en celulares
+      if (rawUrl.includes('docs.google.com/document')) {
+        return `https://docs.google.com/document/d/${id}/mobilebasic`;
+      }
+      // PDFs y archivos de Drive en modo /view con controles nativos habilitados
+      return `https://drive.google.com/file/d/${id}/view?usp=sharing`;
+    }
+    
+    return rawUrl;
+  }
 
-      currentSongIndex = index;
-      currentFileType = type;
-      
-      // Siempre abre en modo normal (no invertido) por defecto
-      setInvertColors(false);
+  function openViewer(id, type = 'acordes') {
+    const index = songs.findIndex(s => s.id === id);
+    if (index === -1) return;
 
+    currentSongIndex = index;
+    currentFileType = type;
+    
+    // Abrir siempre en modo normal (fondo blanco sin invertir) por defecto
+    setInvertColors(false);
+
+    loadCurrentSong();
+    document.getElementById('viewerModal').style.display = 'flex';
+    activarPantallaEncendida();
+  }
+
+  function loadCurrentSong() {
+    const song = songs[currentSongIndex];
+    if (!song) return;
+
+    let targetUrl = song.urlAcordes || song.urlLetraAcordes || song.urlLetra;
+    if (currentFileType === 'letra' && song.urlLetra) targetUrl = song.urlLetra;
+    if (currentFileType === 'letra-acordes' && song.urlLetraAcordes) targetUrl = song.urlLetraAcordes;
+    if (currentFileType === 'acordes' && song.urlAcordes) targetUrl = song.urlAcordes;
+
+    document.getElementById('modalTitle').innerText = song.title;
+    document.getElementById('modalArtist').innerText = song.artist || '';
+    document.getElementById('externalLinkBtn').href = targetUrl || '#';
+    document.getElementById('pdfFrame').src = getEmbedUrl(targetUrl);
+  }
+
+  function navigateSong(direction) {
+    const newIndex = currentSongIndex + direction;
+    if (newIndex >= 0 && newIndex < songs.length) {
+      currentSongIndex = newIndex;
       loadCurrentSong();
-      document.getElementById('viewerModal').style.display = 'flex';
     }
+  }
 
-    /**
-     * Carga el archivo en el iframe según el índice y tipo actual
-     */
-    function loadCurrentSong() {
-      const song = songs[currentSongIndex];
-      if (!song) return;
+  function setInvertColors(enable) {
+    isInverted = enable;
+    const modalBody = document.getElementById('modalBody');
+    const invertBtn = document.getElementById('invertBtn');
 
-      let targetUrl = song.urlAcordes || song.urlLetraAcordes || song.urlLetra;
-      if (currentFileType === 'letra' && song.urlLetra) targetUrl = song.urlLetra;
-      if (currentFileType === 'letra-acordes' && song.urlLetraAcordes) targetUrl = song.urlLetraAcordes;
-      if (currentFileType === 'acordes' && song.urlAcordes) targetUrl = song.urlAcordes;
-
-      document.getElementById('modalTitle').innerText = song.title;
-      document.getElementById('modalArtist').innerText = song.artist || '';
-      document.getElementById('externalLinkBtn').href = targetUrl || '#';
-      document.getElementById('pdfFrame').src = getEmbedUrl(targetUrl);
+    if (isInverted) {
+      modalBody.classList.add('inverted');
+      if (invertBtn) invertBtn.classList.add('active-invert');
+    } else {
+      modalBody.classList.remove('inverted');
+      if (invertBtn) invertBtn.classList.remove('active-invert');
     }
+  }
 
-    /**
-     * Navega entre canciones manteniendo el tipo de archivo seleccionado
-     */
-    function navigateSong(direction) {
-      const newIndex = currentSongIndex + direction;
-      if (newIndex >= 0 && newIndex < songs.length) {
-        currentSongIndex = newIndex;
-        loadCurrentSong();
-      }
+  function toggleInvertColors() {
+    setInvertColors(!isInverted);
+  }
+
+  function closeViewer() {
+    document.getElementById('viewerModal').style.display = 'none';
+    document.getElementById('pdfFrame').src = '';
+    setInvertColors(false);
+  }
+
+  // Metrónomo y funciones secundarias
+  function closeMetronomeSettings(e) {
+    document.getElementById('metronomeSettingsModal').style.display = 'none';
+  }
+  function setMetronomeColor(rgb, btn) {
+    document.documentElement.style.setProperty('--metronome-color-rgb', rgb);
+    document.querySelectorAll('.color-opt').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+  function setMetronomeIntensity(spread, size, btn) {
+    document.documentElement.style.setProperty('--metronome-intensity-spread', spread);
+    document.documentElement.style.setProperty('--metronome-intensity-size', size);
+    document.querySelectorAll('.intensity-opt').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+  function filterSongs() {}
+
+  // Inicialización de la sede previa si existe
+  window.addEventListener('DOMContentLoaded', () => {
+    const savedTeam = localStorage.getItem('selectedTeam');
+    if (savedTeam) {
+      selectTeam(savedTeam);
     }
-
-    /**
-     * Cambia/asigna el estado de inversión de colores
-     */
-    function setInvertColors(enable) {
-      isInverted = enable;
-      const modalBody = document.getElementById('modalBody');
-      const invertBtn = document.getElementById('invertBtn');
-
-      if (isInverted) {
-        modalBody.classList.add('inverted');
-        if (invertBtn) invertBtn.classList.add('active-invert');
-      } else {
-        modalBody.classList.remove('inverted');
-        if (invertBtn) invertBtn.classList.remove('active-invert');
-      }
-    }
-
-    /**
-     * Alterna manualmente los colores al presionar el botón 🌓
-     */
-    function toggleInvertColors() {
-      setInvertColors(!isInverted);
-    }
-
-    /**
-     * Cierra el visor y limpia el iframe y estados
-     */
-    function closeViewer() {
-      document.getElementById('viewerModal').style.display = 'none';
-      document.getElementById('pdfFrame').src = '';
-      setInvertColors(false);
-    }
-  </script>
+  });
+</script>
 </body>
 </html>
