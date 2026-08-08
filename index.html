@@ -484,7 +484,8 @@ border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 0.5rem; }
 
   <!-- TAB DRIVE -->
   <div id="tabDrive" class="tab-content">
-    <iframe class="drive-container" src="https://drive.google.com/embeddedfolderview?id=1xyz#list" id="driveFrame"></iframe>
+    <!-- Reemplaza REEMPLAZA_CON_TU_ID_DE_CARPETA con el ID de tu carpeta pública de Google Drive -->
+    <iframe class="drive-container" src="https://drive.google.com/embeddedfolderview?id=REEMPLAZA_CON_TU_ID_DE_CARPETA#list" id="driveFrame"></iframe>
   </div>
 </main>
 
@@ -557,7 +558,7 @@ border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 0.5rem; }
   }
 
   /**
-   * Adapta las URLs de Google Drive/Docs para habilitar Zoom táctil e interactividad
+   * Adapta las URLs de Google Drive/Docs para cargarse dentro del iframe de la app
    */
   function getEmbedUrl(rawUrl) {
     if (!rawUrl) return '';
@@ -572,12 +573,12 @@ border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 0.5rem; }
     }
 
     if (id) {
-      // Google Docs en modo mobilebasic permite pinch-to-zoom en celulares
+      // Docs de Google
       if (rawUrl.includes('docs.google.com/document')) {
         return `https://docs.google.com/document/d/${id}/mobilebasic`;
       }
-      // PDFs y archivos de Drive en modo /view con controles nativos habilitados
-      return `https://drive.google.com/file/d/${id}/view?usp=sharing`;
+      // Archivos y PDFs en Drive mediante vista de previsualización incrustable
+      return `https://drive.google.com/file/d/${id}/preview`;
     }
     
     return rawUrl;
@@ -590,7 +591,6 @@ border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 0.5rem; }
     currentSongIndex = index;
     currentFileType = type;
     
-    // Abrir siempre en modo normal (fondo blanco sin invertir) por defecto
     setInvertColors(false);
 
     loadCurrentSong();
@@ -645,7 +645,6 @@ border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 0.5rem; }
     setInvertColors(false);
   }
 
-  // Metrónomo y funciones secundarias
   function closeMetronomeSettings(e) {
     document.getElementById('metronomeSettingsModal').style.display = 'none';
   }
@@ -662,7 +661,6 @@ border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 0.5rem; }
   }
   function filterSongs() {}
 
-  // Inicialización de la sede previa si existe
   window.addEventListener('DOMContentLoaded', () => {
     const savedTeam = localStorage.getItem('selectedTeam');
     if (savedTeam) {
