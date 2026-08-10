@@ -19,7 +19,6 @@
       --gold-glow: rgba(251, 191, 36, 0.35);
       --danger: #f43f5e;
       --radius: 18px;
-
       /* Configuración dinámica del metrónomo visual */
       --metronome-color-rgb: 110, 231, 183;
       --metronome-intensity-spread: 50px;
@@ -233,7 +232,8 @@
       transition: all 0.25s;
     }
 
-    nav button span.icon { font-size: 1.2rem; }
+    nav button span.icon { font-size: 1.2rem;
+    }
 
     nav button.active {
       color: #000;
@@ -247,14 +247,18 @@
       animation: tabSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .tab-content.active { display: block; }
-
-    @keyframes tabSlide {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+    .tab-content.active { display: block;
     }
 
-    .search-wrapper { position: relative; margin-bottom: 1.25rem; }
+    @keyframes tabSlide {
+      from { opacity: 0; transform: translateY(8px);
+      }
+      to { opacity: 1; transform: translateY(0);
+      }
+    }
+
+    .search-wrapper { position: relative; margin-bottom: 1.25rem;
+    }
 
     .search-wrapper input {
       width: 100%;
@@ -274,7 +278,8 @@
     }
 
     .search-icon {
-      position: absolute; left: 1rem; top: 50%;
+      position: absolute;
+      left: 1rem; top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
     }
@@ -291,7 +296,8 @@
     }
 
     #sundayList .song-card { cursor: grab; }
-    #sundayList .song-card:active { cursor: grabbing; }
+    #sundayList .song-card:active { cursor: grabbing;
+    }
 
     .song-top {
       display: flex;
@@ -300,74 +306,92 @@
       margin-bottom: 0.75rem;
     }
 
-    .song-info { flex: 1; min-width: 0; margin-right: 0.5rem; }
+    .song-info { flex: 1; min-width: 0; margin-right: 0.5rem;
+    }
 
     .song-info h3 {
       font-size: 0.95rem; font-weight: 700; margin-bottom: 0.15rem;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
     }
 
     .song-artist {
-      font-size: 0.8rem; color: var(--text-muted); font-weight: 500;
+      font-size: 0.8rem; color: var(--text-muted);
+      font-weight: 500;
       margin-bottom: 0.4rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    .song-meta { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+    .song-meta { display: flex; gap: 0.4rem;
+      align-items: center; flex-wrap: wrap; }
 
     .badge {
-      display: inline-flex; padding: 0.2rem 0.55rem; border-radius: 8px;
+      display: inline-flex; padding: 0.2rem 0.55rem;
+      border-radius: 8px;
       font-size: 0.72rem; font-weight: 700; background: rgba(255, 255, 255, 0.05);
       color: var(--text-muted); border: none;
     }
 
-    .badge.key { background: rgba(110, 231, 183, 0.12); color: var(--brand-mint); }
+    .badge.key { background: rgba(110, 231, 183, 0.12); color: var(--brand-mint);
+    }
 
     .badge.bpm-btn {
       cursor: pointer; background: rgba(255, 255, 255, 0.08);
-      color: var(--text-main); border: 1px solid var(--card-border);
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
       transition: all 0.2s; user-select: none; -webkit-touch-callout: none;
     }
 
     .badge.bpm-btn.modo-visual {
-      background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-color: rgba(96, 165, 250, 0.5);
+      background: rgba(59, 130, 246, 0.2); color: #60a5fa;
+      border-color: rgba(96, 165, 250, 0.5);
     }
 
     .badge.bpm-btn.modo-sonoro {
-      background: var(--brand-mint); color: #000; font-weight: 800; border-color: var(--brand-mint);
+      background: var(--brand-mint); color: #000;
+      font-weight: 800; border-color: var(--brand-mint);
     }
 
     .song-structure {
-      margin: 0.6rem 0; font-size: 0.75rem; color: var(--text-muted);
+      margin: 0.6rem 0; font-size: 0.75rem;
+      color: var(--text-muted);
       line-height: 1.4; background: rgba(0, 0, 0, 0.2); padding: 0.4rem 0.6rem;
-      border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.03);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
     }
 
-    .song-main-actions { display: flex; gap: 0.4rem; align-items: center; }
+    .song-main-actions { display: flex; gap: 0.4rem; align-items: center;
+    }
 
     .action-btn {
       background: rgba(255, 255, 255, 0.04); border: 1px solid var(--card-border);
       color: var(--text-muted); width: 36px; height: 36px; border-radius: 10px;
       display: inline-flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 1.05rem; line-height: 1; padding: 0; text-decoration: none;
+      cursor: pointer; font-size: 1.05rem; line-height: 1;
+      padding: 0; text-decoration: none;
       transition: all 0.2s;
     }
 
     .action-btn.star.active {
-      color: var(--gold-star); background: rgba(251, 191, 36, 0.12);
+      color: var(--gold-star);
+      background: rgba(251, 191, 36, 0.12);
       border-color: rgba(251, 191, 36, 0.4); box-shadow: 0 4px 14px var(--gold-glow);
     }
 
     .action-btn.yt-top-btn {
-      background: rgba(244, 63, 94, 0.1); border-color: rgba(244, 63, 94, 0.25);
+      background: rgba(244, 63, 94, 0.1);
+      border-color: rgba(244, 63, 94, 0.25);
       color: #fca5a5; font-size: 0.9rem;
     }
 
-    .action-btn.yt-top-btn.disabled { opacity: 0.2; pointer-events: none; }
+    .action-btn.yt-top-btn.disabled { opacity: 0.2; pointer-events: none;
+    }
 
-    .drag-handle { color: var(--text-muted); font-size: 1.1rem; cursor: grab; margin-right: 0.4rem; }
+    .drag-handle { color: var(--text-muted); font-size: 1.1rem; cursor: grab; margin-right: 0.4rem;
+    }
 
     .song-links {
-      display: flex; gap: 0.4rem; border-top: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex; gap: 0.4rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
       padding-top: 0.75rem; flex-wrap: wrap;
     }
 
@@ -377,7 +401,8 @@
       color: var(--text-main); font-size: 0.72rem; font-weight: 600; cursor: pointer; text-align: center;
     }
 
-    .format-btn.disabled { opacity: 0.25; pointer-events: none; }
+    .format-btn.disabled { opacity: 0.25; pointer-events: none;
+    }
 
     .drive-container {
       width: 100%; height: calc(100vh - 160px);
@@ -385,65 +410,102 @@
       background-color: var(--card-bg);
     }
 
-    .section-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.3rem; }
+    .section-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.3rem;
+    }
 
     .modal {
-      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      display: none; position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
       background-color: #000; z-index: 9999; flex-direction: column;
     }
 
     .modal-header {
-      padding: 0.6rem 0.8rem; background: rgba(10, 14, 23, 0.98); display: flex;
+      padding: 0.6rem 0.8rem; background: rgba(10, 14, 23, 0.98);
+      display: flex;
       justify-content: space-between; align-items: center;
       border-bottom: 1px solid var(--card-border); gap: 0.4rem; z-index: 10;
     }
 
-    .modal-title-wrapper { display: flex; flex-direction: column; align-items: center; flex: 1; justify-content: center; min-width: 0; }
-    .modal-header h3 { font-size: 0.85rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .modal-title-wrapper { display: flex; flex-direction: column; align-items: center; flex: 1; justify-content: center; min-width: 0;
+    }
+    .modal-header h3 { font-size: 0.85rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
     .modal-header .sub-artist { font-size: 0.7rem; color: var(--text-muted); }
-    .modal-header-actions { display: flex; gap: 0.35rem; align-items: center; }
-    .modal-body { flex: 1; width: 100%; height: 100%; background: #000; position: relative; }
-    .modal-body iframe { width: 100%; height: 100%; border: none; }
+    .modal-header-actions { display: flex;
+      gap: 0.35rem; align-items: center; }
+    .modal-body { flex: 1; width: 100%; height: 100%; background: #000; position: relative;
+    }
+    .modal-body iframe { width: 100%; height: 100%; border: none;
+    }
 
     .nav-arrow {
-      background: rgba(110, 231, 183, 0.15); border: 1px solid rgba(110, 231, 183, 0.4);
+      background: rgba(110, 231, 183, 0.15);
+      border: 1px solid rgba(110, 231, 183, 0.4);
       color: var(--brand-mint); width: 36px; height: 36px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      display: flex; align-items: center;
+      justify-content: center; cursor: pointer;
       font-size: 1rem; font-weight: bold;
     }
 
     .icon-btn {
-      background: rgba(255, 255, 255, 0.08); border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
       color: var(--text-main); width: 34px; height: 34px; border-radius: 50%;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       font-size: 0.85rem; text-decoration: none;
     }
 
     .metronome-settings-modal {
-      display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      display: none; position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); z-index: 100000;
-      align-items: center; justify-content: center; padding: 1rem;
+      align-items: center;
+      justify-content: center; padding: 1rem;
     }
 
     .metronome-settings-card {
-      background: rgba(18, 24, 38, 0.95); border: 1px solid var(--card-border);
+      background: rgba(18, 24, 38, 0.95);
+      border: 1px solid var(--card-border);
       border-radius: 20px; padding: 1.5rem; width: 100%; max-width: 340px;
     }
 
-    .metronome-settings-card h4 { font-size: 1rem; font-weight: 800; margin-bottom: 1rem; text-align: center; }
+    .metronome-settings-card h4 { font-size: 1rem; font-weight: 800; margin-bottom: 1rem; text-align: center;
+    }
     .setting-group { margin-bottom: 1.25rem; }
-    .setting-group label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600; }
-    .color-options, .intensity-options { display: flex; gap: 0.5rem; }
-    .color-opt { flex: 1; height: 38px; border-radius: 10px; border: 2px solid transparent; cursor: pointer; }
+    .setting-group label { display: block; font-size: 0.75rem;
+      color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600; }
+    .color-options, .intensity-options { display: flex; gap: 0.5rem;
+    }
+    .color-opt { flex: 1; height: 38px; border-radius: 10px; border: 2px solid transparent; cursor: pointer;
+    }
     .color-opt.selected { border-color: #ffffff; }
-    .intensity-opt { flex: 1; padding: 0.5rem 0.2rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 10px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+    .intensity-opt { flex: 1; padding: 0.5rem 0.2rem;
+      background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 10px; font-size: 0.75rem; font-weight: 700; cursor: pointer;
+    }
     .intensity-opt.selected { background: var(--brand-mint); color: #000; border-color: var(--brand-mint); }
-    .close-settings-btn { width: 100%; padding: 0.75rem; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 0.5rem; }
+    .close-settings-btn { width: 100%;
+      padding: 0.75rem; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 12px; font-weight: 700; cursor: pointer;
+      margin-top: 0.5rem; }
+
+    /* ==========================================================
+       ZONAS TÁCTILES PARA SWIPE EN BORDES DEL MODAL
+       ========================================================== */
+    .swipe-zone {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 25vw; /* Ampliado al 25% para facilitar la activación del gesto */
+      min-width: 80px;
+      z-index: 50;
+      touch-action: none; /* Prohíbe al navegador cancelar el toque por gestos nativos */
+    }
+    .swipe-zone.left { left: 0; }
+    .swipe-zone.right { right: 0; }
+
   </style>
 </head>
 <body>
 
-  <!-- PANTALLA SELECCIÓN DE EQUIPO -->
   <div id="locationSelectorScreen">
     <div class="selector-card">
       <img src="logo.png" alt="Logo Ministerio">
@@ -454,6 +516,7 @@
         <button class="team-btn" onclick="selectTeam('Santa Fe')">
           <span>📍 Santa Fe</span> ➔
         </button>
+       
         <button class="team-btn" onclick="selectTeam('Monte Vera')">
           <span>📍 Monte Vera</span> ➔
         </button>
@@ -466,17 +529,21 @@
 
   <div id="metronomeOverlay"></div>
 
-  <!-- MODAL AJUSTES METRÓNOMO -->
   <div id="metronomeSettingsModal" class="metronome-settings-modal" onclick="closeMetronomeSettings(event)">
     <div class="metronome-settings-card" onclick="event.stopPropagation()">
       <h4>⚡ Configuración Metrónomo</h4>
+     
       <div class="setting-group">
         <label>Color del Destello</label>
         <div class="color-options">
-          <button class="color-opt selected" style="background: #6ee7b7;" onclick="setMetronomeColor('110, 231, 183', this)"></button>
-          <button class="color-opt" style="background: #ffffff;" onclick="setMetronomeColor('255, 255, 255', this)"></button>
-          <button class="color-opt" style="background: #3b82f6;" onclick="setMetronomeColor('59, 130, 246', this)"></button>
-          <button class="color-opt" style="background: #f43f5e;" onclick="setMetronomeColor('244, 63, 94', this)"></button>
+          <button class="color-opt selected" style="background: #6ee7b7;"
+            onclick="setMetronomeColor('110, 231, 183', this)"></button>
+          <button class="color-opt" style="background: #ffffff;"
+            onclick="setMetronomeColor('255, 255, 255', this)"></button>
+          <button class="color-opt" style="background: #3b82f6;"
+            onclick="setMetronomeColor('59, 130, 246', this)"></button>
+          <button class="color-opt" style="background: #f43f5e;"
+            onclick="setMetronomeColor('244, 63, 94', this)"></button>
         </div>
       </div>
       <div class="setting-group">
@@ -486,6 +553,7 @@
           <button class="intensity-opt selected" onclick="setMetronomeIntensity('50px', '15px', this)">Media</button>
           <button class="intensity-opt" onclick="setMetronomeIntensity('120px', '40px', this)">Fuerte</button>
         </div>
+      
       </div>
       <button class="close-settings-btn" onclick="closeMetronomeSettings()">Listo</button>
     </div>
@@ -505,6 +573,7 @@
 
   <main>
     <section id="repertorio" class="tab-content active">
+   
       <div class="search-wrapper">
         <span class="search-icon">🔍</span>
         <input type="text" id="searchInput" placeholder="Buscar canción, artista o tono..." oninput="filterSongs()">
@@ -514,7 +583,8 @@
 
     <section id="domingo" class="tab-content">
       <h2 class="section-title">Repertorio del Domingo</h2>
-      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">Sincronizado para esta sede en tiempo real.</p>
+      <p style="font-size: 0.8rem;
+        color: var(--text-muted); margin-bottom: 1.25rem;">Sincronizado para esta sede en tiempo real.</p>
       <div id="sundayList"></div>
     </section>
 
@@ -532,6 +602,7 @@
     </button>
     <button class="nav-btn" onclick="switchTab('drive', this)">
       <span class="icon">📁</span> Drive
+    
     </button>
   </nav>
 
@@ -547,8 +618,11 @@
         <a id="externalLinkBtn" class="icon-btn" target="_blank" title="Abrir en Drive">↗</a>
         <button class="icon-btn" onclick="closeViewer()">&times;</button>
       </div>
+  
     </div>
     <div class="modal-body">
+      <div class="swipe-zone left"></div>
+      <div class="swipe-zone right"></div>
       <iframe id="pdfFrame" src=""></iframe>
     </div>
   </div>
@@ -560,7 +634,6 @@
       'Monte Vera': '1NdbznXVTpr6LAcuEAqxGJm9yXQuPuOkZveVpsp9evEg',
       'Recreo': '1NiMt3Plxl1dSOi7p4PXWPATNJJtwJ-8HUcnX4quKslQ'
     };
-
     const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyYLD9xbSEujD4q2wW--BR5ADimSKpcrhPF0b8ueS16EHzeF5X1WKU_duIIgEPfzRVDVQ/exec';
     
     let currentTeam = localStorage.getItem('selected_team') || null;
@@ -616,21 +689,22 @@
     let audioCtx = null;
     let isMetronomeRunning = false;
     let activeMetronomeSongId = null;
-    let estadoMetronomo = 0; // 0: Off, 1: Visual, 2: Sonoro + Visual
+    let estadoMetronomo = 0;
+    // 0: Off, 1: Visual, 2: Sonoro + Visual
     let bpm = 120;
     let currentBeat = 0;
-    
     const lookahead = 15.0; // Frecuencia de chequeo (ms)
-    const scheduleAheadTime = 0.2; // Cuánto tiempo adelantamos el render (segundos)
+    const scheduleAheadTime = 0.2;
+    // Cuánto tiempo adelantamos el render (segundos)
     let nextNoteTime = 0.0;
     let metronomeTimerID = null;
-
     const overlay = document.getElementById('metronomeOverlay');
     let nextFlashTime = -1;
 
     function initAudioContext() {
       if (!audioCtx) {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        const AudioContextClass = window.AudioContext ||
+        window.webkitAudioContext;
         audioCtx = new AudioContextClass({ latencyHint: 'interactive' });
       }
       if (audioCtx.state === 'suspended') {
@@ -645,7 +719,6 @@
       }
 
       const currentTime = audioCtx.currentTime;
-
       if (nextFlashTime > 0 && currentTime >= nextFlashTime) {
         overlay.style.opacity = '1';
         setTimeout(() => {
@@ -698,7 +771,6 @@
       initAudioContext();
       const cleanBpm = parseInt(String(bpmString).replace(/\D/g, ''), 10);
       if (!cleanBpm || isNaN(cleanBpm) || cleanBpm <= 0) return;
-
       if (activeMetronomeSongId !== songId) {
         stopMetronome();
         activeMetronomeSongId = songId;
@@ -742,7 +814,8 @@
           if (estadoMetronomo === 1) {
             btn.classList.add('modo-visual');
             btn.innerHTML = `👁️ ${btn.dataset.bpm} BPM`;
-          } else if (estadoMetronomo === 2) {
+          } 
+          else if (estadoMetronomo === 2) {
             btn.classList.add('modo-sonoro');
             btn.innerHTML = `🔊 ${btn.dataset.bpm} BPM`;
           }
@@ -755,7 +828,6 @@
     function setupLongPress(btn) {
       let timer = null;
       let isLongPress = false;
-
       const start = (e) => {
         if (e.type === 'click') return;
         isLongPress = false;
@@ -774,7 +846,6 @@
       };
 
       const cancel = () => clearTimeout(timer);
-
       btn.addEventListener('touchstart', start, { passive: true });
       btn.addEventListener('touchend', end);
       btn.addEventListener('touchmove', cancel);
@@ -788,7 +859,8 @@
     }
 
     function openMetronomeSettings() { document.getElementById('metronomeSettingsModal').style.display = 'flex'; }
-    function closeMetronomeSettings() { document.getElementById('metronomeSettingsModal').style.display = 'none'; }
+    function closeMetronomeSettings() { document.getElementById('metronomeSettingsModal').style.display = 'none';
+    }
 
     function setMetronomeColor(rgbValue, btnEl) {
       document.documentElement.style.setProperty('--metronome-color-rgb', rgbValue);
@@ -832,6 +904,7 @@
       const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&headers=0`;
 
       try {
+  
         const [responseSongs, responseSunday] = await Promise.all([
           fetch(url),
           fetch(`${WEB_APP_URL}?action=get&team=${encodeURIComponent(currentTeam)}`)
@@ -842,7 +915,8 @@
         const rows = jsonSongs.table.rows;
 
         const sundayText = await responseSunday.text();
-        const savedSundayIds = sundayText ? sundayText.split(',').map(Number) : [];
+        const savedSundayIds = sundayText ? sundayText.split(',').map(Number) 
+        : [];
 
         songs = rows.slice(1).map((row, index) => {
           const c = row.c;
@@ -852,19 +926,20 @@
 
           return {
             id: songId,
-            title: c[0] && c[0].v ? String(c[0].v) : '',
+            title: c[0] && c[0].v ? String(c[0].v) 
+            : '',
             artist: c[1] && c[1].v ? String(c[1].v) : '',
             key: c[2] && c[2].v ? String(c[2].v) : '',
             bpm: c[3] && c[3].v ? String(c[3].v) : '',
             urlLetra: extractCellUrl(c[4]),
             urlLetraAcordes: extractCellUrl(c[5]),
             urlAcordes: extractCellUrl(c[6]),
+   
             urlYoutube: extractCellUrl(c[7]),
             structure: c[8] && c[8].v ? String(c[8].v) : '',
             inSunday: savedSundayIds.includes(songId)
           };
         }).filter(song => song !== null && song.title !== '');
-
         renderSongs();
         renderSundayList();
       } catch (error) {
@@ -906,7 +981,6 @@
         song.artist.toLowerCase().includes(query) ||
         song.key.toLowerCase().includes(query)
       );
-
       filteredSongs.forEach(song => {
         const cleanBpm = song.bpm ? song.bpm.replace(/\D/g, '') : '';
         const card = document.createElement('div');
@@ -915,24 +989,29 @@
           <div class="song-top">
             <div class="song-info">
               <h3>${song.title}</h3>
+             
               ${song.artist ? `<div class="song-artist">${song.artist}</div>` : ''}
               <div class="song-meta">
                 ${song.key ? `<span class="badge key">Tono: ${song.key}</span>` : ''}
                 ${cleanBpm ? `<button class="badge bpm-btn" data-song-id="${song.id}" data-bpm="${cleanBpm}">⏱️ ${cleanBpm} BPM</button>` : ''}
               </div>
-              ${song.structure ? `<div class="song-structure"><strong>Estructura:</strong> ${song.structure}</div>` : ''}
+              ${song.structure ? 
+              `<div class="song-structure"><strong>Estructura:</strong> ${song.structure}</div>` : ''}
             </div>
             <div class="song-main-actions">
               <a class="action-btn yt-top-btn ${!song.urlYoutube ? 'disabled' : ''}" 
-                 ${song.urlYoutube ? `href="${song.urlYoutube}" target="_blank"` : ''}>▶</a>
+                 ${song.urlYoutube ?
+                 `href="${song.urlYoutube}" target="_blank"` : ''}>▶</a>
               <button class="action-btn star ${song.inSunday ? 'active' : ''}" onclick="toggleSunday(${song.id})">
-                ${song.inSunday ? '⭐' : '☆'}
+                ${song.inSunday ?
+                '⭐' : '☆'}
               </button>
             </div>
           </div>
           <div class="song-links">
             <button class="format-btn ${!song.urlLetra ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
             <button class="format-btn ${!song.urlLetraAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
+       
             <button class="format-btn ${!song.urlAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
           </div>
         `;
@@ -956,23 +1035,29 @@
         card.innerHTML = `
           <div class="song-top">
             <span class="drag-handle">☰</span>
+        
             <div class="song-info">
               <h3>${song.title}</h3>
               ${song.artist ? `<div class="song-artist">${song.artist}</div>` : ''}
               <div class="song-meta">
                 ${song.key ? `<span class="badge key">Tono: ${song.key}</span>` : ''}
-                ${cleanBpm ? `<button class="badge bpm-btn" data-song-id="${song.id}" data-bpm="${cleanBpm}">⏱️ ${cleanBpm} BPM</button>` : ''}
+                ${cleanBpm ? `<button class="badge bpm-btn" data-song-id="${song.id}" data-bpm="${cleanBpm}">⏱️ ${cleanBpm} 
+                BPM</button>` : ''}
               </div>
               ${song.structure ? `<div class="song-structure"><strong>Estructura:</strong> ${song.structure}</div>` : ''}
             </div>
             <div class="song-main-actions">
               <button class="action-btn danger" onclick="toggleSunday(${song.id})" style="color:var(--danger)">✕</button>
             </div>
+         
           </div>
           <div class="song-links">
-            <button class="format-btn ${!song.urlLetra ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
-            <button class="format-btn ${!song.urlLetraAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
-            <button class="format-btn ${!song.urlAcordes ? 'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
+            <button class="format-btn ${!song.urlLetra ?
+            'disabled' : ''}" onclick="openViewer(${song.id}, 'letra')">📄 Letra</button>
+            <button class="format-btn ${!song.urlLetraAcordes ?
+            'disabled' : ''}" onclick="openViewer(${song.id}, 'letra-acordes')">🎸 Letra + Acordes</button>
+            <button class="format-btn ${!song.urlAcordes ?
+            'disabled' : ''}" onclick="openViewer(${song.id}, 'acordes')">🎼 Acordes</button>
           </div>
         `;
         listContainer.appendChild(card);
@@ -983,13 +1068,15 @@
         listContainer.sortableInstance = Sortable.create(listContainer, {
           animation: 150,
           handle: '.drag-handle',
-          onEnd: function () {
+          onEnd: function 
+          () {
             const newSundayIds = Array.from(listContainer.children).map(el => parseInt(el.dataset.id));
             const sundayMap = new Map(songs.filter(s => s.inSunday).map(s => [s.id, s]));
             const nonSundaySongs = songs.filter(s => !s.inSunday);
             songs = [...newSundayIds.map(id => sundayMap.get(id)), ...nonSundaySongs];
             saveSundayState();
           }
+     
         });
       }
 
@@ -998,7 +1085,8 @@
     }
 
     function toggleSunday(id) {
-      songs = songs.map(s => s.id === id ? {...s, inSunday: !s.inSunday} : s);
+      songs = songs.map(s => s.id === id ?
+      {...s, inSunday: !s.inSunday} : s);
       saveSundayState();
       renderSongs();
       renderSundayList();
@@ -1031,7 +1119,6 @@
       const isSundayActive = document.getElementById('domingo').classList.contains('active');
       const prevBtn = document.getElementById('prevBtn');
       const nextBtn = document.getElementById('nextBtn');
-
       if (isSundayActive) {
         const sundaySongs = songs.filter(s => s.inSunday);
         const currentIndex = sundaySongs.findIndex(s => s.id === id);
@@ -1049,7 +1136,8 @@
       document.getElementById('viewerModal').style.display = 'none';
       document.getElementById('pdfFrame').src = '';
     }
-function navigateSong(direction) {
+    
+    function navigateSong(direction) {
       const sundaySongs = songs.filter(s => s.inSunday);
       const currentIndex = sundaySongs.findIndex(s => s.id === currentModalSongId);
       if (currentIndex === -1) return;
@@ -1060,9 +1148,58 @@ function navigateSong(direction) {
       }
     }
     
+    // ==========================================
+    // NAVEGACIÓN POR GESTOS (SWIPE) EN BORDES ESTÁTICOS
+    // ==========================================
+    (function initSwipeZones() {
+      const leftZone = document.querySelector('.swipe-zone.left');
+      const rightZone = document.querySelector('.swipe-zone.right');
+      if (!leftZone || !rightZone) return;
+
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let isMultiTouch = false;
+
+      function handleTouchStart(e) {
+        if (e.touches.length > 1) {
+          isMultiTouch = true;
+          return;
+        }
+        isMultiTouch = false;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }
+
+      function handleTouchEnd(e) {
+        if (isMultiTouch) return;
+        
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        
+        const deltaX = touchEndX - touchStartX;
+        const deltaY = touchEndY - touchStartY;
+
+        // Sensibilidad ajustada a 20px
+        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 20) {
+          if (deltaX < 0) {
+            if (typeof navigateSong === 'function') navigateSong(1); // Siguiente
+          } else {
+            if (typeof navigateSong === 'function') navigateSong(-1); // Anterior
+          }
+        }
+      }
+
+      // Asignar eventos incluyendo touchcancel para que responda sin perderse
+      [leftZone, rightZone].forEach(zone => {
+        zone.addEventListener('touchstart', handleTouchStart, { passive: true });
+        zone.addEventListener('touchend', handleTouchEnd, { passive: true });
+        zone.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+      });
+    })();
     
     // Inicio de la app
     checkTeamSelection();
   </script>
 </body>
 </html>
+
