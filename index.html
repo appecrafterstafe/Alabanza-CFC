@@ -433,9 +433,9 @@
     .modal-header .sub-artist { font-size: 0.7rem; color: var(--text-muted); }
     .modal-header-actions { display: flex;
       gap: 0.35rem; align-items: center; }
-    .modal-body { flex: 1; width: 100%; height: 100%; background: #000; position: relative;
+    .modal-body { flex: 1; width: 100%; height: 100%; background: #000; position: relative; overflow: hidden;
     }
-    .modal-body iframe { width: 100%; height: 100%; border: none;
+    .modal-body iframe { width: 100%; height: 100%; border: none; transform-origin: center top; transition: transform 0.1s ease-out;
     }
 
     .nav-arrow {
@@ -494,10 +494,9 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      width: 25vw; /* Ampliado al 25% para facilitar la activación del gesto */
-      min-width: 80px;
+      width: 15vw; /* Ocupa el 15% del ancho de cada lado */
+      min-width: 50px;
       z-index: 50;
-      touch-action: none; /* Prohíbe al navegador cancelar el toque por gestos nativos */
     }
     .swipe-zone.left { left: 0; }
     .swipe-zone.right { right: 0; }
@@ -615,6 +614,8 @@
       </div>
       <button id="nextBtn" class="nav-arrow" onclick="navigateSong(1)">▶</button>
       <div class="modal-header-actions">
+        <button class="icon-btn" onclick="zoomViewer(-0.25)" title="Alejar">🔍-</button>
+        <button class="icon-btn" onclick="zoomViewer(0.25)" title="Acercar">🔍+</button>
         <a id="externalLinkBtn" class="icon-btn" target="_blank" title="Abrir en Drive">↗</a>
         <button class="icon-btn" onclick="closeViewer()">&times;</button>
       </div>
@@ -641,6 +642,7 @@
     let filterTimeout = null;
     let currentModalSongId = null;
     let currentModalType = null;
+    let currentZoom = 1;
 
     /* ==========================================================
        GESTIÓN DE SEDES / EQUIPOS
@@ -1099,10 +1101,26 @@
       }, 150);
     }
 
+    /* ==========================================================
+       GESTIÓN DE ZOOM EN VISOR
+       ========================================================== */
+    function zoomViewer(delta) {
+      currentZoom = Math.max(0.8, Math.min(3, currentZoom + delta));
+      const iframe = document.getElementById('pdfFrame');
+      if (iframe) iframe.style.transform = `scale(${currentZoom})`;
+    }
+
+    function resetZoom() {
+      currentZoom = 1;
+      const iframe = document.getElementById('pdfFrame');
+      if (iframe) iframe.style.transform = 'scale(1)';
+    }
+
     function openViewer(id, type) {
       const song = songs.find(s => s.id === id);
       if (!song) return;
 
+      resetZoom();
       currentModalSongId = id;
       currentModalType = type;
 
@@ -1133,11 +1151,13 @@
     }
 
     function closeViewer() {
+      resetZoom();
       document.getElementById('viewerModal').style.display = 'none';
       document.getElementById('pdfFrame').src = '';
     }
     
     function navigateSong(direction) {
+      resetZoom();
       const sundaySongs = songs.filter(s => s.inSunday);
       const currentIndex = sundaySongs.findIndex(s => s.id === currentModalSongId);
       if (currentIndex === -1) return;
@@ -1149,16 +1169,19 @@
     }
     
     // ==========================================
-    // NAVEGACIÓN POR GESTOS (SWIPE) EN BORDES ESTÁTICOS
+    // NAVEGACIÓN POR GESTOS (SWIPE) Y PELLIZCO (PINCH-ZOOM)
     // ==========================================
     (function initSwipeZones() {
       const leftZone = document.querySelector('.swipe-zone.left');
       const rightZone = document.querySelector('.swipe-zone.right');
-      if (!leftZone || !rightZone) return;
+      const modalBody = document.querySelector('.modal-body');
+      if (!leftZone || !rightZone || !modalBody) return;
 
       let touchStartX = 0;
       let touchStartY = 0;
       let isMultiTouch = false;
+      let initialPinchDist = 0;
+      let initialZoomOnPinch = 1;
 
       function handleTouchStart(e) {
         if (e.touches.length > 1) {
@@ -1179,7 +1202,7 @@
         const deltaX = touchEndX - touchStartX;
         const deltaY = touchEndY - touchStartY;
 
-        // Sensibilidad ajustada a 20px
+        // Umbral reducido a 20px para mayor sensibilidad al deslizar
         if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 20) {
           if (deltaX < 0) {
             if (typeof navigateSong === 'function') navigateSong(1); // Siguiente
@@ -1189,12 +1212,41 @@
         }
       }
 
-      // Asignar eventos incluyendo touchcancel para que responda sin perderse
+      // Asignar swipe a zonas laterales
       [leftZone, rightZone].forEach(zone => {
         zone.addEventListener('touchstart', handleTouchStart, { passive: true });
         zone.addEventListener('touchend', handleTouchEnd, { passive: true });
-        zone.addEventListener('touchcancel', handleTouchEnd, { passive: true });
       });
+
+      // Detección de Pellizco para Zoom (Pinch-to-zoom)
+      modalBody.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+          initialPinchDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          initialZoomOnPinch = currentZoom;
+        }
+      }, { passive: true });
+
+      modalBody.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2 && initialPinchDist > 0) {
+          const currentDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          const factor = currentDist / initialPinchDist;
+          currentZoom = Math.max(0.8, Math.min(3, initialZoomOnPinch * factor));
+          const iframe = document.getElementById('pdfFrame');
+          if (iframe) iframe.style.transform = `scale(${currentZoom})`;
+        }
+      }, { passive: true });
+
+      modalBody.addEventListener('touchend', (e) => {
+        if (e.touches.length < 2) {
+          initialPinchDist = 0;
+        }
+      }, { passive: true });
     })();
     
     // Inicio de la app
@@ -1202,4 +1254,3 @@
   </script>
 </body>
 </html>
-
