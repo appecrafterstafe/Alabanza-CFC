@@ -25,12 +25,14 @@
       --metronome-intensity-size: 15px;
     }
 
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
+
 
     html, body {
       height: 100%;
@@ -39,6 +41,7 @@
       overflow-x: hidden;
       touch-action: manipulation;
     }
+
 
     body {
       background-image: 
@@ -54,6 +57,7 @@
       position: relative;
     }
 
+
     /* PANTALLA DE SELECCIÓN DE SEDE / EQUIPO */
     #locationSelectorScreen {
       position: fixed;
@@ -67,6 +71,7 @@
       padding: 1.5rem;
       text-align: center;
     }
+
 
     .selector-card {
       background: var(--card-bg);
@@ -82,6 +87,7 @@
       align-items: center;
     }
 
+
     .selector-card img {
       height: 52px;
       width: auto;
@@ -89,11 +95,13 @@
       margin-bottom: 1.25rem;
     }
 
+
     .selector-card h2 {
       font-size: 1.3rem;
       font-weight: 800;
       margin-bottom: 0.3rem;
     }
+
 
     .selector-card p {
       font-size: 0.85rem;
@@ -101,12 +109,14 @@
       margin-bottom: 1.5rem;
     }
 
+
     .team-buttons {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
       width: 100%;
     }
+
 
     .team-btn {
       padding: 0.9rem 1.2rem;
@@ -123,12 +133,14 @@
       transition: all 0.2s ease;
     }
 
+
     .team-btn:hover, .team-btn:active {
       background: var(--brand-mint);
       color: #000;
       border-color: var(--brand-mint);
       box-shadow: 0 4px 15px var(--brand-mint-glow);
     }
+
 
     /* OVERLAY DE PANTALLA COMPLETA (MARCO DE NEÓN PERIFÉRICO) */
     #metronomeOverlay {
@@ -143,6 +155,7 @@
       border: 4px solid rgba(var(--metronome-color-rgb), 0.8);
     }
 
+
     header {
       padding: 1.2rem 1rem 0.8rem 1rem;
       display: flex;
@@ -151,6 +164,7 @@
       gap: 0.75rem;
     }
 
+
     .header-left {
       display: flex;
       align-items: center;
@@ -158,6 +172,7 @@
       flex: 1;
       min-width: 0;
     }
+
 
     .logo-container {
       background: rgba(255, 255, 255, 0.95);
@@ -170,9 +185,11 @@
       flex-shrink: 0;
     }
 
+
     .app-logo {
       height: 34px; width: auto; object-fit: contain;
     }
+
 
     header h1 {
       font-size: 0.72rem;
@@ -182,6 +199,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+
 
     .location-badge {
       font-size: 0.72rem;
@@ -195,12 +213,14 @@
       flex-shrink: 0;
     }
 
+
     main {
       flex: 1;
       padding: 1rem;
       overflow-y: auto;
       padding-bottom: 80px;
     }
+
 
     nav {
       display: flex;
@@ -215,6 +235,7 @@
       padding: 0.6rem;
       gap: 0.4rem;
     }
+
 
     nav button {
       flex: 1;
@@ -233,7 +254,9 @@
       transition: all 0.25s;
     }
 
+
     nav button span.icon { font-size: 1.2rem; }
+
 
     nav button.active {
       color: #000;
@@ -242,19 +265,24 @@
       box-shadow: 0 6px 16px var(--brand-mint-glow);
     }
 
+
     .tab-content {
       display: none;
       animation: tabSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+
     .tab-content.active { display: block; }
+
 
     @keyframes tabSlide {
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
+
     .search-wrapper { position: relative; margin-bottom: 1.25rem; }
+
 
     .search-wrapper input {
       width: 100%;
@@ -267,11 +295,13 @@
       font-size: 0.95rem;
     }
 
+
     .search-wrapper input:focus {
       outline: none;
       border-color: var(--brand-mint);
       box-shadow: 0 0 0 3px var(--brand-mint-glow);
     }
+
 
     .search-icon {
       position: absolute;
@@ -279,6 +309,7 @@
       transform: translateY(-50%);
       color: var(--text-muted);
     }
+
 
     .song-card {
       background: var(--card-bg);
@@ -291,8 +322,10 @@
       transition: all 0.2s ease;
     }
 
+
     #sundayList .song-card { cursor: grab; }
     #sundayList .song-card:active { cursor: grabbing; }
+
 
     .song-top {
       display: flex;
@@ -301,7 +334,9 @@
       margin-bottom: 0.75rem;
     }
 
+
     .song-info { flex: 1; min-width: 0; margin-right: 0.5rem; }
+
 
     .song-info h3 {
       font-size: 0.95rem; font-weight: 700; margin-bottom: 0.15rem;
@@ -309,13 +344,16 @@
       overflow: hidden; text-overflow: ellipsis;
     }
 
+
     .song-artist {
       font-size: 0.8rem; color: var(--text-muted);
       font-weight: 500;
       margin-bottom: 0.4rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
+
     .song-meta { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+
 
     .badge {
       display: inline-flex; padding: 0.2rem 0.55rem;
@@ -324,7 +362,9 @@
       color: var(--text-muted); border: none;
     }
 
+
     .badge.key { background: rgba(110, 231, 183, 0.12); color: var(--brand-mint); }
+
 
     .badge.bpm-btn {
       cursor: pointer; background: rgba(255, 255, 255, 0.08);
@@ -333,15 +373,18 @@
       transition: all 0.2s; user-select: none; -webkit-touch-callout: none;
     }
 
+
     .badge.bpm-btn.modo-visual {
       background: rgba(59, 130, 246, 0.2); color: #60a5fa;
       border-color: rgba(96, 165, 250, 0.5);
     }
 
+
     .badge.bpm-btn.modo-sonoro {
       background: var(--brand-mint); color: #000;
       font-weight: 800; border-color: var(--brand-mint);
     }
+
 
     .song-structure {
       margin: 0.6rem 0; font-size: 0.75rem;
@@ -351,7 +394,9 @@
       border: 1px solid rgba(255, 255, 255, 0.03);
     }
 
+
     .song-main-actions { display: flex; gap: 0.4rem; align-items: center; }
+
 
     .action-btn {
       background: rgba(255, 255, 255, 0.04); border: 1px solid var(--card-border);
@@ -362,11 +407,13 @@
       transition: all 0.2s;
     }
 
+
     .action-btn.star.active {
       color: var(--gold-star);
       background: rgba(251, 191, 36, 0.12);
       border-color: rgba(251, 191, 36, 0.4); box-shadow: 0 4px 14px var(--gold-glow);
     }
+
 
     .action-btn.yt-top-btn {
       background: rgba(244, 63, 94, 0.1);
@@ -374,9 +421,12 @@
       color: #fca5a5; font-size: 0.9rem;
     }
 
+
     .action-btn.yt-top-btn.disabled { opacity: 0.2; pointer-events: none; }
 
+
     .drag-handle { color: var(--text-muted); font-size: 1.1rem; cursor: grab; margin-right: 0.4rem; }
+
 
     .song-links {
       display: flex; gap: 0.4rem;
@@ -384,13 +434,16 @@
       padding-top: 0.75rem; flex-wrap: wrap;
     }
 
+
     .format-btn {
       flex: 1; min-width: 70px; padding: 0.45rem 0.2rem; border-radius: 10px;
       border: 1px solid var(--card-border); background: rgba(255, 255, 255, 0.04);
       color: var(--text-main); font-size: 0.72rem; font-weight: 600; cursor: pointer; text-align: center;
     }
 
+
     .format-btn.disabled { opacity: 0.25; pointer-events: none; }
+
 
     .drive-container {
       width: 100%; height: calc(100vh - 160px);
@@ -398,13 +451,16 @@
       background-color: var(--card-bg);
     }
 
+
     .section-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.3rem; }
+
 
     .modal {
       display: none; position: fixed; top: 0; left: 0;
       width: 100vw; height: 100vh;
       background-color: #000; z-index: 9999; flex-direction: column;
     }
+
 
     .modal-header {
       padding: 0.6rem 0.8rem; background: rgba(10, 14, 23, 0.98);
@@ -413,10 +469,12 @@
       border-bottom: 1px solid var(--card-border); gap: 0.4rem; z-index: 101;
     }
 
+
     .modal-title-wrapper { display: flex; flex-direction: column; align-items: center; flex: 1; justify-content: center; min-width: 0; }
     .modal-header h3 { font-size: 0.85rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .modal-header .sub-artist { font-size: 0.7rem; color: var(--text-muted); }
     .modal-header-actions { display: flex; gap: 0.35rem; align-items: center; }
+
 
     /* CONTENEDOR Y CAPAS DE ZOOM / PANNING */
     .modal-body {
@@ -425,22 +483,26 @@
       touch-action: none;
     }
 
+
     #zoomContainer {
       width: 100%; height: 100%;
       transform-origin: center center;
       will-change: transform;
     }
 
+
     #zoomContainer iframe {
       width: 100%; height: 100%; border: none;
       pointer-events: none; /* Permite que los gestos pasen al overlay */
     }
+
 
     #touchOverlay {
       position: absolute; top: 0; left: 0;
       width: 100%; height: 100%;
       z-index: 100; touch-action: none;
     }
+
 
     .nav-arrow {
       background: rgba(110, 231, 183, 0.15);
@@ -451,6 +513,7 @@
       font-size: 1rem; font-weight: bold;
     }
 
+
     .icon-btn {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid var(--card-border);
@@ -458,6 +521,7 @@
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       font-size: 0.85rem; text-decoration: none;
     }
+
 
     .metronome-settings-modal {
       display: none; position: fixed;
@@ -467,11 +531,13 @@
       justify-content: center; padding: 1rem;
     }
 
+
     .metronome-settings-card {
       background: rgba(18, 24, 38, 0.95);
       border: 1px solid var(--card-border);
       border-radius: 20px; padding: 1.5rem; width: 100%; max-width: 340px;
     }
+
 
     .metronome-settings-card h4 { font-size: 1rem; font-weight: 800; margin-bottom: 1rem; text-align: center; }
     .setting-group { margin-bottom: 1.25rem; }
@@ -482,9 +548,168 @@
     .intensity-opt { flex: 1; padding: 0.5rem 0.2rem; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 10px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
     .intensity-opt.selected { background: var(--brand-mint); color: #000; border-color: var(--brand-mint); }
     .close-settings-btn { width: 100%; padding: 0.75rem; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 0.5rem; }
+
+    /* ESTILOS DE LA SECCIÓN DE METRÓNOMO STANDALONE CON PERILLA */
+    .knob-section-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 1.75rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      margin-top: 1rem;
+    }
+
+    .bpm-display-container {
+      text-align: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .bpm-value-text {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--brand-mint);
+      text-shadow: 0 0 20px var(--brand-mint-glow);
+    }
+
+    .bpm-unit-text {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      margin-top: 4px;
+    }
+
+    .knob-wrapper {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1rem 0 1.5rem 0;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .knob-outer-ring {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.6) 100%);
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+    }
+
+    .knob-dial {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #1e283d, #0d121d);
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+      cursor: grab;
+      transform: rotate(-135deg);
+      transition: transform 0.05s linear;
+      display: flex;
+      justify-content: center;
+    }
+
+    .knob-dial:active {
+      cursor: grabbing;
+    }
+
+    .knob-indicator {
+      position: absolute;
+      top: 12px;
+      width: 8px;
+      height: 24px;
+      background: var(--brand-mint);
+      border-radius: 4px;
+      box-shadow: 0 0 10px var(--brand-mint);
+    }
+
+    .knob-btn-group {
+      display: flex;
+      gap: 0.6rem;
+      width: 100%;
+      max-width: 320px;
+      margin-top: 0.5rem;
+    }
+
+    .knob-step-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      font-size: 1.1rem;
+      font-weight: 800;
+      border-radius: 14px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+    }
+
+    .knob-step-btn:active {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .knob-play-btn {
+      background: var(--brand-mint);
+      color: #000;
+      border: none;
+      font-size: 1rem;
+      font-weight: 800;
+      border-radius: 14px;
+      padding: 0.85rem 1.5rem;
+      cursor: pointer;
+      flex: 2;
+      box-shadow: 0 6px 20px var(--brand-mint-glow);
+      transition: all 0.2s ease;
+    }
+
+    .knob-play-btn.active {
+      background: var(--danger);
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(244, 63, 94, 0.35);
+    }
+
+    .mode-selector {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 320px;
+      margin-top: 0.75rem;
+    }
+
+    .mode-btn {
+      flex: 1;
+      padding: 0.6rem 0.4rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mode-btn.active {
+      background: rgba(110, 231, 183, 0.15);
+      color: var(--brand-mint);
+      border-color: rgba(110, 231, 183, 0.4);
+    }
   </style>
 </head>
 <body>
+
 
   <div id="locationSelectorScreen">
     <div class="selector-card">
@@ -506,7 +731,9 @@
     </div>
   </div>
 
+
   <div id="metronomeOverlay"></div>
+
 
   <div id="metronomeSettingsModal" class="metronome-settings-modal" onclick="closeMetronomeSettings(event)">
     <div class="metronome-settings-card" onclick="event.stopPropagation()">
@@ -533,6 +760,7 @@
     </div>
   </div>
 
+
   <header>
     <div class="header-left">
       <div class="logo-container">
@@ -545,6 +773,7 @@
     </div>
   </header>
 
+
   <main>
     <section id="repertorio" class="tab-content active">
       <div class="search-wrapper">
@@ -554,16 +783,50 @@
       <div id="songsList">Cargando canciones...</div>
     </section>
 
+
     <section id="domingo" class="tab-content">
       <h2 class="section-title">Repertorio del Domingo</h2>
       <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem;">Sincronizado para esta sede en tiempo real.</p>
       <div id="sundayList"></div>
     </section>
 
+
     <section id="drive" class="tab-content">
       <iframe class="drive-container" src="https://drive.google.com/embeddedfolderview?id=12bycs6XiD6zlXIt2gNw9URdvfl0GoTxa#grid"></iframe>
     </section>
+
+    <!-- NUEVA SECCIÓN: METRÓNOMO INDEPENDIENTE CON PERILLA -->
+    <section id="metronomo" class="tab-content">
+      <h2 class="section-title">Metrónomo</h2>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Ajuste manual de tempo mediante perilla.</p>
+      
+      <div class="knob-section-card">
+        <div class="bpm-display-container">
+          <div id="knobBpmValue" class="bpm-value-text">120</div>
+          <div class="bpm-unit-text">BPM</div>
+        </div>
+
+        <div class="knob-wrapper" id="knobWrapper">
+          <div class="knob-outer-ring"></div>
+          <div class="knob-dial" id="knobDial">
+            <div class="knob-indicator"></div>
+          </div>
+        </div>
+
+        <div class="knob-btn-group">
+          <button class="knob-step-btn" onclick="adjustKnobBpm(-1)">-1</button>
+          <button id="standalonePlayBtn" class="knob-play-btn" onclick="toggleStandaloneMetronome()">▶ Iniciar</button>
+          <button class="knob-step-btn" onclick="adjustKnobBpm(1)">+1</button>
+        </div>
+
+        <div class="mode-selector">
+          <button id="modeVisualBtn" class="mode-btn" onclick="setStandaloneMode(1)">👁️ Visual</button>
+          <button id="modeSonoroBtn" class="mode-btn active" onclick="setStandaloneMode(2)">🔊 Sonoro + Visual</button>
+        </div>
+      </div>
+    </section>
   </main>
+
 
   <nav>
     <button class="nav-btn active" onclick="switchTab('repertorio', this)">
@@ -575,7 +838,11 @@
     <button class="nav-btn" onclick="switchTab('drive', this)">
       <span class="icon">📁</span> Drive
     </button>
+    <button class="nav-btn" onclick="switchTab('metronomo', this)">
+      <span class="icon">⏱️</span> Metrónomo
+    </button>
   </nav>
+
 
   <div id="viewerModal" class="modal">
     <div class="modal-header">
@@ -593,6 +860,7 @@
       </div>
     </div>
 
+
     <div class="modal-body">
       <div id="zoomContainer">
         <iframe id="pdfFrame" src=""></iframe>
@@ -601,6 +869,7 @@
       <div id="touchOverlay"></div>
     </div>
   </div>
+
 
   <script>
     const SHEET_IDS = {
@@ -616,10 +885,12 @@
     let currentModalSongId = null;
     let currentModalType = null;
 
+
     /* VARIABLES DE CONTROL DE ZOOM Y PANNING (ARRASTRE) */
     let currentZoom = 1;
     let translateX = 0;
     let translateY = 0;
+
 
     function checkTeamSelection() {
       if (!currentTeam) {
@@ -631,15 +902,18 @@
       }
     }
 
+
     function selectTeam(teamName) {
       currentTeam = teamName;
       localStorage.setItem('selected_team', teamName);
       checkTeamSelection();
     }
 
+
     function showLocationSelector() {
       document.getElementById('locationSelectorScreen').style.display = 'flex';
     }
+
 
     /* WAKE LOCK */
     let wakeLock = null;
@@ -657,6 +931,7 @@
     });
     activarPantallaEncendida();
 
+
     /* METRÓNOMO */
     let audioCtx = null;
     let isMetronomeRunning = false;
@@ -671,6 +946,7 @@
     const overlay = document.getElementById('metronomeOverlay');
     let nextFlashTime = -1;
 
+
     function initAudioContext() {
       if (!audioCtx) {
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -681,11 +957,13 @@
       }
     }
 
+
     function visualLoop() {
       if (!isMetronomeRunning) {
         overlay.style.opacity = '0';
         return;
       }
+
 
       const currentTime = audioCtx.currentTime;
       if (nextFlashTime > 0 && currentTime >= nextFlashTime) {
@@ -696,35 +974,44 @@
         nextFlashTime = -1;
       }
 
+
       requestAnimationFrame(visualLoop);
     }
+
 
     function scheduleNote(beatNumber, time) {
       if (estadoMetronomo === 2) {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
 
+
         osc.type = 'sine';
         osc.frequency.setValueAtTime(beatNumber === 0 ? 1200 : 800, time);
+
 
         gain.gain.setValueAtTime(1.0, time);
         gain.gain.exponentialRampToValueAtTime(0.001, time + 0.03);
 
+
         osc.connect(gain);
         gain.connect(audioCtx.destination);
+
 
         osc.start(time);
         osc.stop(time + 0.03);
       }
 
+
       nextFlashTime = time;
     }
+
 
     function nextNote() {
       const secondsPerBeat = 60.0 / bpm;
       nextNoteTime += secondsPerBeat;
       currentBeat = (currentBeat + 1) % 4;
     }
+
 
     function scheduler() {
       while (nextNoteTime < audioCtx.currentTime + scheduleAheadTime) {
@@ -735,6 +1022,7 @@
         metronomeTimerID = setTimeout(scheduler, lookahead);
       }
     }
+
 
     function toggleMetronome(songId, bpmString) {
       initAudioContext();
@@ -748,10 +1036,12 @@
         estadoMetronomo = (estadoMetronomo + 1) % 3;
       }
 
+
       if (estadoMetronomo === 0) {
         stopMetronome();
         return;
       }
+
 
       bpm = cleanBpm;
       isMetronomeRunning = true;
@@ -759,10 +1049,12 @@
       nextFlashTime = -1;
       nextNoteTime = audioCtx.currentTime + 0.05;
 
+
       scheduler();
       requestAnimationFrame(visualLoop);
       updateMetronomeUI();
     }
+
 
     function stopMetronome() {
       isMetronomeRunning = false;
@@ -774,10 +1066,12 @@
       updateMetronomeUI();
     }
 
+
     function updateMetronomeUI() {
       document.querySelectorAll('.bpm-btn').forEach(btn => {
         const songId = parseInt(btn.dataset.songId, 10);
         btn.classList.remove('modo-visual', 'modo-sonoro');
+
 
         if (songId === activeMetronomeSongId) {
           if (estadoMetronomo === 1) {
@@ -794,6 +1088,7 @@
       });
     }
 
+
     function setupLongPress(btn) {
       let timer = null;
       let isLongPress = false;
@@ -806,6 +1101,7 @@
         }, 500);
       };
 
+
       const end = (e) => {
         clearTimeout(timer);
         if (!isLongPress && e.type !== 'contextmenu') {
@@ -813,6 +1109,7 @@
           toggleMetronome(songId, btn.dataset.bpm);
         }
       };
+
 
       const cancel = () => clearTimeout(timer);
       btn.addEventListener('touchstart', start, { passive: true });
@@ -827,8 +1124,10 @@
       });
     }
 
+
     function openMetronomeSettings() { document.getElementById('metronomeSettingsModal').style.display = 'flex'; }
     function closeMetronomeSettings() { document.getElementById('metronomeSettingsModal').style.display = 'none'; }
+
 
     function setMetronomeColor(rgbValue, btnEl) {
       document.documentElement.style.setProperty('--metronome-color-rgb', rgbValue);
@@ -836,12 +1135,14 @@
       btnEl.classList.add('selected');
     }
 
+
     function setMetronomeIntensity(spread, size, btnEl) {
       document.documentElement.style.setProperty('--metronome-intensity-spread', spread);
       document.documentElement.style.setProperty('--metronome-intensity-size', size);
       document.querySelectorAll('.intensity-opt').forEach(b => b.classList.remove('selected'));
       btnEl.classList.add('selected');
     }
+
 
     /* DRIVE & SHEETS */
     function getEmbedUrl(rawUrl) {
@@ -854,6 +1155,7 @@
       return rawUrl;
     }
 
+
     function extractCellUrl(cell) {
       if (!cell) return '';
       if (cell.v && typeof cell.v === 'string' && cell.v.startsWith('http')) return cell.v.trim();
@@ -865,9 +1167,11 @@
       return cell.v ? String(cell.v).trim() : '';
     }
 
+
     async function fetchSongsFromSheet() {
       const sheetId = SHEET_IDS[currentTeam] || SHEET_IDS['Santa Fe'];
       const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&headers=0`;
+
 
       try {
         const [responseSongs, responseSunday] = await Promise.all([
@@ -875,18 +1179,23 @@
           fetch(`${WEB_APP_URL}?action=get&team=${encodeURIComponent(currentTeam)}`)
         ]);
 
+
         const textSongs = await responseSongs.text();
         const jsonSongs = JSON.parse(textSongs.substr(47).slice(0, -2));
         const rows = jsonSongs.table.rows;
 
+
         const sundayText = await responseSunday.text();
         const savedSundayIds = sundayText ? sundayText.split(',').map(Number) : [];
+
 
         songs = rows.slice(1).map((row, index) => {
           const c = row.c;
           if (!c || !c[0] || c[0].v === null || c[0].v === '') return null;
 
+
           const songId = index + 2;
+
 
           return {
             id: songId,
@@ -909,6 +1218,7 @@
       }
     }
 
+
     async function saveSundayState() {
       const sundayIds = songs.filter(s => s.inSunday).map(s => s.id);
       try {
@@ -923,20 +1233,24 @@
       }
     }
 
+
     function switchTab(tabId, btnElement) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
       btnElement.classList.add('active');
 
+
       if (tabId === 'repertorio') renderSongs();
       if (tabId === 'domingo') renderSundayList();
     }
+
 
     function renderSongs(filter = '') {
       const listContainer = document.getElementById('songsList');
       listContainer.innerHTML = '';
       const query = filter.toLowerCase();
+
 
       const filteredSongs = songs.filter(song => 
         song.title.toLowerCase().includes(query) || 
@@ -975,14 +1289,17 @@
         listContainer.appendChild(card);
       });
 
+
       document.querySelectorAll('.bpm-btn').forEach(btn => setupLongPress(btn));
       updateMetronomeUI();
     }
+
 
     function renderSundayList() {
       const listContainer = document.getElementById('sundayList');
       listContainer.innerHTML = '';
       const sundaySongs = songs.filter(song => song.inSunday);
+
 
       sundaySongs.forEach(song => {
         const cleanBpm = song.bpm ? song.bpm.replace(/\D/g, '') : '';
@@ -1014,6 +1331,7 @@
         listContainer.appendChild(card);
       });
 
+
       if (window.Sortable) {
         if (listContainer.sortableInstance) listContainer.sortableInstance.destroy();
         listContainer.sortableInstance = Sortable.create(listContainer, {
@@ -1029,9 +1347,11 @@
         });
       }
 
+
       document.querySelectorAll('.bpm-btn').forEach(btn => setupLongPress(btn));
       updateMetronomeUI();
     }
+
 
     function toggleSunday(id) {
       songs = songs.map(s => s.id === id ? {...s, inSunday: !s.inSunday} : s);
@@ -1040,12 +1360,14 @@
       renderSundayList();
     }
 
+
     function filterSongs() {
       clearTimeout(filterTimeout);
       filterTimeout = setTimeout(() => {
         renderSongs(document.getElementById('searchInput').value);
       }, 150);
     }
+
 
     /* ==========================================================
        GESTIÓN DE ZOOM Y DESPLAZAMIENTO (PANNING / ARRASTRE)
@@ -1057,6 +1379,7 @@
       container.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentZoom})`;
     }
 
+
     function zoomViewer(delta) {
       currentZoom = Math.max(1, Math.min(3.5, currentZoom + delta));
       if (currentZoom === 1) {
@@ -1066,6 +1389,7 @@
       applyTransform(true);
     }
 
+
     function resetZoom() {
       currentZoom = 1;
       translateX = 0;
@@ -1073,23 +1397,28 @@
       applyTransform(true);
     }
 
+
     function openViewer(id, type) {
       const song = songs.find(s => s.id === id);
       if (!song) return;
 
+
       resetZoom();
       currentModalSongId = id;
       currentModalType = type;
+
 
       let targetUrl = song.urlAcordes || song.urlLetraAcordes || song.urlLetra;
       if (type === 'letra' && song.urlLetra) targetUrl = song.urlLetra;
       if (type === 'letra-acordes' && song.urlLetraAcordes) targetUrl = song.urlLetraAcordes;
       if (type === 'acordes' && song.urlAcordes) targetUrl = song.urlAcordes;
 
+
       document.getElementById('modalTitle').innerText = song.title;
       document.getElementById('modalArtist').innerText = song.artist || '';
       document.getElementById('externalLinkBtn').href = targetUrl || '#';
       document.getElementById('pdfFrame').src = getEmbedUrl(targetUrl);
+
 
       const isSundayActive = document.getElementById('domingo').classList.contains('active');
       const prevBtn = document.getElementById('prevBtn');
@@ -1104,8 +1433,10 @@
         nextBtn.style.display = 'none';
       }
 
+
       document.getElementById('viewerModal').style.display = 'flex';
     }
+
 
     function closeViewer() {
       resetZoom();
@@ -1119,11 +1450,13 @@
       const currentIndex = sundaySongs.findIndex(s => s.id === currentModalSongId);
       if (currentIndex === -1) return;
 
+
       const newIndex = currentIndex + direction;
       if (newIndex >= 0 && newIndex < sundaySongs.length) {
         openViewer(sundaySongs[newIndex].id, currentModalType);
       }
     }
+
 
     /* ==========================================================
        MANEJADOR DE GESTOS UNIFICADO (PELLIZCO + ARRASTRE + SWIPE)
@@ -1132,11 +1465,13 @@
       const overlay = document.getElementById('touchOverlay');
       if (!overlay) return;
 
+
       let startX = 0, startY = 0;
       let lastX = 0, lastY = 0;
       let isDragging = false;
       let startPinchDist = 0;
       let startZoom = 1;
+
 
       overlay.addEventListener('touchstart', (e) => {
         if (e.touches.length === 1) {
@@ -1155,8 +1490,10 @@
         }
       }, { passive: false });
 
+
       overlay.addEventListener('touchmove', (e) => {
         e.preventDefault();
+
 
         // Pellizco (Zoom)
         if (e.touches.length === 2 && startPinchDist > 0) {
@@ -1177,6 +1514,7 @@
           const currentX = e.touches[0].clientX;
           const currentY = e.touches[0].clientY;
 
+
           if (currentZoom > 1) {
             const deltaX = currentX - lastX;
             const deltaY = currentY - lastY;
@@ -1188,6 +1526,7 @@
           lastY = currentY;
         }
       }, { passive: false });
+
 
       overlay.addEventListener('touchend', (e) => {
         if (e.touches.length === 0) {
@@ -1205,6 +1544,126 @@
         }
       });
     })();
+
+    /* ==========================================================
+       LÓGICA DEL METRÓNOMO INDEPENDIENTE CON PERILLA (KNOB)
+       ========================================================== */
+    let standaloneMode = 2; // 1: Visual, 2: Sonoro + Visual
+    const MIN_BPM = 30;
+    const MAX_BPM = 250;
+    const MIN_ANGLE = -135;
+    const MAX_ANGLE = 135;
+
+    function setStandaloneMode(mode) {
+      standaloneMode = mode;
+      document.getElementById('modeVisualBtn').classList.toggle('active', mode === 1);
+      document.getElementById('modeSonoroBtn').classList.toggle('active', mode === 2);
+      
+      if (isMetronomeRunning && activeMetronomeSongId === 'standalone') {
+        estadoMetronomo = standaloneMode;
+      }
+    }
+
+    function updateKnobUI(targetBpm) {
+      bpm = Math.max(MIN_BPM, Math.min(MAX_BPM, targetBpm));
+      document.getElementById('knobBpmValue').innerText = bpm;
+
+      const pct = (bpm - MIN_BPM) / (MAX_BPM - MIN_BPM);
+      const angle = MIN_ANGLE + (pct * (MAX_ANGLE - MIN_ANGLE));
+      const knobDial = document.getElementById('knobDial');
+      if (knobDial) {
+        knobDial.style.transform = `rotate(${angle}deg)`;
+      }
+    }
+
+    function adjustKnobBpm(delta) {
+      updateKnobUI(bpm + delta);
+    }
+
+    function toggleStandaloneMetronome() {
+      initAudioContext();
+      const playBtn = document.getElementById('standalonePlayBtn');
+
+      if (isMetronomeRunning && activeMetronomeSongId === 'standalone') {
+        stopMetronome();
+        playBtn.innerText = '▶ Iniciar';
+        playBtn.classList.remove('active');
+      } else {
+        stopMetronome();
+        activeMetronomeSongId = 'standalone';
+        estadoMetronomo = standaloneMode;
+        isMetronomeRunning = true;
+        currentBeat = 0;
+        nextFlashTime = -1;
+        nextNoteTime = audioCtx.currentTime + 0.05;
+
+        scheduler();
+        requestAnimationFrame(visualLoop);
+
+        playBtn.innerText = '⏹ Detener';
+        playBtn.classList.add('active');
+      }
+    }
+
+    // Interacción táctil / mouse con la Perilla (Knob)
+    (function initKnobControl() {
+      const wrapper = document.getElementById('knobWrapper');
+      if (!wrapper) return;
+
+      let isTurning = false;
+
+      function handleMove(clientX, clientY) {
+        if (!isTurning) return;
+        const rect = wrapper.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const deltaX = clientX - centerX;
+        const deltaY = clientY - centerY;
+
+        let rad = Math.atan2(deltaY, deltaX);
+        let deg = rad * (180 / Math.PI) + 90;
+
+        if (deg < -180) deg += 360;
+        if (deg > 180) deg -= 360;
+
+        deg = Math.max(MIN_ANGLE, Math.min(MAX_ANGLE, deg));
+
+        const pct = (deg - MIN_ANGLE) / (MAX_ANGLE - MIN_ANGLE);
+        const calculatedBpm = Math.round(MIN_BPM + pct * (MAX_BPM - MIN_BPM));
+
+        updateKnobUI(calculatedBpm);
+      }
+
+      wrapper.addEventListener('mousedown', (e) => {
+        isTurning = true;
+        handleMove(e.clientX, e.clientY);
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (isTurning) handleMove(e.clientX, e.clientY);
+      });
+
+      window.addEventListener('mouseup', () => { isTurning = false; });
+
+      wrapper.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          isTurning = true;
+          handleMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (isTurning && e.touches.length === 1) {
+          handleMove(e.touches[0].clientX, e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchend', () => { isTurning = false; });
+
+      updateKnobUI(bpm);
+    })();
+
 
     // Inicio de la app
     checkTeamSelection();
