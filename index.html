@@ -566,6 +566,8 @@
     let currentTeam = localStorage.getItem('selected_team') || null;
     let songs = [];
     let filterTimeout = null;
+    let currentModalSongId = null;
+    let currentModalType = null;
 
     /* ==========================================================
        GESTIÓN DE SEDES / EQUIPOS
@@ -1013,6 +1015,9 @@
       const song = songs.find(s => s.id === id);
       if (!song) return;
 
+      currentModalSongId = id;
+      currentModalType = type;
+
       let targetUrl = song.urlAcordes || song.urlLetraAcordes || song.urlLetra;
       if (type === 'letra' && song.urlLetra) targetUrl = song.urlLetra;
       if (type === 'letra-acordes' && song.urlLetraAcordes) targetUrl = song.urlLetraAcordes;
@@ -1022,6 +1027,21 @@
       document.getElementById('modalArtist').innerText = song.artist || '';
       document.getElementById('externalLinkBtn').href = targetUrl || '#';
       document.getElementById('pdfFrame').src = getEmbedUrl(targetUrl);
+
+      const isSundayActive = document.getElementById('domingo').classList.contains('active');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+
+      if (isSundayActive) {
+        const sundaySongs = songs.filter(s => s.inSunday);
+        const currentIndex = sundaySongs.findIndex(s => s.id === id);
+        prevBtn.style.display = currentIndex > 0 ? 'flex' : 'none';
+        nextBtn.style.display = currentIndex < sundaySongs.length - 1 ? 'flex' : 'none';
+      } else {
+        prevBtn.style.display = 'none';
+        nextBtn.style.display = 'none';
+      }
+
       document.getElementById('viewerModal').style.display = 'flex';
     }
 
@@ -1029,7 +1049,18 @@
       document.getElementById('viewerModal').style.display = 'none';
       document.getElementById('pdfFrame').src = '';
     }
+function navigateSong(direction) {
+      const sundaySongs = songs.filter(s => s.inSunday);
+      const currentIndex = sundaySongs.findIndex(s => s.id === currentModalSongId);
+      if (currentIndex === -1) return;
 
+      const newIndex = currentIndex + direction;
+      if (newIndex >= 0 && newIndex < sundaySongs.length) {
+        openViewer(sundaySongs[newIndex].id, currentModalType);
+      }
+    }
+    
+    
     // Inicio de la app
     checkTeamSelection();
   </script>
