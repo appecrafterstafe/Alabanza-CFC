@@ -853,6 +853,7 @@
       </div>
       <button id="nextBtn" class="nav-arrow" onclick="navigateSong(1)">▶</button>
       <div class="modal-header-actions">
+        <button id="modalBpmBtn" class="badge bpm-btn" style="display: none;"></button>
         <button class="icon-btn" onclick="zoomViewer(-0.25)" title="Alejar">🔍-</button>
         <button class="icon-btn" onclick="zoomViewer(0.25)" title="Acercar">🔍+</button>
         <a id="externalLinkBtn" class="icon-btn" target="_blank" title="Abrir en Drive">↗</a>
@@ -1419,6 +1420,19 @@
       document.getElementById('externalLinkBtn').href = targetUrl || '#';
       document.getElementById('pdfFrame').src = getEmbedUrl(targetUrl);
 
+      const cleanBpm = song.bpm ? song.bpm.replace(/\D/g, '') : '';
+      const modalBpmBtn = document.getElementById('modalBpmBtn');
+      if (modalBpmBtn) {
+        if (cleanBpm) {
+          modalBpmBtn.dataset.songId = song.id;
+          modalBpmBtn.dataset.bpm = cleanBpm;
+          modalBpmBtn.style.display = 'inline-flex';
+          setupLongPress(modalBpmBtn);
+        } else {
+          modalBpmBtn.style.display = 'none';
+        }
+      }
+
 
       const isSundayActive = document.getElementById('domingo').classList.contains('active');
       const prevBtn = document.getElementById('prevBtn');
@@ -1433,6 +1447,7 @@
         nextBtn.style.display = 'none';
       }
 
+      updateMetronomeUI();
 
       document.getElementById('viewerModal').style.display = 'flex';
     }
