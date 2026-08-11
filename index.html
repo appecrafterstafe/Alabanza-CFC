@@ -488,6 +488,11 @@
       width: 100%; height: 100%;
       transform-origin: center center;
       will-change: transform;
+      transition: filter 0.2s ease;
+    }
+
+    #zoomContainer.inverted-colors {
+      filter: invert(1) hue-rotate(180deg);
     }
 
 
@@ -520,6 +525,13 @@
       color: var(--text-main); width: 34px; height: 34px; border-radius: 50%;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       font-size: 0.85rem; text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .icon-btn.active {
+      background: var(--brand-mint);
+      color: #000;
+      border-color: var(--brand-mint);
     }
 
 
@@ -795,7 +807,7 @@
       <iframe class="drive-container" src="https://drive.google.com/embeddedfolderview?id=12bycs6XiD6zlXIt2gNw9URdvfl0GoTxa#grid"></iframe>
     </section>
 
-    <!-- NUEVA SECCIÓN: METRÓNOMO INDEPENDIENTE CON PERILLA -->
+    <!-- METRÓNOMO INDEPENDIENTE CON PERILLA -->
     <section id="metronomo" class="tab-content">
       <h2 class="section-title">Metrónomo</h2>
       <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Ajuste manual de tempo mediante perilla.</p>
@@ -854,7 +866,12 @@
       <button id="nextBtn" class="nav-arrow" onclick="navigateSong(1)">▶</button>
       <div class="modal-header-actions">
         <button id="modalBpmBtn" class="badge bpm-btn" style="display: none;"></button>
-        <button class="icon-btn" onclick="zoomViewer(-0.25)" title="Alejar">🔍-</button>
+<button id="invertColorsBtn" class="icon-btn" onclick="toggleInvertColors()" title="Invertir Colores">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"></circle>
+    <path d="M12 18a6 6 0 0 0 0-12v12z" fill="currentColor"></path>
+  </svg>
+</button>        <button class="icon-btn" onclick="zoomViewer(-0.25)" title="Alejar">🔍-</button>
         <button class="icon-btn" onclick="zoomViewer(0.25)" title="Acercar">🔍+</button>
         <a id="externalLinkBtn" class="icon-btn" target="_blank" title="Abrir en Drive">↗</a>
         <button class="icon-btn" onclick="closeViewer()">&times;</button>
@@ -885,6 +902,7 @@
     let filterTimeout = null;
     let currentModalSongId = null;
     let currentModalType = null;
+    let isInverted = false;
 
 
     /* VARIABLES DE CONTROL DE ZOOM Y PANNING (ARRASTRE) */
@@ -1376,7 +1394,7 @@
     function applyTransform(animate = false) {
       const container = document.getElementById('zoomContainer');
       if (!container) return;
-      container.style.transition = animate ? 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)' : 'none';
+      container.style.transition = animate ? 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease' : 'filter 0.2s ease';
       container.style.transform = `translate(${translateX}px, ${translateY}px) scale(${currentZoom})`;
     }
 
@@ -1396,6 +1414,21 @@
       translateX = 0;
       translateY = 0;
       applyTransform(true);
+    }
+
+
+    function toggleInvertColors() {
+      isInverted = !isInverted;
+      const zoomContainer = document.getElementById('zoomContainer');
+      const invertBtn = document.getElementById('invertColorsBtn');
+      
+      if (isInverted) {
+        zoomContainer.classList.add('inverted-colors');
+        invertBtn.classList.add('active');
+      } else {
+        zoomContainer.classList.remove('inverted-colors');
+        invertBtn.classList.remove('active');
+      }
     }
 
 
