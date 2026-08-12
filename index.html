@@ -392,12 +392,6 @@
 
     .format-btn.disabled { opacity: 0.25; pointer-events: none; }
 
-    .drive-container {
-      width: 100%; height: calc(100vh - 160px);
-      border: 1px solid var(--card-border); border-radius: var(--radius);
-      background-color: var(--card-bg);
-    }
-
     .section-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 0.3rem; }
 
     .modal {
@@ -652,6 +646,116 @@
       color: var(--brand-mint);
       border-color: rgba(110, 231, 183, 0.4);
     }
+
+    /* ESTILOS DEL AFINADOR CROMÁTICO */
+    .tuner-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      margin-top: 1rem;
+    }
+
+    .tuner-note-display {
+      font-size: 5rem;
+      font-weight: 800;
+      line-height: 1;
+      color: var(--brand-mint);
+      text-shadow: 0 0 25px var(--brand-mint-glow);
+      margin: 1rem 0 0.2rem 0;
+      min-height: 5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .tuner-freq-display {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+
+    .tuner-meter-wrapper {
+      width: 100%;
+      max-width: 300px;
+      height: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .tuner-center-line {
+      position: absolute;
+      left: 50%; top: 0; bottom: 0;
+      width: 4px;
+      background: var(--brand-mint);
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+
+    .tuner-needle {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 8px;
+      background: var(--text-main);
+      border-radius: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      transition: left 0.1s ease-out, background-color 0.2s;
+      z-index: 3;
+    }
+
+    .tuner-needle.in-tune {
+      background: var(--brand-mint);
+      box-shadow: 0 0 12px var(--brand-mint);
+    }
+
+    .tuner-needle.flat {
+      background: #3b82f6;
+    }
+
+    .tuner-needle.sharp {
+      background: var(--danger);
+    }
+
+    .tuner-status-text {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      min-height: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    .tuner-start-btn {
+      background: var(--brand-mint);
+      color: #000;
+      border: none;
+      font-size: 1rem;
+      font-weight: 800;
+      border-radius: 16px;
+      padding: 0.85rem 2rem;
+      cursor: pointer;
+      box-shadow: 0 6px 20px var(--brand-mint-glow);
+      transition: all 0.2s ease;
+      width: 100%;
+      max-width: 280px;
+    }
+
+    .tuner-start-btn.active {
+      background: var(--danger);
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(244, 63, 94, 0.35);
+    }
   </style>
 </head>
 <body>
@@ -740,8 +844,24 @@
       <div id="sundayList"></div>
     </section>
 
-    <section id="drive" class="tab-content">
-      <iframe class="drive-container" src="https://drive.google.com/embeddedfolderview?id=12bycs6XiD6zlXIt2gNw9URdvfl0GoTxa#grid"></iframe>
+    <!-- AFINADOR CROMÁTICO -->
+    <section id="afinador" class="tab-content">
+      <h2 class="section-title">Afinador Cromático</h2>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Toca una nota cerca del micrófono para afinar.</p>
+
+      <div class="tuner-card">
+        <div id="tunerNote" class="tuner-note-display">--</div>
+        <div id="tunerFreq" class="tuner-freq-display">0.0 Hz</div>
+
+        <div class="tuner-meter-wrapper">
+          <div class="tuner-center-line"></div>
+          <div id="tunerNeedle" class="tuner-needle"></div>
+        </div>
+
+        <div id="tunerStatus" class="tuner-status-text">Micrófono desactivado</div>
+
+        <button id="tunerToggleBtn" class="tuner-start-btn" onclick="toggleTuner()">🎙️ Encender Afinador</button>
+      </div>
     </section>
 
     <!-- METRÓNOMO INDEPENDIENTE CON PERILLA -->
@@ -786,8 +906,8 @@
     <button class="nav-btn" onclick="switchTab('domingo', this)">
       <span class="icon">⭐</span> Domingo
     </button>
-    <button class="nav-btn" onclick="switchTab('drive', this)">
-      <span class="icon">📁</span> Drive
+    <button class="nav-btn" onclick="switchTab('afinador', this)">
+      <span class="icon">🎸</span> Afinador
     </button>
     <button class="nav-btn" onclick="switchTab('metronomo', this)">
       <span class="icon">⏱️</span> Metrónomo
@@ -1161,6 +1281,10 @@
       document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
       document.getElementById(tabId).classList.add('active');
       btnElement.classList.add('active');
+
+      if (tabId !== 'afinador' && isTuning) {
+        stopTuner();
+      }
 
       if (tabId === 'repertorio') renderSongs();
       if (tabId === 'domingo') renderSundayList();
@@ -1576,6 +1700,181 @@
 
       updateKnobUI(bpm);
     })();
+
+    /* LÓGICA DEL AFINADOR CROMÁTICO */
+    let tunerAudioCtx = null;
+    let tunerMicStream = null;
+    let tunerAnalyser = null;
+    let isTuning = false;
+    let tunerAnimFrame = null;
+
+    const NOTE_STRINGS = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+    function noteFromPitch(frequency) {
+      const noteNum = 12 * (Math.log(frequency / 440) / Math.log(2));
+      return Math.round(noteNum) + 69;
+    }
+
+    function frequencyFromNoteNumber(note) {
+      return 440 * Math.pow(2, (note - 69) / 12);
+    }
+
+    function centsOffFromPitch(frequency, note) {
+      return Math.floor(1200 * Math.log(frequency / frequencyFromNoteNumber(note)) / Math.log(2));
+    }
+
+    function autoCorrelate(buf, sampleRate) {
+      const SIZE = buf.length;
+      let rms = 0;
+
+      for (let i = 0; i < SIZE; i++) {
+        const val = buf[i];
+        rms += val * val;
+      }
+      rms = Math.sqrt(rms / SIZE);
+
+      if (rms < 0.015) return -1; // Señal muy débil (silencio/ruido de fondo)
+
+      let r1 = 0, r2 = SIZE - 1, thres = 0.2;
+      for (let i = 0; i < SIZE / 2; i++) {
+        if (Math.abs(buf[i]) < thres) { r1 = i; break; }
+      }
+      for (let i = 1; i < SIZE / 2; i++) {
+        if (Math.abs(buf[SIZE - i]) < thres) { r2 = SIZE - i; break; }
+      }
+
+      buf = buf.slice(r1, r2);
+      const c = new Array(buf.length).fill(0);
+
+      for (let i = 0; i < buf.length; i++) {
+        for (let j = 0; j < buf.length - i; j++) {
+          c[i] = c[i] + buf[j] * buf[j + i];
+        }
+      }
+
+      let d = 0;
+      while (c[d] > c[d + 1]) d++;
+
+      let maxval = -1, maxpos = -1;
+      for (let i = d; i < buf.length; i++) {
+        if (c[i] > maxval) {
+          maxval = c[i];
+          maxpos = i;
+        }
+      }
+
+      let T0 = maxpos;
+      const x1 = c[T0 - 1], x2 = c[T0], x3 = c[T0 + 1];
+      const a = (x1 + x3 - 2 * x2) / 2;
+      const b = (x3 - x1) / 2;
+
+      if (a) T0 = T0 - b / (2 * a);
+
+      return sampleRate / T0;
+    }
+
+    function updateTunerLoop() {
+      if (!isTuning) return;
+
+      const buf = new Float32Array(2048);
+      tunerAnalyser.getFloatTimeDomainData(buf);
+      const pitch = autoCorrelate(buf, tunerAudioCtx.sampleRate);
+
+      const noteEl = document.getElementById('tunerNote');
+      const freqEl = document.getElementById('tunerFreq');
+      const needleEl = document.getElementById('tunerNeedle');
+      const statusEl = document.getElementById('tunerStatus');
+
+      if (pitch === -1) {
+        statusEl.innerText = "Escuchando...";
+        needleEl.style.left = "50%";
+        needleEl.className = "tuner-needle";
+      } else {
+        const pitchFreq = pitch.toFixed(1);
+        const pitchNote = noteFromPitch(pitch);
+        const noteName = NOTE_STRINGS[pitchNote % 12];
+        const octave = Math.floor(pitchNote / 12) - 1;
+        const cents = centsOffFromPitch(pitch, pitchNote);
+
+        noteEl.innerText = `${noteName}${octave}`;
+        freqEl.innerText = `${pitchFreq} Hz`;
+
+        // Mapear de -50 cents a +50 cents -> 0% a 100% de la barra
+        const percent = Math.max(0, Math.min(100, 50 + cents));
+        needleEl.style.left = `${percent}%`;
+
+        if (Math.abs(cents) <= 4) {
+          statusEl.innerText = "¡Afinado!";
+          statusEl.style.color = "var(--brand-mint)";
+          needleEl.className = "tuner-needle in-tune";
+        } else if (cents < 0) {
+          statusEl.innerText = `Bajo (${cents} cents)`;
+          statusEl.style.color = "#60a5fa";
+          needleEl.className = "tuner-needle flat";
+        } else {
+          statusEl.innerText = `Alto (+${cents} cents)`;
+          statusEl.style.color = "var(--danger)";
+          needleEl.className = "tuner-needle sharp";
+        }
+      }
+
+      tunerAnimFrame = requestAnimationFrame(updateTunerLoop);
+    }
+
+    async function toggleTuner() {
+      const btn = document.getElementById('tunerToggleBtn');
+
+      if (isTuning) {
+        stopTuner();
+      } else {
+        try {
+          tunerMicStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          tunerAudioCtx = new AudioContextClass();
+
+          const source = tunerAudioCtx.createMediaStreamSource(tunerMicStream);
+          tunerAnalyser = tunerAudioCtx.createAnalyser();
+          tunerAnalyser.fftSize = 2048;
+          source.connect(tunerAnalyser);
+
+          isTuning = true;
+          btn.innerText = "⏹ Apagar Afinador";
+          btn.classList.add('active');
+
+          updateTunerLoop();
+        } catch (err) {
+          alert("No se pudo acceder al micrófono para el afinador. Por favor otorga los permisos.");
+          console.error(err);
+        }
+      }
+    }
+
+    function stopTuner() {
+      isTuning = false;
+      if (tunerAnimFrame) cancelAnimationFrame(tunerAnimFrame);
+      if (tunerMicStream) {
+        tunerMicStream.getTracks().forEach(track => track.stop());
+      }
+      if (tunerAudioCtx) {
+        tunerAudioCtx.close();
+      }
+
+      const btn = document.getElementById('tunerToggleBtn');
+      if (btn) {
+        btn.innerText = "🎙️ Encender Afinador";
+        btn.classList.remove('active');
+      }
+
+      document.getElementById('tunerNote').innerText = "--";
+      document.getElementById('tunerFreq').innerText = "0.0 Hz";
+      document.getElementById('tunerStatus').innerText = "Micrófono desactivado";
+      document.getElementById('tunerStatus').style.color = "var(--text-muted)";
+      const needle = document.getElementById('tunerNeedle');
+      if (needle) {
+        needle.style.left = "50%";
+        needle.className = "tuner-needle";
+      }
+    }
 
     // Inicio de la app
     checkTeamSelection();
