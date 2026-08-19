@@ -489,13 +489,13 @@
     .intensity-opt.selected { background: var(--brand-mint); color: #000; border-color: var(--brand-mint); }
     .close-settings-btn { width: 100%; padding: 0.75rem; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 12px; font-weight: 700; cursor: pointer; margin-top: 0.5rem; }
 
-    /* ESTILOS DE LA SECCIÓN DE METRÓNOMO STANDALONE CON PERILLA */
+    /* ESTILOS DE LA SECCIÓN DE METRÓNOMO STANDALONE CON TECLADO NUMÉRICO */
     .knob-section-card {
       background: var(--card-bg);
       backdrop-filter: blur(14px);
       border: 1px solid var(--card-border);
       border-radius: 24px;
-      padding: 1.75rem 1rem;
+      padding: 1.5rem 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -506,7 +506,7 @@
 
     .bpm-display-container {
       text-align: center;
-      margin-bottom: 1.25rem;
+      margin-bottom: 0.75rem;
     }
 
     .bpm-value-text {
@@ -525,79 +525,79 @@
       margin-top: 4px;
     }
 
-    .knob-wrapper {
-      position: relative;
-      width: 220px;
-      height: 220px;
+    .bpm-presets {
+      display: flex;
+      gap: 0.4rem;
+      width: 100%;
+      max-width: 300px;
+      margin-bottom: 1rem;
+    }
+
+    .bpm-preset-btn {
+      flex: 1;
+      padding: 0.4rem 0.2rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .bpm-preset-btn:active {
+      background: var(--brand-mint);
+      color: #000;
+    }
+
+    .keypad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 300px;
+      margin-bottom: 1.25rem;
+    }
+
+    .keypad-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      font-size: 1.2rem;
+      font-weight: 800;
+      border-radius: 14px;
+      padding: 0.85rem 0;
+      cursor: pointer;
+      transition: all 0.15s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 1rem 0 1.5rem 0;
-      touch-action: none;
       user-select: none;
     }
 
-    .knob-outer-ring {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, rgba(0,0,0,0.6) 100%);
-      border: 2px dashed rgba(255, 255, 255, 0.15);
+    .keypad-btn:active {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(0.96);
     }
 
-    .knob-dial {
-      position: relative;
-      width: 160px;
-      height: 160px;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #1e283d, #0d121d);
-      border: 2px solid rgba(255, 255, 255, 0.12);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7), inset 0 2px 4px rgba(255, 255, 255, 0.1);
-      cursor: grab;
-      transform: rotate(-135deg);
-      transition: transform 0.05s linear;
-      display: flex;
-      justify-content: center;
+    .keypad-btn.action {
+      background: rgba(244, 63, 94, 0.15);
+      color: #fca5a5;
+      border-color: rgba(244, 63, 94, 0.3);
     }
 
-    .knob-dial:active {
-      cursor: grabbing;
-    }
-
-    .knob-indicator {
-      position: absolute;
-      top: 12px;
-      width: 8px;
-      height: 24px;
-      background: var(--brand-mint);
-      border-radius: 4px;
-      box-shadow: 0 0 10px var(--brand-mint);
+    .keypad-btn.step {
+      background: rgba(110, 231, 183, 0.1);
+      color: var(--brand-mint);
+      border-color: rgba(110, 231, 183, 0.3);
     }
 
     .knob-btn-group {
       display: flex;
       gap: 0.6rem;
       width: 100%;
-      max-width: 320px;
-      margin-top: 0.5rem;
-    }
-
-    .knob-step-btn {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-      font-size: 1.1rem;
-      font-weight: 800;
-      border-radius: 14px;
-      padding: 0.75rem 1rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      flex: 1;
-    }
-
-    .knob-step-btn:active {
-      background: rgba(255, 255, 255, 0.15);
+      max-width: 300px;
     }
 
     .knob-play-btn {
@@ -609,7 +609,7 @@
       border-radius: 14px;
       padding: 0.85rem 1.5rem;
       cursor: pointer;
-      flex: 2;
+      flex: 1;
       box-shadow: 0 6px 20px var(--brand-mint-glow);
       transition: all 0.2s ease;
     }
@@ -624,7 +624,7 @@
       display: flex;
       gap: 0.5rem;
       width: 100%;
-      max-width: 320px;
+      max-width: 300px;
       margin-top: 0.75rem;
     }
 
@@ -790,9 +790,9 @@
       <div class="setting-group">
         <label>Tiempos por Compás (Métrica)</label>
         <div style="display: flex; align-items: center; justify-content: center; gap: 1rem;">
-          <button class="knob-step-btn" style="padding: 0.4rem 0.8rem; max-width: 50px;" onclick="adjustBeatsPerMeasure(-1)">-</button>
+          <button class="keypad-btn step" style="padding: 0.4rem 0.8rem; max-width: 50px;" onclick="adjustBeatsPerMeasure(-1)">-</button>
           <span id="beatsPerMeasureDisplay" style="font-size: 1.2rem; font-weight: 800; min-width: 30px; text-align: center;">4</span>
-          <button class="knob-step-btn" style="padding: 0.4rem 0.8rem; max-width: 50px;" onclick="adjustBeatsPerMeasure(1)">+</button>
+          <button class="keypad-btn step" style="padding: 0.4rem 0.8rem; max-width: 50px;" onclick="adjustBeatsPerMeasure(1)">+</button>
         </div>
       </div>
 
@@ -864,13 +864,13 @@
       </div>
     </section>
 
-    <!-- METRÓNOMO INDEPENDIENTE CON PERILLA -->
+    <!-- METRÓNOMO INDEPENDIENTE CON TECLADO NUMÉRICO -->
     <section id="metronomo" class="tab-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
         <h2 class="section-title" style="margin-bottom: 0;">Metrónomo</h2>
         <button class="icon-btn" onclick="openMetronomeSettings()" title="Configuración">⚙️</button>
       </div>
-      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Ajuste manual de tempo mediante perilla.</p>
+      <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Ajuste rápido o mediante teclado numérico.</p>
       
       <div class="knob-section-card">
         <div class="bpm-display-container">
@@ -878,17 +878,34 @@
           <div class="bpm-unit-text">BPM</div>
         </div>
 
-        <div class="knob-wrapper" id="knobWrapper">
-          <div class="knob-outer-ring"></div>
-          <div class="knob-dial" id="knobDial">
-            <div class="knob-indicator"></div>
-          </div>
+        <!-- Presets directos -->
+        <div class="bpm-presets">
+          <button class="bpm-preset-btn" onclick="setDirectBpm(60)">60</button>
+          <button class="bpm-preset-btn" onclick="setDirectBpm(80)">80</button>
+          <button class="bpm-preset-btn" onclick="setDirectBpm(100)">100</button>
+          <button class="bpm-preset-btn" onclick="setDirectBpm(120)">120</button>
+          <button class="bpm-preset-btn" onclick="setDirectBpm(140)">140</button>
+        </div>
+
+        <!-- Teclado numérico -->
+        <div class="keypad-grid">
+          <button class="keypad-btn" onclick="pressKey('1')">1</button>
+          <button class="keypad-btn" onclick="pressKey('2')">2</button>
+          <button class="keypad-btn" onclick="pressKey('3')">3</button>
+          <button class="keypad-btn" onclick="pressKey('4')">4</button>
+          <button class="keypad-btn" onclick="pressKey('5')">5</button>
+          <button class="keypad-btn" onclick="pressKey('6')">6</button>
+          <button class="keypad-btn" onclick="pressKey('7')">7</button>
+          <button class="keypad-btn" onclick="pressKey('8')">8</button>
+          <button class="keypad-btn" onclick="pressKey('9')">9</button>
+          <button class="keypad-btn step" onclick="adjustKnobBpm(-1)">-1</button>
+          <button class="keypad-btn" onclick="pressKey('0')">0</button>
+          <button class="keypad-btn step" onclick="adjustKnobBpm(1)">+1</button>
+          <button class="keypad-btn action" style="grid-column: span 3;" onclick="pressKey('clear')">⌫ Borrar / Reajustar</button>
         </div>
 
         <div class="knob-btn-group">
-          <button class="knob-step-btn" onclick="adjustKnobBpm(-1)">-1</button>
           <button id="standalonePlayBtn" class="knob-play-btn" onclick="toggleStandaloneMetronome()">▶ Iniciar</button>
-          <button class="knob-step-btn" onclick="adjustKnobBpm(1)">+1</button>
         </div>
 
         <div class="mode-selector">
@@ -1585,12 +1602,11 @@
       });
     })();
 
-    /* LÓGICA DEL METRÓNOMO INDEPENDIENTE CON PERILLA (KNOB) */
+    /* LÓGICA DEL METRÓNOMO INDEPENDIENTE CON TECLADO NUMÉRICO */
     let standaloneMode = 2; // 1: Visual, 2: Sonoro + Visual
     const MIN_BPM = 30;
     const MAX_BPM = 250;
-    const MIN_ANGLE = -135;
-    const MAX_ANGLE = 135;
+    let keypadBuffer = "";
 
     function setStandaloneMode(mode) {
       standaloneMode = mode;
@@ -1602,20 +1618,40 @@
       }
     }
 
-    function updateKnobUI(targetBpm) {
+    function setBpmValue(targetBpm) {
       bpm = Math.max(MIN_BPM, Math.min(MAX_BPM, targetBpm));
       document.getElementById('knobBpmValue').innerText = bpm;
+    }
 
-      const pct = (bpm - MIN_BPM) / (MAX_BPM - MIN_BPM);
-      const angle = MIN_ANGLE + (pct * (MAX_ANGLE - MIN_ANGLE));
-      const knobDial = document.getElementById('knobDial');
-      if (knobDial) {
-        knobDial.style.transform = `rotate(${angle}deg)`;
-      }
+    function setDirectBpm(val) {
+      keypadBuffer = "";
+      setBpmValue(val);
     }
 
     function adjustKnobBpm(delta) {
-      updateKnobUI(bpm + delta);
+      keypadBuffer = "";
+      setBpmValue(bpm + delta);
+    }
+
+    function pressKey(key) {
+      if (key === 'clear') {
+        keypadBuffer = "";
+        document.getElementById('knobBpmValue').innerText = bpm;
+        return;
+      }
+
+      if (keypadBuffer.length >= 3) {
+        keypadBuffer = key;
+      } else {
+        keypadBuffer += key;
+      }
+
+      document.getElementById('knobBpmValue').innerText = keypadBuffer;
+
+      const parsedBpm = parseInt(keypadBuffer, 10);
+      if (!isNaN(parsedBpm) && parsedBpm >= MIN_BPM) {
+        setBpmValue(parsedBpm);
+      }
     }
 
     function toggleStandaloneMetronome() {
@@ -1642,64 +1678,6 @@
         playBtn.classList.add('active');
       }
     }
-
-    (function initKnobControl() {
-      const wrapper = document.getElementById('knobWrapper');
-      if (!wrapper) return;
-
-      let isTurning = false;
-
-      function handleMove(clientX, clientY) {
-        if (!isTurning) return;
-        const rect = wrapper.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-
-        const deltaX = clientX - centerX;
-        const deltaY = clientY - centerY;
-
-        let rad = Math.atan2(deltaY, deltaX);
-        let deg = rad * (180 / Math.PI) + 90;
-
-        if (deg < -180) deg += 360;
-        if (deg > 180) deg -= 360;
-
-        deg = Math.max(MIN_ANGLE, Math.min(MAX_ANGLE, deg));
-
-        const pct = (deg - MIN_ANGLE) / (MAX_ANGLE - MIN_ANGLE);
-        const calculatedBpm = Math.round(MIN_BPM + pct * (MAX_BPM - MIN_BPM));
-
-        updateKnobUI(calculatedBpm);
-      }
-
-      wrapper.addEventListener('mousedown', (e) => {
-        isTurning = true;
-        handleMove(e.clientX, e.clientY);
-      });
-
-      window.addEventListener('mousemove', (e) => {
-        if (isTurning) handleMove(e.clientX, e.clientY);
-      });
-
-      window.addEventListener('mouseup', () => { isTurning = false; });
-
-      wrapper.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 1) {
-          isTurning = true;
-          handleMove(e.touches[0].clientX, e.touches[0].clientY);
-        }
-      }, { passive: true });
-
-      window.addEventListener('touchmove', (e) => {
-        if (isTurning && e.touches.length === 1) {
-          handleMove(e.touches[0].clientX, e.touches[0].clientY);
-        }
-      }, { passive: true });
-
-      window.addEventListener('touchend', () => { isTurning = false; });
-
-      updateKnobUI(bpm);
-    })();
 
     /* LÓGICA DEL AFINADOR CROMÁTICO */
     let tunerAudioCtx = null;
